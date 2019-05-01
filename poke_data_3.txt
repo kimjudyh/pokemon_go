@@ -1,0 +1,82 @@
+1
+meltan
+396
+70
+1900
+not likely
+defense
+certainly impressed
+
+2
+meltan
+382
+73
+1900
+not likely
+hp
+certainly impressed
+
+3
+meltan
+362
+64
+1600
+above average
+attack
+noticeably
+
+4
+meltan
+838
+95
+5000
+above average
+attack
+certainly impressed
+
+5
+meltan
+823
+98
+5000
+not likely
+attack
+noticeably
+
+6
+meltan
+784
+101
+4500
+certainly
+defense
+exceeds
+
+7
+meltan
+727
+96
+5000
+not likely
+hp
+attack
+norm
+
+8
+meltan
+711
+96
+4000
+certainly
+hp
+defense
+exceeds
+
+9
+meltan
+683
+95
+4000
+not likely
+hp
+noticeably
