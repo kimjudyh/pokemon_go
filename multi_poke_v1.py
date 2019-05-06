@@ -143,7 +143,8 @@ def read_base_stats():
     # [pokemon, stamina, attack, defense]
     base_stats = [["meltan", 130, 118, 99],
                   ["charmander", 118, 116, 93],
-                  ["squirtle", 127, 94, 121]]
+                  ["squirtle", 127, 94, 121],
+                  ["bagon", 128, 134, 93]]
     return base_stats
 
 # narrow down IV values using appraisal
@@ -216,7 +217,7 @@ def narrow_IV(entry):
             # attack and stamina can't be >= 14
             stam_IV = stam_IV[0:14]
             atk_IV = atk_IV[0:14]
-        elif  appraisal[1] == "defense" and appraisal[2] == "noticeably":
+        elif appraisal[1] == "defense" and appraisal[2] == "noticeably":
             def_IV = list(range(8,13))      # 8-12
             # attack and stamina can't be >= 12
             stam_IV = stam_IV[0:12]
@@ -256,7 +257,7 @@ def narrow_IV(entry):
         is_single = False
         # find the stat that doesn't appear to get the two stats
         # DEFENSE & STAMINA
-        if (appraisal[1] and appraisal[2]) != "attack" \
+        if "attack" not in appraisal \
                 and appraisal[3] == "exceeds":
             def_IV = [15]           # 15
             stam_IV = [15]          # 15
@@ -264,20 +265,20 @@ def narrow_IV(entry):
             atk_IV = atk_IV[0:15]
             print("hp and defense exceeds")
             print("def", def_IV, "stam", stam_IV, "atk", atk_IV)
-        elif (appraisal[1] and appraisal[2]) != "attack" \
+        elif "attack" not in appraisal \
                 and appraisal[3] == "certainly impressed":
             def_IV = [13, 14]       # 13-14
             stam_IV = [13, 14]      # 13-14
             # attack can't be >= 14
             atk_IV = atk_IV[0:14]
             print("defense and hp")
-        elif (appraisal[1] and appraisal[2]) != "attack" \
+        elif "attack" not in appraisal \
                 and appraisal[3] == "noticeably":
             def_IV = list(range(8,13))  # 8-12
             stam_IV = def_IV.copy()
             # attack can't be >= 12
             atk_IV = atk_IV[0:12]
-        elif (appraisal[1] and appraisal[2]) != "attack" \
+        elif "attack" not in appraisal \
                 and appraisal [3] == "norm":
             def_IV = def_IV[0:8]    # 0-7
             stam_IV = stam_IV[0:8]  # 0-7
@@ -285,45 +286,56 @@ def narrow_IV(entry):
             atk_IV = atk_IV[0:7]
 
         # ATTACK & STAMINA
-        elif (appraisal[1] and appraisal[2]) != "defense" \
+        elif "defense" not in appraisal \
                 and appraisal[3] == "exceeds":
             atk_IV = [15]       # 15
             stam_IV = [15]      # 15
             # defense can't be 15
             def_IV = def_IV[0:15]
             print("i'm at attack and stamina exceeds")
-        elif (appraisal[1] and appraisal[2]) != "defense" \
+        elif "defense" not in appraisal \
                 and appraisal[3] == "certainly impressed":
             atk_IV = [13, 14]   # 13-14
             stam_IV = [13, 14]  # 13-14
             # defense can't be >= 14
             def_IV = def_IV[0:14]
-        elif (appraisal[1] and appraisal[2]) != "defense" \
+        elif "defense" not in appraisal \
                 and appraisal[3] == "noticeably":
             atk_IV = atk_IV[8:13]   # 8-12
             stam_IV = stam_IV[8:13] # 8-12
             # defense can't be >= 12
             def_IV = def_IV[0:12]
-        elif (appraisal[1] and appraisal[2]) != "defense" \
+        elif "defense" not in appraisal \
                 and appraisal[3] == "norm":
             atk_IV = atk_IV[0:8]    # 0-7
             stam_IV = stam_IV[0:8]
             # defense can't be >= 7
             def_IV = def_IV[0:7]
-        #print("appraisal[1]", appraisal[1])
+
         # ATTACK & DEFENSE
-        elif (appraisal[1] and appraisal[2]) != "hp" and appraisal[3] == "exceeds":
+        elif "hp" not in appraisal and appraisal[3] == "exceeds":
             def_IV = [15]       # 15
             atk_IV = [15]       # 15
             # stamina can't be 15
             stam_IV = stam_IV[0:15]
             print("i'm at attack and defense exceeds")
-        elif (appraisal[1] and appraisal[2]) != "hp" \
+        elif "hp" not in appraisal \
                 and appraisal[3] == "certainly impressed":
             def_IV = [13, 14]   # 13-14
             atk_IV = [13, 14]   # 13-14
             # stamina can't be >= 14
             stam_IV = stam_IV[0:14]
+            print("i'm at attack and defense certainly impressed")
+        elif "hp" not in appraisal and appraisal [3] == "noticeably":
+            def_IV = def_IV[8:13]       # 8-12
+            atk_IV = atk_IV[8:13]
+            # stamina can't be >= 12
+            stam_IV = stam_IV[0:12]
+        elif "hp" not in appraisal and appraisal[3] == "norm":
+            def_IV = def_IV[0:8]    # 0-7
+            atk_IV = atk_IV[0:8]
+            # stamina can't be >= 7
+            stam_IV = stam_IV[0:7]
 
     # three stats, set is_single to False
     elif len(appraisal) == 5:
@@ -491,7 +503,7 @@ def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels,
 #################################################
 
 # read pokemon data from text file
-stats = read_stats("poke_data_3.txt")
+stats = read_stats("poke_data_4.txt")
 
 # read cp multiplier and level data from text file
 dic_cp_mult = read_cp_mult()
