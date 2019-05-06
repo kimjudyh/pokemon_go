@@ -204,80 +204,96 @@ def narrow_IV(entry):
 
     print("max_IV, other_IV: ", max_IV, other_IV)
 
+    if len(appraisal) == 3:
+        if "attack" in appraisal:
+            atk_IV = max_IV
+            def_IV = other_IV
+            stam_IV = other_IV
+        elif "defense" in appraisal:
+            def_IV = max_IV
+            atk_IV = other_IV
+            stam_IV = other_IV
+        elif "hp" in appraisal:
+            stam_IV = max_IV
+            atk_IV = other_IV
+            def_IV = other_IV
+        else:
+            print("error")
+
     # account for different length of appraisal list
     # one stat
-    if len(appraisal) == 3:
-        # extract stat
-        # ATTACK
-        if appraisal[1] == "attack" and appraisal[2] == "exceeds":
-            atk_IV = [15]
-            # defense and stamina cannot equal 15
-            stam_IV = stam_IV[0:15]
-            def_IV = def_IV[0:15]
-        elif appraisal[1] == "attack" and appraisal[2] == "certainly impressed":
-            atk_IV = [13, 14]
-            # defense and stamina cannot be >= 14
-            stam_IV = stam_IV[0:14]
-            def_IV = def_IV[0:14]
-        elif  appraisal[1] == "attack" and appraisal[2] == "noticeably":
-            atk_IV = list(range(8,13))      # 8-12
-            # defense and stamina cannot be >= 12
-            stam_IV = stam_IV[0:12]
-            def_IV = def_IV[0:12]
-        elif appraisal[1] == "attack" and appraisal[2] == "norm":
-            atk_IV = list(range(0,8))       # 0-7
-            # defense and stamina cannot be >= 7
-            stam_IV = stam_IV[0:7]
-            def_IV = def_IV[0:7]
-
-        # DEFENSE
-        elif appraisal[1] == "defense" and appraisal[2] == "exceeds":
-            def_IV = [15]
-            # attack and stamina can't be 15
-            stam_IV = stam_IV[0:15]
-            atk_IV = atk_IV[0:15]
-        elif appraisal[1] == "defense" and appraisal[2] == "certainly impressed":
-            def_IV = [13, 14]
-            # attack and stamina can't be >= 14
-            stam_IV = stam_IV[0:14]
-            atk_IV = atk_IV[0:14]
-        elif appraisal[1] == "defense" and appraisal[2] == "noticeably":
-            def_IV = list(range(8,13))      # 8-12
-            # attack and stamina can't be >= 12
-            stam_IV = stam_IV[0:12]
-            atk_IV = atk_IV[0:12]
-        elif appraisal[1] == "defense" and appraisal[2] == "norm":
-            def_IV = list(range(0,8))       # 0-7
-            # attack and stamina can't be >= 7
-            stam_IV = stam_IV[0:7]
-            atk_IV = atk_IV[0:7]
-
-        # STAMINA
-        elif appraisal[1] == "hp" and appraisal[2] == "exceeds":
-            stam_IV = [15]
-            # attack and defense can't be 15
-            atk_IV = atk_IV[0:15]
-            def_IV = def_IV[0:15]
-        elif appraisal[1] == "hp" and appraisal[2] == "certainly impressed":
-            stam_IV = [13, 14]
-            # attack and defense can't be >= 14
-            atk_IV = atk_IV[0:14]
-            def_IV = def_IV[0:14]
-        elif  appraisal[1] == "hp" and appraisal[2] == "noticeably":
-            stam_IV = list(range(8,13))      # 8-12
-            # attack and defense can't be >= 12
-            atk_IV = atk_IV[0:12]
-            def_IV = def_IV[0:12]
-        elif appraisal[1] == "hp" and appraisal[2] == "norm":
-            stam_IV = list(range(0,8))       # 0-7
-            # attack and defense can't be >= 7
-            atk_IV = atk_IV[0:7]
-            def_IV = def_IV[0:7]
-        else:
-            pass
+    # if len(appraisal) == 3:
+    #     # extract stat
+    #     # ATTACK
+    #     if appraisal[1] == "attack" and appraisal[2] == "exceeds":
+    #         atk_IV = [15]
+    #         # defense and stamina cannot equal 15
+    #         stam_IV = stam_IV[0:15]
+    #         def_IV = def_IV[0:15]
+    #     elif appraisal[1] == "attack" and appraisal[2] == "certainly impressed":
+    #         atk_IV = [13, 14]
+    #         # defense and stamina cannot be >= 14
+    #         stam_IV = stam_IV[0:14]
+    #         def_IV = def_IV[0:14]
+    #     elif  appraisal[1] == "attack" and appraisal[2] == "noticeably":
+    #         atk_IV = list(range(8,13))      # 8-12
+    #         # defense and stamina cannot be >= 12
+    #         stam_IV = stam_IV[0:12]
+    #         def_IV = def_IV[0:12]
+    #     elif appraisal[1] == "attack" and appraisal[2] == "norm":
+    #         atk_IV = list(range(0,8))       # 0-7
+    #         # defense and stamina cannot be >= 7
+    #         stam_IV = stam_IV[0:7]
+    #         def_IV = def_IV[0:7]
+    #
+    #     # DEFENSE
+    #     elif appraisal[1] == "defense" and appraisal[2] == "exceeds":
+    #         def_IV = [15]
+    #         # attack and stamina can't be 15
+    #         stam_IV = stam_IV[0:15]
+    #         atk_IV = atk_IV[0:15]
+    #     elif appraisal[1] == "defense" and appraisal[2] == "certainly impressed":
+    #         def_IV = [13, 14]
+    #         # attack and stamina can't be >= 14
+    #         stam_IV = stam_IV[0:14]
+    #         atk_IV = atk_IV[0:14]
+    #     elif appraisal[1] == "defense" and appraisal[2] == "noticeably":
+    #         def_IV = list(range(8,13))      # 8-12
+    #         # attack and stamina can't be >= 12
+    #         stam_IV = stam_IV[0:12]
+    #         atk_IV = atk_IV[0:12]
+    #     elif appraisal[1] == "defense" and appraisal[2] == "norm":
+    #         def_IV = list(range(0,8))       # 0-7
+    #         # attack and stamina can't be >= 7
+    #         stam_IV = stam_IV[0:7]
+    #         atk_IV = atk_IV[0:7]
+    #
+    #     # STAMINA
+    #     elif appraisal[1] == "hp" and appraisal[2] == "exceeds":
+    #         stam_IV = [15]
+    #         # attack and defense can't be 15
+    #         atk_IV = atk_IV[0:15]
+    #         def_IV = def_IV[0:15]
+    #     elif appraisal[1] == "hp" and appraisal[2] == "certainly impressed":
+    #         stam_IV = [13, 14]
+    #         # attack and defense can't be >= 14
+    #         atk_IV = atk_IV[0:14]
+    #         def_IV = def_IV[0:14]
+    #     elif  appraisal[1] == "hp" and appraisal[2] == "noticeably":
+    #         stam_IV = list(range(8,13))      # 8-12
+    #         # attack and defense can't be >= 12
+    #         atk_IV = atk_IV[0:12]
+    #         def_IV = def_IV[0:12]
+    #     elif appraisal[1] == "hp" and appraisal[2] == "norm":
+    #         stam_IV = list(range(0,8))       # 0-7
+    #         # attack and defense can't be >= 7
+    #         atk_IV = atk_IV[0:7]
+    #         def_IV = def_IV[0:7]
+    #     else:
+    #         pass
 
     # two stats, set is_single to False
-    elif len(appraisal) == 4:
+    if len(appraisal) == 4:
         is_single = False
         # find the stat that doesn't appear to get the two stats
         # DEFENSE & STAMINA
