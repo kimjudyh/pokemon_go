@@ -180,6 +180,30 @@ def narrow_IV(entry):
     # set is_single to default True
     is_single = True
 
+    max_IV = []
+    other_IV = []
+
+    if "exceeds" in appraisal:
+        max_IV = [15]   # 15
+        # other stats can't be 15
+        other_IV = list(range(0,15))    # 0-14
+    elif "certainly impressed" in appraisal:
+        max_IV = [13, 14]
+        # other stats can't be >= 14
+        other_IV = list(range(0,14))    # 0-13
+    elif "noticeably" in appraisal:
+        max_IV = list(range(8,13))  # 8-12
+        # other stats can't be >=12
+        other_IV = list(range(0,12))    # 0-11
+    elif "norm" in appraisal:
+        max_IV = list(range(0,8))   # 0-7
+        # other stats can't be >=7
+        other_IV = list(range(0,7))     # 0-6
+    else:
+        print("error")
+
+    print("max_IV, other_IV: ", max_IV, other_IV)
+
     # account for different length of appraisal list
     # one stat
     if len(appraisal) == 3:
