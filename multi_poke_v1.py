@@ -179,6 +179,7 @@ def narrow_IV(entry):
 
     # set is_single to default True
     is_single = True
+    two_stats = ""
 
     max_IV = []
     other_IV = []
@@ -232,16 +233,19 @@ def narrow_IV(entry):
             stam_IV = max_IV
             def_IV = max_IV
             atk_IV = other_IV
+            two_stats = "not attack"
         # Stamina & Attack
         elif "defense" not in appraisal:
             stam_IV = max_IV
             atk_IV = max_IV
             def_IV = other_IV
+            two_stats = "not defense"
         # Attack & Defense
         elif "hp" not in appraisal:
             atk_IV = max_IV
             def_IV = max_IV
             stam_IV = other_IV
+            two_stats = "not hp"
         else:
             print("error with two stats")
     # three stats
@@ -423,7 +427,7 @@ def narrow_IV(entry):
     #         stam_IV = [13, 14]
 
 
-    return stam_IV, atk_IV, def_IV, is_single
+    return stam_IV, atk_IV, def_IV, is_single, two_stats
 
 # narrow down cp multiplier range based on stardust.
 def narrow_cp_mult(dic_cp_mult, dic_stardust, entry):
@@ -448,14 +452,17 @@ def narrow_cp_mult(dic_cp_mult, dic_stardust, entry):
     d_list_levels = {}
     list_levels = dic_stardust[stardust]
     for i in list_levels:
-        cp_mult.append(dic_cp_mult[i])
-        d_list_levels[dic_cp_mult[i]] = i
+        # remove half levels
+        if i.is_integer():
+            cp_mult.append(dic_cp_mult[i])
+            d_list_levels[dic_cp_mult[i]] = i
 
     #print("d_list_levels: ", d_list_levels)
     return d_list_levels, cp_mult
 
 # function that guesses IVs
-def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels, is_single):
+def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels, is_single,
+             two_stats):
     '''
     Processes one pokemon's original stats and narrowed down IVs to guess the combo of
     level, attack IV, stamina IV, and defense IV that satisfies a given CP equation.
@@ -504,7 +511,7 @@ def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels,
             if hp == calc_hp:
                 # use cp multiplier value to get level
                 lvl = d_list_levels[i_cp]
-                # add list of [stamina IV, cp mulitiplier, level] to stam_cp
+                # add list of [stamina IV, cp multiplier, level] to stam_cp
                 stam_cp.append([j_stam, i_cp, lvl])
             else:
                 pass
@@ -531,8 +538,21 @@ def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels,
                     IV_sum = i_stam + j_atk + k_def
                     IV_percent = IV_sum/45*100
 
-                    # check for illegal duplicate IVs
+                    # 1 stat: check for illegal duplicate IVs
                     if is_single and (i_stam == j_atk or i_stam == k_def or j_atk == k_def):
+                        break
+                    # 2 stats: check that stamina and attack IVs equal
+                    elif two_stats == "not defense" and i_stam != j_atk:
+                        break
+                    # 2 stats: check that stamina and defense IVs equal
+                    elif two_stats == "not attack" and i_stam != k_def:
+                        break
+                    # 2 stats: check that attack and defense IVs equal
+                    elif two_stats == "not hp" and j_atk != k_def:
+                        break
+                    # 3 stats: check that all three stats are equal
+                    elif not is_single and two_stats == "" and \
+                            (i_stam != j_atk or i_stam != k_def or j_atk != k_def):
                         break
                     # otherwise, check IV sum against appraisal
                     elif appraisal == "wonder":
@@ -599,13 +619,13 @@ for entry in stats:
     #print(t_base_stats)
 
     # narrow down IVs based on appraisal language
-    t_stam_IV, t_atk_IV, t_def_IV, is_single = narrow_IV(entry)
+    t_stam_IV, t_atk_IV, t_def_IV, is_single, two_stats = narrow_IV(entry)
     # narrow down levels & cp multipliers based on stardust
     t_list_levels, t_cp_mult = narrow_cp_mult(dic_cp_mult, dic_stardust, entry)
     print("t_list_levels", t_list_levels)
     # guess all level & IV combos that work
     t_IV = guess_IV(t_cp_mult, t_stam_IV, t_atk_IV, t_def_IV, t_base_stats, entry,
-                    t_list_levels, is_single)
+                    t_list_levels, is_single, two_stats)
 
     #print("test IV: ", t_IV)
     # add info to pokemon's entry list [level, stam IV, atk IV, def IV, percentage]
