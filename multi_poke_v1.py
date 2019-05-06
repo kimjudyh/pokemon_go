@@ -409,7 +409,18 @@ def narrow_IV(entry):
     #         atk_IV = atk_IV[0:8]
     #         # stamina can't be >= 7
     #         stam_IV = stam_IV[0:7]
-
+    # # three stats, set is_single to False
+    # elif len(appraisal) == 5:
+    #     is_single = False
+    #     # must be all stats
+    #     if appraisal[4] == "exceeds":
+    #         atk_IV = [15]
+    #         def_IV = [15]
+    #         stam_IV = [15]
+    #     elif appraisal[4] == "certainly impressed":
+    #         atk_IV = [13, 14]
+    #         def_IV = [13, 14]
+    #         stam_IV = [13, 14]
 
 
     return stam_IV, atk_IV, def_IV, is_single
