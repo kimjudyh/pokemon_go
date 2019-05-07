@@ -591,81 +591,83 @@ def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels,
 
 # main part of file that calls functions in order
 #################################################
+if __name__ == "__main__":
+    # read pokemon data from text file
+    stats = read_stats("poke_data_3.txt")
 
-# read pokemon data from text file
-stats = read_stats("poke_data_4.txt")
+    # read cp multiplier and level data from text file
+    dic_cp_mult = read_cp_mult()
+    #print(dic_cp_mult[5])
 
-# read cp multiplier and level data from text file
-dic_cp_mult = read_cp_mult()
-#print(dic_cp_mult[5])
+    # read stardust and level data from csv file
+    dic_stardust = read_stardust()
+    #print(dic_stardust[1300])
 
-# read stardust and level data from csv file
-dic_stardust = read_stardust()
-#print(dic_stardust[1300])
+    # for now, get base stats of 3 pokemon
+    base_stats = read_base_stats()
 
-# for now, get base stats of 3 pokemon
-base_stats = read_base_stats()
+    # narrow down IVs using appraisal
+    # initialize lists
+    # stam_IV = []
+    # atk_IV = []
+    # def_IV = []
+    for entry in stats:
+        # choose correct base stat for pokemon being analyzed
+        for poke in base_stats:
+            if poke[0] == entry[1]:
+                t_base_stats = poke[1:]
+            #else:
+                #print("error finding base stats for " + entry[1])
+        #print(t_base_stats)
 
-# narrow down IVs using appraisal
-# initialize lists
-# stam_IV = []
-# atk_IV = []
-# def_IV = []
-for entry in stats:
-    # choose correct base stat for pokemon being analyzed
-    for poke in base_stats:
-        if poke[0] == entry[1]:
-            t_base_stats = poke[1:]
-    #print(t_base_stats)
+        # narrow down IVs based on appraisal language
+        t_stam_IV, t_atk_IV, t_def_IV, is_single, two_stats = narrow_IV(entry)
+        # narrow down levels & cp multipliers based on stardust
+        t_list_levels, t_cp_mult = narrow_cp_mult(dic_cp_mult, dic_stardust, entry)
+        #print("t_list_levels", t_list_levels)
+        # guess all level & IV combos that work
+        t_IV = guess_IV(t_cp_mult, t_stam_IV, t_atk_IV, t_def_IV, t_base_stats, entry,
+                        t_list_levels, is_single, two_stats)
 
-    # narrow down IVs based on appraisal language
-    t_stam_IV, t_atk_IV, t_def_IV, is_single, two_stats = narrow_IV(entry)
-    # narrow down levels & cp multipliers based on stardust
-    t_list_levels, t_cp_mult = narrow_cp_mult(dic_cp_mult, dic_stardust, entry)
-    #print("t_list_levels", t_list_levels)
-    # guess all level & IV combos that work
-    t_IV = guess_IV(t_cp_mult, t_stam_IV, t_atk_IV, t_def_IV, t_base_stats, entry,
-                    t_list_levels, is_single, two_stats)
+        # save appraisal data to display in report
+        t_appraisal = entry[5:]
 
-    # save appraisal data to display in report
-    t_appraisal = entry[5:]
+        # add info to pokemon's entry list [level, stam IV, atk IV, def IV, percentage]
+        entry.append(t_IV)
+        #print(entry)
 
-    # add info to pokemon's entry list [level, stam IV, atk IV, def IV, percentage]
-    entry.append(t_IV)
-    #print(entry)
+        # format header and data
+        hdr_fmt = "|{0:^10}|{1:^8}|{2:^8}|{3:^8}|{4:^8}|{5:^8}|"  # Header format
+        dat_fmt = "|{0:^10}|{1:^8}|{2:^8}|{3:^8}|{4:^8}|{5:^8}|"  # Data   format
 
-    # format header and data
-    hdr_fmt = "|{0:^10}|{1:^8}|{2:^8}|{3:^8}|{4:^8}|{5:^8}|"  # Header format
-    dat_fmt = "|{0:^10}|{1:^8}|{2:^8}|{3:^8}|{4:^8}|{5:^8}|"  # Data   format
+        #print("Original stats.. :", entry[2:5], t_appraisal)
+        print("{}. Original stats:".format(entry[0]))
+        print("CP: {}, HP: {}, Stardust: {}".format(entry[2], entry[3], entry[4]))
+        print("Appraisal:", t_appraisal)
+        #print("Here are level/IV combos that work:")
 
-    #print("Original stats.. :", entry[2:5], t_appraisal)
-    print("{}. Original stats:".format(entry[0]))
-    print("CP: {}, HP: {}, Stardust: {}".format(entry[2], entry[3], entry[4]))
-    print("Appraisal:", t_appraisal)
-    #print("Here are level/IV combos that work:")
+        # Display the report header
+        print (hdr_fmt.format('----------', '--------', '--------',\
+                              '--------', '--------', '--------'))
+        print (hdr_fmt.format('Pokemon', 'Level', 'Stamina', 'Attack',\
+                                'Defense', 'Percent'))
+        print (hdr_fmt.format('----------', '--------', '--------',\
+                              '--------', '--------', '--------'))
 
-    # Display the report header
-    print (hdr_fmt.format('----------', '--------', '--------',\
-                          '--------', '--------', '--------'))
-    print (hdr_fmt.format('Pokemon', 'Level', 'Stamina', 'Attack',\
-                            'Defense', 'Percent'))
-    print (hdr_fmt.format('----------', '--------', '--------',\
-                          '--------', '--------', '--------'))
+        # print IV report for pokemon
+        for i in t_IV:
+            pokemon = entry[1]
+            level = i[0]
+            stamina = i[1]
+            attack = i[2]
+            defense = i[3]
+            percent = i[4]
+            print(dat_fmt.format(pokemon, level, stamina, attack, defense,'{:,.2f}%'.format(percent)))
 
-    # print IV report for pokemon
-    for i in t_IV:
-        pokemon = entry[1]
-        level = i[0]
-        stamina = i[1]
-        attack = i[2]
-        defense = i[3]
-        percent = i[4]
-        print(dat_fmt.format(pokemon, level, stamina, attack, defense,'{:,.2f}%'.format(percent)))
-
-    print()
-
+        print()
 
 
-#print(narrow_cp_mult.__doc__)
 
-#print(dat_fmt.format(pokemon, level, stamina, attack, defense,'{:,.2f}%'.format(percent)))
+    #print(narrow_cp_mult.__doc__)
+
+    #print(dat_fmt.format(pokemon, level, stamina, attack, defense,'{:,.2f}%'.format(percent)))
