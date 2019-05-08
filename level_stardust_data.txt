@@ -1,3 +1,25 @@
+Stardust	Level
+200	1	1.5	2	2.5
+400	3	3.5	4	4.5
+600	5	5.5	6	6.5
+800	7	7.5	8	8.5
+1000	9	9.5	10	10.5
+1300
+1600
+1900
+2200
+2500
+3000
+3500
+4000
+4500
+5000
+6000
+7000
+8000
+9000
+1000
+
 
  	Per Level	Cumulative
 Level	# of Power Ups	Stardust	Candy	Stardust	Candy

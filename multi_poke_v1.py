@@ -1,9 +1,11 @@
 
 # read and process pokemon data text file
 def read_stats(filename):
-    pogo_file = open(filename, "r")
-    pogo_list = pogo_file.readlines()
-    pogo_file.close()
+    with open(filename, 'r') as pogo_file:
+        pogo_list = pogo_file.readlines()
+    #pogo_file = open(filename, "r")
+    #pogo_list = pogo_file.readlines()
+    #pogo_file.close()
 
     # testing - remove later
     print(pogo_list)
@@ -60,9 +62,12 @@ def read_cp_mult():
     returns dictionary with key: level (float), value: cp multiplier (float)
     each level has a unique cp multiplier
     '''
-    cp_mult_file = open("cp_mult_data.txt", "r")
-    cp_mult_list = cp_mult_file.readlines()
-    cp_mult_file.close()
+    with open("cp_mult_data.txt", "r") as cp_mult_file:
+        cp_mult_list = cp_mult_file.readlines()
+
+    #cp_mult_file = open("cp_mult_data.txt", "r")
+    #cp_mult_list = cp_mult_file.readlines()
+    #cp_mult_file.close()
 
     # remove header lines that label columns
     del(cp_mult_list[0:1])
