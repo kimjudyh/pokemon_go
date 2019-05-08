@@ -1,5 +1,7 @@
 # travis yaml file for python
 
+notifications:
+    email: false
 language: python
 python:
   - "3.6"
