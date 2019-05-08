@@ -596,9 +596,9 @@ def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels,
 
 # main part of file that calls functions in order
 #################################################
-if __name__ == "__main__":
+def main():
     # read pokemon data from text file
-    stats = read_stats("poke_data_3.txt")
+    stats = read_stats("poke_data_4.txt")
 
     # read cp multiplier and level data from text file
     dic_cp_mult = read_cp_mult()
@@ -612,10 +612,6 @@ if __name__ == "__main__":
     base_stats = read_base_stats()
 
     # narrow down IVs using appraisal
-    # initialize lists
-    # stam_IV = []
-    # atk_IV = []
-    # def_IV = []
     for entry in stats:
         # choose correct base stat for pokemon being analyzed
         for poke in base_stats:
@@ -668,8 +664,8 @@ if __name__ == "__main__":
 
         print()
 
-
-
     #print(narrow_cp_mult.__doc__)
 
-    #print(dat_fmt.format(pokemon, level, stamina, attack, defense,'{:,.2f}%'.format(percent)))
+
+if __name__ == "__main__":
+    main()
