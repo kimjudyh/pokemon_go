@@ -121,11 +121,11 @@ def read_stardust():
         # add row to list
         stardust_list.append(i_row)
     # testing - remove later
-    print(stardust_list)
+    #print(stardust_list)
 
     # delete last two empty entries of list
     stardust_list[-1] = stardust_list[-1][0:3]
-    print(stardust_list)
+    #print(stardust_list)
     stardust_file.close()
 
 
@@ -616,9 +616,6 @@ if __name__ == "__main__":
         for poke in base_stats:
             if poke[0] == entry[1]:
                 t_base_stats = poke[1:]
-            #else:
-                #print("error finding base stats for " + entry[1])
-        #print(t_base_stats)
 
         # narrow down IVs based on appraisal language
         t_stam_IV, t_atk_IV, t_def_IV, is_single, two_stats = narrow_IV(entry)
