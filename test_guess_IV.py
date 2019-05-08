@@ -54,8 +54,29 @@ def test_bagon_7():
     assert j_atk == 9
     assert k_def == 1
 
+def test_bagon_8():
+    entry = ['8', 'bagon', 841, 97, 5000, 'not likely', 'defense', 'noticeably']
+    IV = run_functions(entry)
+    assert len(IV) == 3
+    i_lvl, i_stam, j_atk, k_def, IV_percent = IV[0]
+    assert i_lvl == 29.0
+    assert i_stam == 8
+    assert j_atk == 2
+    assert k_def == 12
+    i_lvl, i_stam, j_atk, k_def, IV_percent = IV[1]
+    assert i_lvl == 29.0
+    assert i_stam == 8
+    assert j_atk == 4
+    assert k_def == 9
+    i_lvl, i_stam, j_atk, k_def, IV_percent = IV[2]
+    assert i_lvl == 30.0
+    assert i_stam == 5
+    assert j_atk == 1
+    assert k_def == 9
+
 
 if __name__ == "__main__":
     test_meltan_3()
     test_bagon_5()
     test_bagon_7()
+    test_bagon_8()
