@@ -8,12 +8,11 @@ def run_functions(entry):
     dic_stardust = read_stardust()
     base_stats = read_base_stats()
     d_list_levels, cp_mult = narrow_cp_mult(dic_cp_mult, dic_stardust, entry)
-    stam_IV, atk_IV, def_IV, is_single, two_stats = narrow_IV(entry)
+    stam_IV, atk_IV, def_IV, is_single = narrow_IV(entry)
     for poke in base_stats:
         if poke[0] == entry[1]:
             t_base_stats = poke[1:]
-    IV = guess_IV(cp_mult, stam_IV, atk_IV, def_IV, t_base_stats, entry, d_list_levels, is_single,
-             two_stats)
+    IV = guess_IV(cp_mult, stam_IV, atk_IV, def_IV, t_base_stats, entry, d_list_levels, is_single)
     return IV
 
 def test_meltan_3():
@@ -74,9 +73,24 @@ def test_bagon_8():
     assert j_atk == 1
     assert k_def == 9
 
-
+def test_charmander_2():
+    '''
+    testing this charmander because: single stat (defense), but hp and attack
+    are equal
+    '''
+    entry = ['2', 'charmander', 284, 55, 1300, 'certainly', 'defense', 'exceeds']
+    IV = run_functions(entry)
+    assert len(IV) == 1
+    i_lvl, i_stam, j_atk, k_def, IV_percent = IV[0]
+    assert i_lvl == 11.0
+    assert i_stam == 8
+    assert j_atk == 8
+    assert k_def == 15
+ 
+'''
 if __name__ == "__main__":
     test_meltan_3()
     test_bagon_5()
     test_bagon_7()
     test_bagon_8()
+    '''

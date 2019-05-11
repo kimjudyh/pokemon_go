@@ -15,7 +15,10 @@ def read_stats(filename):
 
     # get rid of \n at end of every entry in list
     for i in range(0, len(pogo_list)):
-        pogo_list[i] = pogo_list[i][:-1]
+        if "\r" in pogo_list[i]:
+            pogo_list[i] = pogo_list[i][:-1]
+        if "\n" in pogo_list[i]:
+            pogo_list[i] = pogo_list[i][:-1]
     # testing - remove later
     print(pogo_list)
 
@@ -183,8 +186,10 @@ def narrow_IV(entry):
     def_IV =  list(range(0,16))
 
     # set is_single to default True
-    is_single = True
-    two_stats = ""
+    #is_single = True
+    #two_stats = ""
+    is_single = {"bool": True, "max":""}
+    print(is_single)
 
     max_IV = []
     other_IV = []
@@ -218,47 +223,59 @@ def narrow_IV(entry):
             atk_IV = max_IV
             def_IV = other_IV
             stam_IV = other_IV
+            # set "max" key in is_single to attack
+            is_single["max"] = "attack"
         # Defense
         elif "defense" in appraisal:
             def_IV = max_IV
             atk_IV = other_IV
             stam_IV = other_IV
+            # set "max" key in is_single to defense
+            is_single["max"] = "defense"
         # Stamina
         elif "hp" in appraisal:
             stam_IV = max_IV
             atk_IV = other_IV
             def_IV = other_IV
+            # set "max" key in is_single to stamina
+            is_single["max"] = "stamina"
         else:
             print("error with one stat")
     # two stats
     elif len(appraisal) == 4:
-        is_single = False
+        # set "bool" key in is_single to False
+        is_single["bool"] = False
         # Stamina & Defense
         if "attack" not in appraisal:
             stam_IV = max_IV
             def_IV = max_IV
             atk_IV = other_IV
-            two_stats = "not attack"
+            # set "max" key in is_single to "not attack"
+            is_single["max"] = "not attack"
         # Stamina & Attack
         elif "defense" not in appraisal:
             stam_IV = max_IV
             atk_IV = max_IV
             def_IV = other_IV
-            two_stats = "not defense"
+            # set "max" key in is_single to "not defense"
+            is_single["max"] = "not defense"
         # Attack & Defense
         elif "hp" not in appraisal:
             atk_IV = max_IV
             def_IV = max_IV
             stam_IV = other_IV
-            two_stats = "not hp"
+            # set "max" key in is_single to "not hp"
+            is_single["max"] = "not hp"
         else:
             print("error with two stats")
     # three stats
     elif len(appraisal) == 5:
-        is_single = False
+        is_single["bool"] = False
         atk_IV = max_IV
         def_IV = max_IV
         stam_IV = max_IV
+        # set "max" key in is_single to "all"
+        is_single["max"] = "all"
     else:
         print("error with appraisal length")
 
@@ -432,7 +449,7 @@ def narrow_IV(entry):
     #         stam_IV = [13, 14]
 
 
-    return stam_IV, atk_IV, def_IV, is_single, two_stats
+    return stam_IV, atk_IV, def_IV, is_single#, two_stats
 
 # narrow down cp multiplier range based on stardust.
 def narrow_cp_mult(dic_cp_mult, dic_stardust, entry):
@@ -466,8 +483,7 @@ def narrow_cp_mult(dic_cp_mult, dic_stardust, entry):
     return d_list_levels, cp_mult
 
 # function that guesses IVs
-def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels, is_single,
-             two_stats):
+def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels, is_single):
     '''
     Processes one pokemon's original stats and narrowed down IVs to guess the combo of
     level, attack IV, stamina IV, and defense IV that satisfies a given CP equation.
@@ -498,6 +514,11 @@ def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels,
     stam_base = base_stats[0]
     atk_base = base_stats[1]
     def_base = base_stats[2]
+    
+    # extract info from is_single dictionary
+    single = is_single["bool"]
+    max_stat = is_single["max"]
+    print(is_single)
 
     # initialize empty vars
     stam_cp = []       # list of lists: [[stamina, cp_mult, level]]
@@ -520,7 +541,7 @@ def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels,
                 stam_cp.append([j_stam, i_cp, lvl])
             else:
                 pass
-    #print("atk_IV", atk_IV)
+    print("atk_IV", atk_IV)
     # guess attack, defense IVs
     # for each possibility in stam_cp list of lists
     for i_stcp in stam_cp:
@@ -542,25 +563,33 @@ def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels,
                     # calculate IV sum and IV percentage
                     IV_sum = i_stam + j_atk + k_def
                     IV_percent = IV_sum/45*100
+                    print("IV sum", IV_sum)
+                    print(j_atk, k_def, i_stam)
+                    print(appraisal, max_stat)
 
                     # 1 stat: check for illegal duplicate IVs
-                    if is_single and (i_stam == j_atk or i_stam == k_def or j_atk == k_def):
+                    if max_stat == "attack" and (j_atk == i_stam or j_atk == k_def):
+                        break
+                    elif max_stat == "defense" and (k_def == j_atk or k_def == i_stam):
+                        break
+                    elif max_stat == "stamina" and (i_stam == j_atk or i_stam == k_def):
                         break
                     # 2 stats: check that stamina and attack IVs equal
-                    elif two_stats == "not defense" and i_stam != j_atk:
+                    if max_stat == "not defense" and i_stam != j_atk:
                         break
                     # 2 stats: check that stamina and defense IVs equal
-                    elif two_stats == "not attack" and i_stam != k_def:
+                    elif max_stat == "not attack" and i_stam != k_def:
                         break
                     # 2 stats: check that attack and defense IVs equal
-                    elif two_stats == "not hp" and j_atk != k_def:
+                    elif max_stat == "not hp" and j_atk != k_def:
+                        print("not hp", i_stam, j_atk, k_def)
                         break
-                    # 3 stats: check that all three stats are equal
-                    elif not is_single and two_stats == "" and \
+                    # 3 stats: check that all three stats are equal 
+                    if max_stat == "all" and \
                             (i_stam != j_atk or i_stam != k_def or j_atk != k_def):
                         break
                     # otherwise, check IV sum against appraisal
-                    elif appraisal == "wonder":
+                    if appraisal == "wonder":
                         # sum of IVs >= 37
                         if IV_sum >= 37:
                             # add to IV list [level, stam IV, atk IV, def IV, percentage]
@@ -568,9 +597,10 @@ def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels,
                         else:
                             break
                     elif appraisal == "certainly":
+                        print(j_atk, k_def, i_stam)
                         # sum of IVs: 30-36
                         if IV_sum >=30 and IV_sum <= 36:
-                            #print("certainly", "IV_sum", IV_sum)
+                            print("certainly", "IV_sum", IV_sum)
                             # add to IV list [level, stam IV, atk IV, def IV, percentage]
                             IV.append([i_lvl, i_stam, j_atk, k_def, IV_percent])
                         else:
@@ -598,7 +628,7 @@ def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels,
 #################################################
 def main():
     # read pokemon data from text file
-    stats = read_stats("poke_data_4.txt")
+    stats = read_stats("poke_data_2.txt")
 
     # read cp multiplier and level data from text file
     dic_cp_mult = read_cp_mult()
@@ -619,13 +649,13 @@ def main():
                 t_base_stats = poke[1:]
 
         # narrow down IVs based on appraisal language
-        t_stam_IV, t_atk_IV, t_def_IV, is_single, two_stats = narrow_IV(entry)
+        t_stam_IV, t_atk_IV, t_def_IV, is_single = narrow_IV(entry)
         # narrow down levels & cp multipliers based on stardust
         t_list_levels, t_cp_mult = narrow_cp_mult(dic_cp_mult, dic_stardust, entry)
-        #print("t_list_levels", t_list_levels)
+        print("t_list_levels", t_list_levels)
         # guess all level & IV combos that work
         t_IV = guess_IV(t_cp_mult, t_stam_IV, t_atk_IV, t_def_IV, t_base_stats, entry,
-                        t_list_levels, is_single, two_stats)
+                        t_list_levels, is_single)
 
         # save appraisal data to display in report
         t_appraisal = entry[5:]
@@ -633,7 +663,6 @@ def main():
         # add info to pokemon's entry list [level, stam IV, atk IV, def IV, percentage]
         entry.append(t_IV)
         #print(entry)
-
         # format header and data
         hdr_fmt = "|{0:^10}|{1:^8}|{2:^8}|{3:^8}|{4:^8}|{5:^8}|"  # Header format
         dat_fmt = "|{0:^10}|{1:^8}|{2:^8}|{3:^8}|{4:^8}|{5:^8}|"  # Data   format
