@@ -152,7 +152,8 @@ def read_base_stats():
     base_stats = [["meltan", 130, 118, 99],
                   ["charmander", 118, 116, 93],
                   ["squirtle", 127, 94, 121],
-                  ["bagon", 128, 134, 93]]
+                  ["bagon", 128, 134, 93],
+                  ["salamence", 216, 277, 168]]
     return base_stats
 
 # narrow down IV values using appraisal
@@ -628,7 +629,7 @@ def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels,
 #################################################
 def main():
     # read pokemon data from text file
-    stats = read_stats("poke_data_2.txt")
+    stats = read_stats("poke_data_4.txt")
 
     # read cp multiplier and level data from text file
     dic_cp_mult = read_cp_mult()
