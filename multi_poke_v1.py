@@ -495,7 +495,7 @@ def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels,
     :param base_stats: list of base stats for one pokemon, contains:
         [pokemon name (str), base stam (int), base atk (int), base def (int)]
     :param entry: list of original stats for one pokemon
-    :param d_list_levels:
+    :param d_list_levels: dict of key cp multiplier (float): value level (float)
     :param is_single: tells if there is a singled out IV (True) or not (False)
     :return IV: list of lists of level & IV combos that work, contains:
         [level (float), stamina IV (int), attack IV (int), defense IV (int), percentage (float)]
@@ -625,6 +625,49 @@ def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels,
 
     return IV
 
+def calc_evolve_cp(d_list_levels, IV):
+    '''
+    :param d_list_levels: dict of narrowed down key cp multiplier (float): 
+        value level (float)
+    :param IV: list of [level (float), stam IV (int), atk IV (int),
+        def IV (int), IV percent (float)
+
+    '''
+
+    import math as m
+    
+    # user input on which pokemon(s) to evolve
+    # user input on pokemon to evolve into
+
+    evolve_stats = []
+
+    for i_combo in IV:
+        level = i_combo[0]
+        stam_IV = i_combo[1]
+        atk_IV = i_combo[2]
+        def_IV = i_combo[3]
+
+        # find those base stats
+        atk_base = 277  # salamence
+        def_base = 168  # salamence
+        stam_base = 216 # salamence
+        # use calc'd IVs, level, new base stats to calc CP
+        for key, value in d_list_levels.items():
+            if value == level:
+                cp_mult = key
+        # also calc HP
+        # calculate CP, rounding down
+        calc_cp = m.floor(.1*(atk_base + atk_IV)*\
+                  m.sqrt(def_base + def_IV)*\
+                  m.sqrt(stam_base + stam_IV)*cp_mult**2)
+        # calculate hp, rounding down
+        calc_hp = m.floor(cp_mult*(stam_base + stam_IV))
+
+        evolve_stats.append([calc_cp, calc_hp])
+
+    return evolve_stats 
+
+
 # main part of file that calls functions in order
 #################################################
 def main():
@@ -693,6 +736,16 @@ def main():
             print(dat_fmt.format(pokemon, level, stamina, attack, defense,'{:,.2f}%'.format(percent)))
 
         print()
+
+        evolve_stats = calc_evolve_cp(t_list_levels, t_IV)
+        for i_combo, j_IV in zip(evolve_stats, t_IV):
+            calc_cp = i_combo[0]
+            calc_hp = i_combo[1]
+            print(j_IV[:-1])
+            print("Salamence CP: {} and HP: {}".format(calc_cp, calc_hp))
+
+        #print("Salamence CP: ", calc_cp)
+        #print("HP: ", calc_hp)
 
     #print(narrow_cp_mult.__doc__)
 
