@@ -706,10 +706,42 @@ def main():
 
         # add info to pokemon's entry list [level, stam IV, atk IV, def IV, percentage]
         entry.append(t_IV)
+        
+        # calc evolution stats
+        evolve_stats = calc_evolve_cp(t_list_levels, t_IV)
+        if len(evolve_stats) > 1:
+            min_cp = min(evolve_stats)[0]
+            min_hp = min(evolve_stats)[1]
+            max_cp = max(evolve_stats)[0]
+            max_hp = max(evolve_stats)[1]
+            print("Salamence stats")
+            print("CP range: {}-{}".format(min_cp, max_cp))
+            print("HP range: {}-{}".format(min_hp, max_hp))
+        else:
+            calc_cp = evolve_stats[0][0]
+            calc_hp = evolve_stats[0][1]
+            print("Salamence stats")
+            print("CP: ", calc_cp)
+            print("HP: ", calc_hp)
+        
+        for i_combo, j_IV in zip(evolve_stats, t_IV):
+            calc_cp = i_combo[0]
+            calc_hp = i_combo[1]
+            print(j_IV[:-1])
+            print("Salamence CP: {} and HP: {}".format(calc_cp, calc_hp))
+
+        #print("Salamence CP: ", calc_cp)
+        #print("HP: ", calc_hp)
+
+
+
+
         #print(entry)
         # format header and data
-        hdr_fmt = "|{0:^10}|{1:^8}|{2:^8}|{3:^8}|{4:^8}|{5:^8}|"  # Header format
-        dat_fmt = "|{0:^10}|{1:^8}|{2:^8}|{3:^8}|{4:^8}|{5:^8}|"  # Data   format
+        hdr_fmt = ("|{0:^10}|{1:^8}|{2:^8}|{3:^8}|{4:^8}|{5:^8}|"
+                "{6:^10}|{7:^5}|{8:^4}|")  # Header format
+        dat_fmt = ("|{0:^10}|{1:^8}|{2:^8}|{3:^8}|{4:^8}|{5:^8}|"
+                "{6:^10}|{7:^5}|{8:^4}|")  # data format
 
         #print("Original stats.. :", entry[2:5], t_appraisal)
         print("{}. Original stats:".format(entry[0]))
@@ -719,33 +751,28 @@ def main():
 
         # Display the report header
         print (hdr_fmt.format('----------', '--------', '--------',\
-                              '--------', '--------', '--------'))
+                              '--------', '--------', '--------','----------', \
+                              '-----', '----'))
         print (hdr_fmt.format('Pokemon', 'Level', 'Stamina', 'Attack',\
-                                'Defense', 'Percent'))
+                                'Defense', 'Percent', 'Evolution', 'CP', 'HP'))
         print (hdr_fmt.format('----------', '--------', '--------',\
-                              '--------', '--------', '--------'))
+                              '--------', '--------', '--------','----------', \
+                              '-----', '----'))
 
         # print IV report for pokemon
-        for i in t_IV:
+        for i, j in zip(t_IV, evolve_stats):
             pokemon = entry[1]
             level = i[0]
             stamina = i[1]
             attack = i[2]
             defense = i[3]
             percent = i[4]
-            print(dat_fmt.format(pokemon, level, stamina, attack, defense,'{:,.2f}%'.format(percent)))
+            evo_pokemon = "Salamence"
+            evo_cp = j[0]
+            evo_hp = j[1]
+            print(dat_fmt.format(pokemon, level, stamina, attack, defense,'{:,.2f}%'.format(percent), evo_pokemon, evo_cp, evo_hp))
 
         print()
-
-        evolve_stats = calc_evolve_cp(t_list_levels, t_IV)
-        for i_combo, j_IV in zip(evolve_stats, t_IV):
-            calc_cp = i_combo[0]
-            calc_hp = i_combo[1]
-            print(j_IV[:-1])
-            print("Salamence CP: {} and HP: {}".format(calc_cp, calc_hp))
-
-        #print("Salamence CP: ", calc_cp)
-        #print("HP: ", calc_hp)
 
     #print(narrow_cp_mult.__doc__)
 
