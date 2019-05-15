@@ -629,9 +629,9 @@ def calc_evolve_cp(d_list_levels, IV):
     '''
     :param d_list_levels: dict of narrowed down key cp multiplier (float): 
         value level (float)
-    :param IV: list of [level (float), stam IV (int), atk IV (int),
+    :param IV: list of lists of [level (float), stam IV (int), atk IV (int),
         def IV (int), IV percent (float)
-
+    :return evolve_stats: list of lists of [cp (int), hp (int)] 
     '''
 
     import math as m
