@@ -648,9 +648,12 @@ def calc_evolve_cp(d_list_levels, IV):
         def_IV = i_combo[3]
 
         # find those base stats
-        atk_base = 277  # salamence
-        def_base = 168  # salamence
-        stam_base = 216 # salamence
+        #atk_base = 277  # salamence
+        #def_base = 168  # salamence
+        #stam_base = 216 # salamence
+        atk_base = 226  # melmetal
+        def_base = 190  # melmetal
+        stam_base = 264 # melmetal
         # use calc'd IVs, level, new base stats to calc CP
         for key, value in d_list_levels.items():
             if value == level:
@@ -672,7 +675,7 @@ def calc_evolve_cp(d_list_levels, IV):
 #################################################
 def main():
     # read pokemon data from text file
-    stats = read_stats("poke_data_4.txt")
+    stats = read_stats("poke_data_3.txt")
 
     # read cp multiplier and level data from text file
     dic_cp_mult = read_cp_mult()
@@ -714,13 +717,13 @@ def main():
             min_hp = min(evolve_stats)[1]
             max_cp = max(evolve_stats)[0]
             max_hp = max(evolve_stats)[1]
-            print("Salamence stats")
+            print("Melmetal stats")
             print("CP range: {}-{}".format(min_cp, max_cp))
             print("HP range: {}-{}".format(min_hp, max_hp))
         else:
             calc_cp = evolve_stats[0][0]
             calc_hp = evolve_stats[0][1]
-            print("Salamence stats")
+            print("Melmetal stats")
             print("CP: ", calc_cp)
             print("HP: ", calc_hp)
         
@@ -728,7 +731,7 @@ def main():
             calc_cp = i_combo[0]
             calc_hp = i_combo[1]
             print(j_IV[:-1])
-            print("Salamence CP: {} and HP: {}".format(calc_cp, calc_hp))
+            print("Melmetal CP: {} and HP: {}".format(calc_cp, calc_hp))
 
         #print("Salamence CP: ", calc_cp)
         #print("HP: ", calc_hp)
@@ -767,7 +770,7 @@ def main():
             attack = i[2]
             defense = i[3]
             percent = i[4]
-            evo_pokemon = "Salamence"
+            evo_pokemon = "Melmetal"
             evo_cp = j[0]
             evo_hp = j[1]
             print(dat_fmt.format(pokemon, level, stamina, attack, defense,'{:,.2f}%'.format(percent), evo_pokemon, evo_cp, evo_hp))
