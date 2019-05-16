@@ -80,3 +80,41 @@ meltan
 not likely
 hp
 noticeably
+
+10
+meltan
+677
+93
+4500
+not likely
+hp
+norm
+
+11
+meltan
+676
+91
+4000
+above average
+defense
+noticeably
+
+12
+meltan
+658
+96
+4000
+above average
+hp
+exceeds
+
+13
+meltan
+650
+89
+3000
+wonder
+hp
+attack
+defense
+certainly impressed
