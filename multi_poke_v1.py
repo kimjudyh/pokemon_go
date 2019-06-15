@@ -190,7 +190,7 @@ def narrow_IV(entry):
     #is_single = True
     #two_stats = ""
     is_single = {"bool": True, "max":""}
-    print(is_single)
+    #print(is_single)
 
     max_IV = []
     other_IV = []
@@ -519,7 +519,7 @@ def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels,
     # extract info from is_single dictionary
     single = is_single["bool"]
     max_stat = is_single["max"]
-    print(is_single)
+    #print(is_single)
 
     # initialize empty vars
     stam_cp = []       # list of lists: [[stamina, cp_mult, level]]
@@ -542,7 +542,7 @@ def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels,
                 stam_cp.append([j_stam, i_cp, lvl])
             else:
                 pass
-    print("atk_IV", atk_IV)
+    #print("atk_IV", atk_IV)
     # guess attack, defense IVs
     # for each possibility in stam_cp list of lists
     for i_stcp in stam_cp:
@@ -564,9 +564,9 @@ def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels,
                     # calculate IV sum and IV percentage
                     IV_sum = i_stam + j_atk + k_def
                     IV_percent = IV_sum/45*100
-                    print("IV sum", IV_sum)
-                    print(j_atk, k_def, i_stam)
-                    print(appraisal, max_stat)
+                    #print("IV sum", IV_sum)
+                    #print(j_atk, k_def, i_stam)
+                    #print(appraisal, max_stat)
 
                     # 1 stat: check for illegal duplicate IVs
                     if max_stat == "attack" and (j_atk == i_stam or j_atk == k_def):
@@ -583,7 +583,7 @@ def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels,
                         break
                     # 2 stats: check that attack and defense IVs equal
                     elif max_stat == "not hp" and j_atk != k_def:
-                        print("not hp", i_stam, j_atk, k_def)
+                        #print("not hp", i_stam, j_atk, k_def)
                         break
                     # 3 stats: check that all three stats are equal 
                     if max_stat == "all" and \
@@ -598,10 +598,10 @@ def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels,
                         else:
                             break
                     elif appraisal == "certainly":
-                        print(j_atk, k_def, i_stam)
+                        #print(j_atk, k_def, i_stam)
                         # sum of IVs: 30-36
                         if IV_sum >=30 and IV_sum <= 36:
-                            print("certainly", "IV_sum", IV_sum)
+                            #print("certainly", "IV_sum", IV_sum)
                             # add to IV list [level, stam IV, atk IV, def IV, percentage]
                             IV.append([i_lvl, i_stam, j_atk, k_def, IV_percent])
                         else:
@@ -699,7 +699,7 @@ def main():
         t_stam_IV, t_atk_IV, t_def_IV, is_single = narrow_IV(entry)
         # narrow down levels & cp multipliers based on stardust
         t_list_levels, t_cp_mult = narrow_cp_mult(dic_cp_mult, dic_stardust, entry)
-        print("t_list_levels", t_list_levels)
+        #print("t_list_levels", t_list_levels)
         # guess all level & IV combos that work
         t_IV = guess_IV(t_cp_mult, t_stam_IV, t_atk_IV, t_def_IV, t_base_stats, entry,
                         t_list_levels, is_single)
@@ -717,21 +717,21 @@ def main():
             min_hp = min(evolve_stats)[1]
             max_cp = max(evolve_stats)[0]
             max_hp = max(evolve_stats)[1]
-            print("Melmetal stats")
-            print("CP range: {}-{}".format(min_cp, max_cp))
-            print("HP range: {}-{}".format(min_hp, max_hp))
+            #print("Melmetal stats")
+            #print("CP range: {}-{}".format(min_cp, max_cp))
+            #print("HP range: {}-{}".format(min_hp, max_hp))
         else:
             calc_cp = evolve_stats[0][0]
             calc_hp = evolve_stats[0][1]
-            print("Melmetal stats")
-            print("CP: ", calc_cp)
-            print("HP: ", calc_hp)
+            #print("Melmetal stats")
+            #print("CP: ", calc_cp)
+            #print("HP: ", calc_hp)
         
         for i_combo, j_IV in zip(evolve_stats, t_IV):
             calc_cp = i_combo[0]
             calc_hp = i_combo[1]
-            print(j_IV[:-1])
-            print("Melmetal CP: {} and HP: {}".format(calc_cp, calc_hp))
+            #print(j_IV[:-1])
+            #print("Melmetal CP: {} and HP: {}".format(calc_cp, calc_hp))
 
         #print("Salamence CP: ", calc_cp)
         #print("HP: ", calc_hp)
