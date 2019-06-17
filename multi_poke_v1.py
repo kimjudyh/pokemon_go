@@ -171,8 +171,8 @@ def read_base_stats(pokemon):
     # convert tuples in list into list
     base_stats = list(base_stats[0])
     print(base_stats)
-    print(base_stats[0],type(base_stats[0]))
-    print(base_stats[1],type(base_stats[1]))
+    #print(base_stats[0],type(base_stats[0]))
+    #print(base_stats[1],type(base_stats[1]))
     '''
     base_stats = [["meltan", 130, 118, 99],
                   ["charmander", 118, 116, 93],
@@ -651,7 +651,7 @@ def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels,
 
     return IV
 
-def calc_evolve_cp(d_list_levels, IV):
+def calc_evolve_cp(evo_pokemon, d_list_levels, IV):
     '''
     :param d_list_levels: dict of narrowed down key cp multiplier (float): 
         value level (float)
@@ -674,12 +674,17 @@ def calc_evolve_cp(d_list_levels, IV):
         def_IV = i_combo[3]
 
         # find those base stats
+        base_stats = read_base_stats(evo_pokemon)
+        stam_base = base_stats[0]
+        atk_base = base_stats[1]
+        def_base = base_stats[2]
+
         #atk_base = 277  # salamence
         #def_base = 168  # salamence
         #stam_base = 216 # salamence
-        atk_base = 226  # melmetal
-        def_base = 190  # melmetal
-        stam_base = 264 # melmetal
+        #atk_base = 226  # melmetal
+        #def_base = 190  # melmetal
+        #stam_base = 264 # melmetal
         # use calc'd IVs, level, new base stats to calc CP
         for key, value in d_list_levels.items():
             if value == level:
@@ -693,6 +698,7 @@ def calc_evolve_cp(d_list_levels, IV):
         calc_hp = m.floor(cp_mult*(stam_base + stam_IV))
 
         evolve_stats.append([calc_cp, calc_hp])
+        print(evolve_stats)
 
     return evolve_stats 
 
@@ -700,8 +706,12 @@ def calc_evolve_cp(d_list_levels, IV):
 # main part of file that calls functions in order
 #################################################
 def main():
+
     # read pokemon data from text file
-    stats = read_stats("poke_data_4.txt")
+    stats = read_stats("poke_data_5.txt")
+
+    # ask for evolution pokemon (assumes only one pokemon species in file)
+    evo_pokemon = input("Evolution pokemon?\n").lower()
 
     # read cp multiplier and level data from text file
     dic_cp_mult = read_cp_mult()
@@ -740,7 +750,7 @@ def main():
         entry.append(t_IV)
         
         # calc evolution stats
-        evolve_stats = calc_evolve_cp(t_list_levels, t_IV)
+        evolve_stats = calc_evolve_cp(evo_pokemon, t_list_levels, t_IV)
         if len(evolve_stats) > 1:
             min_cp = min(evolve_stats)[0]
             min_hp = min(evolve_stats)[1]
@@ -799,7 +809,7 @@ def main():
             attack = i[2]
             defense = i[3]
             percent = i[4]
-            evo_pokemon = "Melmetal"
+            #evo_pokemon = "Melmetal"
             evo_cp = j[0]
             evo_hp = j[1]
             print(dat_fmt.format(pokemon, level, stamina, attack, defense,'{:,.2f}%'.format(percent), evo_pokemon, evo_cp, evo_hp))
