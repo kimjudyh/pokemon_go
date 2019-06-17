@@ -147,13 +147,39 @@ def read_stardust():
 
 
 # some base stats.. from text file? or hard-coded in for now in v1
-def read_base_stats():
+def read_base_stats(pokemon):
+    '''
+    param pokemon: string of pokemon's name
+    return base_stats: list [stamina, attack, defense]
+    '''
     # [pokemon, stamina, attack, defense]
+    import psycopg2
+
+    # create connection to database (mydb)
+    db = psycopg2.connect(database = "mydb")
+
+    # create cursor to go through database
+    cur = db.cursor()
+
+    # use cursor to execute SQL queries
+    # retrieve base stats of given pokemon by passing in pokemon name as a tuple of one
+    cur.execute(
+            "SELECT hp, attack, defense FROM base_stats WHERE species = (%s)",\
+                    (pokemon.title(),))
+    # store query results (list of tuples)
+    base_stats = cur.fetchall()
+    # convert tuples in list into list
+    base_stats = list(base_stats[0])
+    print(base_stats)
+    print(base_stats[0],type(base_stats[0]))
+    print(base_stats[1],type(base_stats[1]))
+    '''
     base_stats = [["meltan", 130, 118, 99],
                   ["charmander", 118, 116, 93],
                   ["squirtle", 127, 94, 121],
                   ["bagon", 128, 134, 93],
                   ["salamence", 216, 277, 168]]
+    '''
     return base_stats
 
 # narrow down IV values using appraisal
@@ -675,7 +701,7 @@ def calc_evolve_cp(d_list_levels, IV):
 #################################################
 def main():
     # read pokemon data from text file
-    stats = read_stats("poke_data_3.txt")
+    stats = read_stats("poke_data_4.txt")
 
     # read cp multiplier and level data from text file
     dic_cp_mult = read_cp_mult()
@@ -686,14 +712,17 @@ def main():
     #print(dic_stardust[1300])
 
     # for now, get base stats of 3 pokemon
-    base_stats = read_base_stats()
+    #base_stats = read_base_stats()
 
     # narrow down IVs using appraisal
     for entry in stats:
+        pokemon = entry[1]
         # choose correct base stat for pokemon being analyzed
-        for poke in base_stats:
-            if poke[0] == entry[1]:
-                t_base_stats = poke[1:]
+        t_base_stats = read_base_stats(pokemon)
+        #for poke in base_stats:
+        #    if poke[0] == entry[1]:
+        #        t_base_stats = poke[1:]
+        print(t_base_stats)
 
         # narrow down IVs based on appraisal language
         t_stam_IV, t_atk_IV, t_def_IV, is_single = narrow_IV(entry)

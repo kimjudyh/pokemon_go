@@ -6,12 +6,14 @@ from multi_poke_v1 import guess_IV, narrow_IV, read_stardust, read_base_stats,\
 def run_functions(entry):
     dic_cp_mult = read_cp_mult()
     dic_stardust = read_stardust()
-    base_stats = read_base_stats()
+    #base_stats = read_base_stats()
     d_list_levels, cp_mult = narrow_cp_mult(dic_cp_mult, dic_stardust, entry)
     stam_IV, atk_IV, def_IV, is_single = narrow_IV(entry)
-    for poke in base_stats:
-        if poke[0] == entry[1]:
-            t_base_stats = poke[1:]
+    pokemon = entry[1]
+    t_base_stats = read_base_stats(pokemon)
+    #for poke in base_stats:
+    #    if poke[0] == entry[1]:
+    #        t_base_stats = poke[1:]
     IV = guess_IV(cp_mult, stam_IV, atk_IV, def_IV, t_base_stats, entry, d_list_levels, is_single)
     return IV
 
