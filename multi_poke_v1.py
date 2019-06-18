@@ -1,3 +1,12 @@
+# This file contains the following functions:
+# read_stats
+# read_cp_mult
+# read_stardust
+# read_base_stats
+# narrow_IV
+# guess_IV
+# calc_evolve_cp
+# main
 
 # read and process pokemon data text file
 def read_stats(filename):
@@ -698,7 +707,7 @@ def calc_evolve_cp(evo_pokemon, d_list_levels, IV):
         calc_hp = m.floor(cp_mult*(stam_base + stam_IV))
 
         evolve_stats.append([calc_cp, calc_hp])
-        print(evolve_stats)
+        #print(evolve_stats)
 
     return evolve_stats 
 
@@ -708,7 +717,7 @@ def calc_evolve_cp(evo_pokemon, d_list_levels, IV):
 def main():
 
     # read pokemon data from text file
-    stats = read_stats("poke_data_5.txt")
+    stats = read_stats("poke_data_6.txt")
 
     # ask for evolution pokemon (assumes only one pokemon species in file)
     evo_pokemon = input("Evolution pokemon?\n").lower()
@@ -732,7 +741,7 @@ def main():
         #for poke in base_stats:
         #    if poke[0] == entry[1]:
         #        t_base_stats = poke[1:]
-        print(t_base_stats)
+        #print(t_base_stats)
 
         # narrow down IVs based on appraisal language
         t_stam_IV, t_atk_IV, t_def_IV, is_single = narrow_IV(entry)
