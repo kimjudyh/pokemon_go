@@ -5,3 +5,4 @@ __pycache__/
 read_it.py
 read_txt.py
 pogostats.xlsx
+*.pyc
