@@ -179,7 +179,7 @@ def read_base_stats(pokemon):
     base_stats = cur.fetchall()
     # convert tuples in list into list
     base_stats = list(base_stats[0])
-    print(base_stats)
+    #print(base_stats)
     #print(base_stats[0],type(base_stats[0]))
     #print(base_stats[1],type(base_stats[1]))
     '''
@@ -660,12 +660,14 @@ def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels,
 
     return IV
 
-def calc_evolve_cp(evo_pokemon, d_list_levels, IV):
+def calc_evolve_cp(evo_pokemon, d_list_levels, IV, dic_cp_mult):
     '''
+    :param evo_pokemon: string of evolution pokemon
     :param d_list_levels: dict of narrowed down key cp multiplier (float): 
         value level (float)
     :param IV: list of lists of [level (float), stam IV (int), atk IV (int),
         def IV (int), IV percent (float)
+    :param dic_cp_mult: dict of level (float): cp multiplier (float) of all 40 levels
     :return evolve_stats: list of lists of [cp (int), hp (int)] 
     '''
 
@@ -706,8 +708,56 @@ def calc_evolve_cp(evo_pokemon, d_list_levels, IV):
         # calculate hp, rounding down
         calc_hp = m.floor(cp_mult*(stam_base + stam_IV))
 
-        evolve_stats.append([calc_cp, calc_hp])
-        #print(evolve_stats)
+        #print("cp, hp", calc_cp, calc_hp)
+
+        # calculate closest cp to 1500
+        cp_1500 = calc_cp
+        #print("cp 1500", cp_1500)
+        hp_1500 = calc_hp 
+        cp_mult_1500 = cp_mult
+        level_1500 = level
+        power_up_count = 0
+        # check if calc_hp is already over 1500
+        if cp_1500 <=1500:
+            while cp_1500 <= 1500:
+                power_up_count += 1
+                level_1500 += 0.5
+                cp_mult_1500 = dic_cp_mult[level_1500]
+                #print("cp_mult", cp_mult_1500)
+                # calculate CP, rounding down
+                cp_1500 = m.floor(.1*(atk_base + atk_IV)*\
+                        m.sqrt(def_base + def_IV)*\
+                        m.sqrt(stam_base + stam_IV)*cp_mult_1500**2)
+                # calculate hp, rounding down
+                hp_1500 = m.floor(cp_mult_1500*(stam_base + stam_IV))
+            # since while loop will give cp over 1500, need to get the level below
+            # and recalculate cp and hp
+            power_up_count -= 1
+            level_1500 -= 0.5
+            cp_mult_1500 = dic_cp_mult[level_1500]
+            # calculate CP, rounding down
+            cp_1500 = m.floor(.1*(atk_base + atk_IV)*\
+                    m.sqrt(def_base + def_IV)*\
+                    m.sqrt(stam_base + stam_IV)*cp_mult_1500**2)
+            # calculate hp, rounding down
+            hp_1500 = m.floor(cp_mult_1500*(stam_base + stam_IV))
+
+
+
+        #print("1500 cp", cp_1500)
+        #print("1500 hp", hp_1500)
+        #print("1500 level", level_1500)
+        #print("num power ups", power_up_count)
+
+        evolve_stats.append([calc_cp, calc_hp, power_up_count, cp_1500])
+
+        # if not, get next level's cp multiplier (add 0.5 to current level)
+        # keep track of how many power ups
+        # calculate new cp
+        # check if less than 1500
+        # add to evolve_stats
+
+        #print("evolve stats", evolve_stats)
 
     return evolve_stats 
 
@@ -717,14 +767,14 @@ def calc_evolve_cp(evo_pokemon, d_list_levels, IV):
 def main():
 
     # read pokemon data from text file
-    stats = read_stats("poke_data_6.txt")
+    stats = read_stats("poke_data_7.txt")
 
     # ask for evolution pokemon (assumes only one pokemon species in file)
     evo_pokemon = input("Evolution pokemon?\n").lower()
 
     # read cp multiplier and level data from text file
     dic_cp_mult = read_cp_mult()
-    #print(dic_cp_mult[5])
+    #print(dic_cp_mult)
 
     # read stardust and level data from csv file
     dic_stardust = read_stardust()
@@ -759,7 +809,11 @@ def main():
         entry.append(t_IV)
         
         # calc evolution stats
-        evolve_stats = calc_evolve_cp(evo_pokemon, t_list_levels, t_IV)
+        evolve_stats = calc_evolve_cp(evo_pokemon, t_list_levels, t_IV, dic_cp_mult)
+        #print("i calc'd evolution stats")
+        #print(evolve_stats)
+
+        # i think the following if else block can be ignored
         if len(evolve_stats) > 1:
             min_cp = min(evolve_stats)[0]
             min_hp = min(evolve_stats)[1]
@@ -775,6 +829,7 @@ def main():
             #print("CP: ", calc_cp)
             #print("HP: ", calc_hp)
         
+        # i think the following can be ignored
         for i_combo, j_IV in zip(evolve_stats, t_IV):
             calc_cp = i_combo[0]
             calc_hp = i_combo[1]
@@ -790,9 +845,9 @@ def main():
         #print(entry)
         # format header and data
         hdr_fmt = ("|{0:^10}|{1:^8}|{2:^8}|{3:^8}|{4:^8}|{5:^8}|"
-                "{6:^10}|{7:^5}|{8:^4}|")  # Header format
+                "{6:^10}|{7:^5}|{8:^4}|{9:^5}|{10:^6}|")  # Header format
         dat_fmt = ("|{0:^10}|{1:^8}|{2:^8}|{3:^8}|{4:^8}|{5:^8}|"
-                "{6:^10}|{7:^5}|{8:^4}|")  # data format
+                "{6:^10}|{7:^5}|{8:^4}|{9:^5}|{10:^6}|")  # data format
 
         #print("Original stats.. :", entry[2:5], t_appraisal)
         print("{}. Original stats:".format(entry[0]))
@@ -803,12 +858,12 @@ def main():
         # Display the report header
         print (hdr_fmt.format('----------', '--------', '--------',\
                               '--------', '--------', '--------','----------', \
-                              '-----', '----'))
-        print (hdr_fmt.format('Pokemon', 'Level', 'Stamina', 'Attack',\
-                                'Defense', 'Percent', 'Evolution', 'CP', 'HP'))
+                              '-----', '----', '-----', '------'))
+        print (hdr_fmt.format('Pokemon', 'Level', 'STM', 'ATK',\
+                                'DEF', 'IV %', 'Evolution', 'CP', 'HP', '#Pwr^', 'CP1500'))
         print (hdr_fmt.format('----------', '--------', '--------',\
                               '--------', '--------', '--------','----------', \
-                              '-----', '----'))
+                              '-----', '----','-----','------'))
 
         # print IV report for pokemon
         for i, j in zip(t_IV, evolve_stats):
@@ -821,7 +876,9 @@ def main():
             #evo_pokemon = "Melmetal"
             evo_cp = j[0]
             evo_hp = j[1]
-            print(dat_fmt.format(pokemon, level, stamina, attack, defense,'{:,.2f}%'.format(percent), evo_pokemon, evo_cp, evo_hp))
+            power_up_count = j[2]
+            cp_1500 = j[3]
+            print(dat_fmt.format(pokemon, level, stamina, attack, defense,'{:,.2f}%'.format(percent), evo_pokemon, evo_cp, evo_hp, power_up_count, cp_1500))
 
         print()
 

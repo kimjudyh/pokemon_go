@@ -1,0 +1,81 @@
+1
+slakoth
+732
+120
+4500
+above average
+hp
+exceeds
+
+2
+slakoth
+732
+115
+4500
+certainly
+attack
+certainly impressed
+
+3
+slakoth
+711
+110
+4500
+not likely
+attack
+noticeably
+
+4
+slakoth
+679
+113
+4500
+not likely
+hp
+attack
+noticeably
+
+5
+slakoth
+667
+115
+4000
+above average
+hp
+certainly impressed
+
+6
+slakoth
+450
+91
+2200
+not likely
+defense
+noticeably
+
+7
+slakoth
+337
+79
+1600
+not likely
+defense
+norm
+
+8
+slakoth
+335
+82
+1600
+not likely
+hp
+noticeably
+
+9
+slakoth
+243
+67
+1000
+not likely
+defense
+certainly impressed
