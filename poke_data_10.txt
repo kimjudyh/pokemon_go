@@ -1,0 +1,81 @@
+1
+meditite
+590
+82
+7000
+certainly
+attack
+certainly impressed
+
+2
+meditite
+579
+87
+7000
+certainly
+hp
+certainly impressed
+
+3
+meditite
+528
+80
+4500
+certainly
+attack
+certainly impressed
+
+4
+meditite
+474
+77
+4500
+above average
+hp
+defense
+noticeably
+
+5
+meditite
+470
+78
+4000
+certainly
+defense
+certainly impressed
+
+6
+meditite
+397
+72
+3500
+above average
+hp
+noticeably
+
+7
+meditite
+383
+68
+2500
+wonder
+defense
+certainly impressed
+
+8
+meditite
+378
+69
+2500
+wonder
+hp
+certainly impressed
+
+9
+meditite
+236
+55
+1600
+certainly
+hp
+certainly impressed

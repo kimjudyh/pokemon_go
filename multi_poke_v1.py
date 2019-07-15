@@ -719,7 +719,7 @@ def calc_evolve_cp(evo_pokemon, d_list_levels, IV, dic_cp_mult):
         power_up_count = 0
         # check if calc_hp is already over 1500
         if cp_1500 <=1500:
-            while cp_1500 <= 1500:
+            while cp_1500 <= 1500 and level_1500 < 40.0:
                 power_up_count += 1
                 level_1500 += 0.5
                 cp_mult_1500 = dic_cp_mult[level_1500]
@@ -732,8 +732,11 @@ def calc_evolve_cp(evo_pokemon, d_list_levels, IV, dic_cp_mult):
                 hp_1500 = m.floor(cp_mult_1500*(stam_base + stam_IV))
             # since while loop will give cp over 1500, need to get the level below
             # and recalculate cp and hp
-            power_up_count -= 1
-            level_1500 -= 0.5
+            if level_1500 == 40.0:
+                pass
+            else:
+                power_up_count -= 1
+                level_1500 -= 0.5
             cp_mult_1500 = dic_cp_mult[level_1500]
             # calculate CP, rounding down
             cp_1500 = m.floor(.1*(atk_base + atk_IV)*\
@@ -767,7 +770,7 @@ def calc_evolve_cp(evo_pokemon, d_list_levels, IV, dic_cp_mult):
 def main():
 
     # read pokemon data from text file
-    stats = read_stats("poke_data_7.txt")
+    stats = read_stats("poke_data_10.txt")
 
     # ask for evolution pokemon (assumes only one pokemon species in file)
     evo_pokemon = input("Evolution pokemon?\n").lower()

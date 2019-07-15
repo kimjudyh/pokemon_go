@@ -1,0 +1,81 @@
+1
+croagunk
+828
+109
+7000
+wonder
+attack
+certainly impressed
+
+2
+croagunk
+802
+109
+7000
+certainly
+hp
+defense
+noticeably
+
+3
+croagunk
+787
+107
+7000
+above average
+defense
+certainly impressed
+
+4
+croagunk
+786
+106
+6000
+certainly
+defense
+certainly impressed
+
+5
+croagunk
+760
+110
+7000
+above average
+hp
+certainly impressed
+
+6
+croagunk
+642
+94
+4000
+above average
+attack
+certainly impressed
+
+7
+croagunk
+470
+81
+2500
+not likely
+defense
+noticeably
+
+8
+croagunk
+436
+82
+2200
+certainly
+hp
+exceeds
+
+9
+croagunk
+341
+71
+1600
+wonder
+defense
+exceeds
