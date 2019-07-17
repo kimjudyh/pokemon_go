@@ -177,6 +177,10 @@ def read_base_stats(pokemon):
                     (pokemon.title(),))
     # store query results (list of tuples)
     base_stats = cur.fetchall()
+
+    # close database connection
+    db.close()
+
     # convert tuples in list into list
     base_stats = list(base_stats[0])
     #print(base_stats)

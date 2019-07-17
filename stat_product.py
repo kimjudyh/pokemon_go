@@ -1,66 +1,135 @@
-import math as m
-from multi_poke_v1 import read_cp_mult, read_base_stats
+def create_table(pokemon):
+    import math as m
+    from multi_poke_v1 import read_cp_mult, read_base_stats
+    import psycopg2
+    from psycopg2 import sql
 
-dic_cp_mult = read_cp_mult()
+    # create connection to database mydb
+    db = psycopg2.connect(database = "mydb")
 
-pokemon = "vigoroth"
-base_stats = read_base_stats(pokemon)
-print(base_stats)
+    # create cursor to go through database
+    cur = db.cursor()
 
-stam_base = base_stats[0]
-atk_base = base_stats[1]
-def_base = base_stats[2]
+    # convert pokemon string variable into something that can be passed into
+    # query as a table name
+    table_name = sql.Identifier(pokemon.lower())
 
-stam_IV = list(range(0,16))
-atk_IV = list(range(0,16))
-def_IV = list(range(0,16))
+    # create new table that is named after pokemon
+    cur.execute(sql.SQL(
+    '''CREATE TABLE {} 
+        (rank   int,
+        stam_IV int,
+        atk_IV  int,
+        def_IV  int,
+        stat_product    float,
+        percent_max float
+        )''').format(table_name))
 
-min_cpm_est = m.sqrt(14990/((atk_base+15)*m.sqrt((def_base+15)*(stam_base+15))))
-max_cpm_est = m.sqrt(14990/((atk_base+0)*m.sqrt((def_base+0)*(stam_base+0))))
-print(min_cpm_est)
-print(max_cpm_est)
+    db.commit()
+    db.close()
 
-for key, value in dic_cp_mult.items():
-    if (value > (min_cpm_est -.02)) and (value < (min_cpm_est)):
-        min_cpm = value
-        min_level = key
-    if (value > (max_cpm_est)) and (value < (max_cpm_est + .02)):
-        max_cpm = value
-        max_level = key
+def calc_stat_product(pokemon):
+    import math as m
+    from multi_poke_v1 import read_cp_mult, read_base_stats
+    import psycopg2
+    from psycopg2 import sql
 
-print(min_cpm, "min cp mult")
-print(max_cpm, "max cp mult")
-print(min_level)
+    # create connection to database mydb
+    db = psycopg2.connect(database = "mydb")
 
-stat_product = []
-for i_stam in stam_IV:
-    for j_atk in atk_IV:
-        for k_def in def_IV:
-            S = stam_base + i_stam
-            A = atk_base + j_atk
-            D = def_base + k_def
+    # create cursor to go through database
+    cur = db.cursor()
 
-            cp = m.floor(.1*A*m.sqrt(D*S)*min_cpm**2)
-            if cp <= 1500:
-                level = min_level
-                while cp <= 1500:
-                    level += .5
+    # convert pokemon string variable into something that can be passed into
+    # query as a table name
+    table_name = sql.Identifier(pokemon.lower())
+
+    dic_cp_mult = read_cp_mult()
+
+    #pokemon = "vigoroth"
+    base_stats = read_base_stats(pokemon)
+    print(base_stats)
+
+    stam_base = base_stats[0]
+    atk_base = base_stats[1]
+    def_base = base_stats[2]
+
+    stam_IV = list(range(0,16))
+    atk_IV = list(range(0,16))
+    def_IV = list(range(0,16))
+
+    min_cpm_est = m.sqrt(14990/((atk_base+15)*m.sqrt((def_base+15)*(stam_base+15))))
+    max_cpm_est = m.sqrt(14990/((atk_base+0)*m.sqrt((def_base+0)*(stam_base+0))))
+    print(min_cpm_est)
+    print(max_cpm_est)
+
+    for key, value in dic_cp_mult.items():
+        if (value > (min_cpm_est -.02)) and (value < (min_cpm_est)):
+            min_cpm = value
+            min_level = key
+        if (value > (max_cpm_est)) and (value < (max_cpm_est + .02)):
+            max_cpm = value
+            max_level = key
+
+    print(min_cpm, "min cp mult")
+    print(max_cpm, "max cp mult")
+    print(min_level)
+
+    stat_product = []
+    for i_stam in stam_IV:
+        for j_atk in atk_IV:
+            for k_def in def_IV:
+                S = stam_base + i_stam
+                A = atk_base + j_atk
+                D = def_base + k_def
+
+                cp = m.floor(.1*A*m.sqrt(D*S)*min_cpm**2)
+                if cp <= 1500:
+                    level = min_level
+                    while cp <= 1500:
+                        level += .5
+                        cp_mult = dic_cp_mult[level]
+                        cp = m.floor(.1*A*m.sqrt(D*S)*cp_mult**2)
+                    level -= .5
                     cp_mult = dic_cp_mult[level]
                     cp = m.floor(.1*A*m.sqrt(D*S)*cp_mult**2)
-                level -= .5
-                cp_mult = dic_cp_mult[level]
-                cp = m.floor(.1*A*m.sqrt(D*S)*cp_mult**2)
-                #print(cp)
+                    #print(cp)
 
-            p = m.floor(S*cp_mult)*A*D*cp_mult**2
-            #print(p)
-            #todo: create data structure with IV combo, level, cp and stat product
-            stat_product.append(p)
+                p = m.floor(S*cp_mult)*A*D*cp_mult**2
 
-max_p = max(stat_product)
-min_p = min(stat_product)
-print("max", max_p)
-print("min", min_p)
-print(len(stat_product))
+                # insert IV combo and stat product into pokemon's table
+                cur.execute(sql.SQL(
+                        '''INSERT INTO {} (stam_IV, atk_IV, def_IV, stat_product,
+                        percent_max)
+                        VALUES (%s, %s, %s, %s, %s)''').format(table_name),\
+                                [i_stam, j_atk, k_def, p, p])
 
 
+                stat_product.append(p)
+
+    max_p = max(stat_product)
+    min_p = min(stat_product)
+    print("max", max_p)
+    print("min", min_p)
+    print(len(stat_product))
+
+    # update percent with stat_product/max stat_product
+    cur.execute(sql.SQL(
+        '''UPDATE {} SET percent_max = percent_max/(%s)*100''').format(table_name),
+        [max_p])
+
+    # sort by stat_product descending and add the rank
+    cur.execute(sql.SQL(
+        '''WITH temp AS (SELECT *, ROW_NUMBER() OVER(ORDER BY stat_product DESC)
+        AS rn FROM {})
+        UPDATE {} SET rank = (SELECT rn FROM temp WHERE
+        temp.stam_IV = {}.stam_IV AND temp.atk_IV = {}.atk_IV
+        AND temp.def_IV = {}.def_IV)''').format(table_name, table_name, table_name,
+            table_name, table_name))
+
+
+    db.commit()
+    db.close()
+
+create_table("swampert")
+calc_stat_product("swampert")
