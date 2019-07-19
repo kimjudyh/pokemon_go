@@ -131,5 +131,37 @@ def calc_stat_product(pokemon):
     db.commit()
     db.close()
 
-create_table("swampert")
-calc_stat_product("swampert")
+def get_stat_product(pokemon, IV_list):
+
+    import psycopg2
+    from psycopg2 import sql
+
+    atk_IV = IV_list[0]
+    def_IV = IV_list[1]
+    stam_IV = IV_list[2]
+
+    db = psycopg2.connect(database = "mydb")
+    cur = db.cursor()
+    table_name = sql.Identifier(pokemon.lower())
+
+    cur.execute(sql.SQL(
+        '''SELECT rank, stat_product, percent_max FROM {} WHERE
+        atk_IV = (%s) AND def_IV = (%s) AND stam_IV = (%s)''').format(table_name),
+        [atk_IV, def_IV, stam_IV])
+
+    PVP_stats = cur.fetchall()
+
+    db.close()
+
+    PVP_stats = list(PVP_stats[0])
+    print(PVP_stats)
+
+    return PVP_stats
+
+
+
+
+
+#create_table("swampert")
+#calc_stat_product("swampert")
+get_stat_product("swampert", [15,15,15])

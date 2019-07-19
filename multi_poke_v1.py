@@ -8,8 +8,46 @@
 # calc_evolve_cp
 # main
 
-# read and process pokemon data text file
+# todo: change to read from csv the following:
+# id, pokemon, cp, stardust, atk IV, def IV, stam IV
+
 def read_stats(filename):
+    import csv
+
+    # initialize variables
+    pokemon_list = []
+    count = 0
+
+    # open csv file, use csv reader
+    pokemon_file = open(filename, newline = '')
+    read_file = csv.reader(pokemon_file)
+
+    for i_row in read_file:
+        # skip first line
+        if count == 0:
+            count += 1
+            continue
+        # cast certain entries as ints
+        i_row[0] = int(i_row[0])    # id
+        i_row[2] = int(i_row[2])    # cp
+        i_row[3] = int(i_row[3])    # hp
+        i_row[4] = int(i_row[4])    # stardust
+        i_row[5] = int(i_row[5])    # atk IV
+        i_row[6] = int(i_row[6])    # def IV
+        i_row[7] = int(i_row[7])    # stam IV
+        # add each row to list
+        pokemon_list.append(i_row)
+
+    # cast id, cp, stardust, and all IV's as ints
+
+
+    pokemon_file.close()
+    print(pokemon_list)
+
+    return pokemon_list
+
+# read and process pokemon data text file
+def read_stats_old(filename):
     with open(filename, 'r') as pogo_file:
         pogo_list = pogo_file.readlines()
     #pogo_file = open(filename, "r")
@@ -319,180 +357,11 @@ def narrow_IV(entry):
     else:
         print("error with appraisal length")
 
-    # account for different length of appraisal list
-    # one stat
-    # if len(appraisal) == 3:
-    #     # extract stat
-    #     # ATTACK
-    #     if appraisal[1] == "attack" and appraisal[2] == "exceeds":
-    #         atk_IV = [15]
-    #         # defense and stamina cannot equal 15
-    #         stam_IV = stam_IV[0:15]
-    #         def_IV = def_IV[0:15]
-    #     elif appraisal[1] == "attack" and appraisal[2] == "certainly impressed":
-    #         atk_IV = [13, 14]
-    #         # defense and stamina cannot be >= 14
-    #         stam_IV = stam_IV[0:14]
-    #         def_IV = def_IV[0:14]
-    #     elif  appraisal[1] == "attack" and appraisal[2] == "noticeably":
-    #         atk_IV = list(range(8,13))      # 8-12
-    #         # defense and stamina cannot be >= 12
-    #         stam_IV = stam_IV[0:12]
-    #         def_IV = def_IV[0:12]
-    #     elif appraisal[1] == "attack" and appraisal[2] == "norm":
-    #         atk_IV = list(range(0,8))       # 0-7
-    #         # defense and stamina cannot be >= 7
-    #         stam_IV = stam_IV[0:7]
-    #         def_IV = def_IV[0:7]
-    #
-    #     # DEFENSE
-    #     elif appraisal[1] == "defense" and appraisal[2] == "exceeds":
-    #         def_IV = [15]
-    #         # attack and stamina can't be 15
-    #         stam_IV = stam_IV[0:15]
-    #         atk_IV = atk_IV[0:15]
-    #     elif appraisal[1] == "defense" and appraisal[2] == "certainly impressed":
-    #         def_IV = [13, 14]
-    #         # attack and stamina can't be >= 14
-    #         stam_IV = stam_IV[0:14]
-    #         atk_IV = atk_IV[0:14]
-    #     elif appraisal[1] == "defense" and appraisal[2] == "noticeably":
-    #         def_IV = list(range(8,13))      # 8-12
-    #         # attack and stamina can't be >= 12
-    #         stam_IV = stam_IV[0:12]
-    #         atk_IV = atk_IV[0:12]
-    #     elif appraisal[1] == "defense" and appraisal[2] == "norm":
-    #         def_IV = list(range(0,8))       # 0-7
-    #         # attack and stamina can't be >= 7
-    #         stam_IV = stam_IV[0:7]
-    #         atk_IV = atk_IV[0:7]
-    #
-    #     # STAMINA
-    #     elif appraisal[1] == "hp" and appraisal[2] == "exceeds":
-    #         stam_IV = [15]
-    #         # attack and defense can't be 15
-    #         atk_IV = atk_IV[0:15]
-    #         def_IV = def_IV[0:15]
-    #     elif appraisal[1] == "hp" and appraisal[2] == "certainly impressed":
-    #         stam_IV = [13, 14]
-    #         # attack and defense can't be >= 14
-    #         atk_IV = atk_IV[0:14]
-    #         def_IV = def_IV[0:14]
-    #     elif  appraisal[1] == "hp" and appraisal[2] == "noticeably":
-    #         stam_IV = list(range(8,13))      # 8-12
-    #         # attack and defense can't be >= 12
-    #         atk_IV = atk_IV[0:12]
-    #         def_IV = def_IV[0:12]
-    #     elif appraisal[1] == "hp" and appraisal[2] == "norm":
-    #         stam_IV = list(range(0,8))       # 0-7
-    #         # attack and defense can't be >= 7
-    #         atk_IV = atk_IV[0:7]
-    #         def_IV = def_IV[0:7]
-    #     else:
-    #         pass
-
-    # two stats, set is_single to False
-    # if len(appraisal) == 4:
-    #     is_single = False
-    #     # find the stat that doesn't appear to get the two stats
-    #     # DEFENSE & STAMINA
-    #     if "attack" not in appraisal \
-    #             and appraisal[3] == "exceeds":
-    #         def_IV = [15]           # 15
-    #         stam_IV = [15]          # 15
-    #         # attack can't be 15
-    #         atk_IV = atk_IV[0:15]
-    #         print("hp and defense exceeds")
-    #         print("def", def_IV, "stam", stam_IV, "atk", atk_IV)
-    #     elif "attack" not in appraisal \
-    #             and appraisal[3] == "certainly impressed":
-    #         def_IV = [13, 14]       # 13-14
-    #         stam_IV = [13, 14]      # 13-14
-    #         # attack can't be >= 14
-    #         atk_IV = atk_IV[0:14]
-    #         print("defense and hp")
-    #     elif "attack" not in appraisal \
-    #             and appraisal[3] == "noticeably":
-    #         def_IV = list(range(8,13))  # 8-12
-    #         stam_IV = def_IV.copy()
-    #         # attack can't be >= 12
-    #         atk_IV = atk_IV[0:12]
-    #     elif "attack" not in appraisal \
-    #             and appraisal [3] == "norm":
-    #         def_IV = def_IV[0:8]    # 0-7
-    #         stam_IV = stam_IV[0:8]  # 0-7
-    #         # attack can't be >= 7
-    #         atk_IV = atk_IV[0:7]
-    #
-    #     # ATTACK & STAMINA
-    #     elif "defense" not in appraisal \
-    #             and appraisal[3] == "exceeds":
-    #         atk_IV = [15]       # 15
-    #         stam_IV = [15]      # 15
-    #         # defense can't be 15
-    #         def_IV = def_IV[0:15]
-    #         print("i'm at attack and stamina exceeds")
-    #     elif "defense" not in appraisal \
-    #             and appraisal[3] == "certainly impressed":
-    #         atk_IV = [13, 14]   # 13-14
-    #         stam_IV = [13, 14]  # 13-14
-    #         # defense can't be >= 14
-    #         def_IV = def_IV[0:14]
-    #     elif "defense" not in appraisal \
-    #             and appraisal[3] == "noticeably":
-    #         atk_IV = atk_IV[8:13]   # 8-12
-    #         stam_IV = stam_IV[8:13] # 8-12
-    #         # defense can't be >= 12
-    #         def_IV = def_IV[0:12]
-    #     elif "defense" not in appraisal \
-    #             and appraisal[3] == "norm":
-    #         atk_IV = atk_IV[0:8]    # 0-7
-    #         stam_IV = stam_IV[0:8]
-    #         # defense can't be >= 7
-    #         def_IV = def_IV[0:7]
-    #
-    #     # ATTACK & DEFENSE
-    #     elif "hp" not in appraisal and appraisal[3] == "exceeds":
-    #         def_IV = [15]       # 15
-    #         atk_IV = [15]       # 15
-    #         # stamina can't be 15
-    #         stam_IV = stam_IV[0:15]
-    #         print("i'm at attack and defense exceeds")
-    #     elif "hp" not in appraisal \
-    #             and appraisal[3] == "certainly impressed":
-    #         def_IV = [13, 14]   # 13-14
-    #         atk_IV = [13, 14]   # 13-14
-    #         # stamina can't be >= 14
-    #         stam_IV = stam_IV[0:14]
-    #         print("i'm at attack and defense certainly impressed")
-    #     elif "hp" not in appraisal and appraisal [3] == "noticeably":
-    #         def_IV = def_IV[8:13]       # 8-12
-    #         atk_IV = atk_IV[8:13]
-    #         # stamina can't be >= 12
-    #         stam_IV = stam_IV[0:12]
-    #     elif "hp" not in appraisal and appraisal[3] == "norm":
-    #         def_IV = def_IV[0:8]    # 0-7
-    #         atk_IV = atk_IV[0:8]
-    #         # stamina can't be >= 7
-    #         stam_IV = stam_IV[0:7]
-    # # three stats, set is_single to False
-    # elif len(appraisal) == 5:
-    #     is_single = False
-    #     # must be all stats
-    #     if appraisal[4] == "exceeds":
-    #         atk_IV = [15]
-    #         def_IV = [15]
-    #         stam_IV = [15]
-    #     elif appraisal[4] == "certainly impressed":
-    #         atk_IV = [13, 14]
-    #         def_IV = [13, 14]
-    #         stam_IV = [13, 14]
-
 
     return stam_IV, atk_IV, def_IV, is_single#, two_stats
 
 # narrow down cp multiplier range based on stardust.
-def narrow_cp_mult(dic_cp_mult, dic_stardust, entry):
+def narrow_cp_mult(dic_cp_mult, dic_stardust, entry, base_stats):
     '''
     :param dic_cp_mult: dictionary of level (float): cp multiplier (float)
     :param dic_stardust: dictionary of stardust (int): list of levels (floats)
@@ -503,24 +372,47 @@ def narrow_cp_mult(dic_cp_mult, dic_stardust, entry):
     :return cp_mult: list of cp multipliers for each level that maps to stardust value
         ex. if stardust is 1300, levels can be 11, 11.5, 12, 12.5. cp_mult will contain 4 values.
     '''
+    import math as m
+
     # extract data from input list
     name = entry[1]
     cp = entry[2]
-    hp = entry[3]
     stardust = entry[4]
-    appraisal = entry[5:]
+    atk_IV = entry[5]
+    def_IV = entry[6]
+    stam_IV = entry[7]
+
+    stam_base = base_stats[0]
+    atk_base = base_stats[1]
+    def_base = base_stats[2]
 
     cp_mult = []
     d_list_levels = {}
+    # get list of levels from stardust dictionary associated with given stardust
     list_levels = dic_stardust[stardust]
+
     for i in list_levels:
         # remove half levels
         if i.is_integer():
+            # get cp multiplier from cp_mult dictionary associated with level i
             cp_mult.append(dic_cp_mult[i])
+            # populate dictionary of key: cp_mult, value: level
             d_list_levels[dic_cp_mult[i]] = i
 
-    #print("d_list_levels: ", d_list_levels)
-    return d_list_levels, cp_mult
+    # guess real level from narrowed down list
+    for i_cpm in cp_mult:
+        # calculate cp
+        calc_cp = m.floor(.1*(atk_base + atk_IV)*\
+                m.sqrt(def_base + def_IV)*\
+                m.sqrt(stam_base + stam_IV)*i_cpm**2)
+
+        if cp == calc_cp:
+            real_cp_mult = i_cpm
+            real_level = d_list_levels[i_cpm]
+    print("cp_mult", real_cp_mult)
+    print("level", real_level)
+
+    return real_cp_mult, real_level 
 
 # function that guesses IVs
 def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels, is_single):
@@ -664,7 +556,8 @@ def guess_IV(cp_mult, stam_IV, atk_IV, def_IV, base_stats, entry, d_list_levels,
 
     return IV
 
-def calc_evolve_cp(evo_pokemon, d_list_levels, IV, dic_cp_mult):
+#def calc_evolve_cp(evo_pokemon, d_list_levels, IV, dic_cp_mult):
+def calc_evolve_cp(evo_pokemon, IV_list, level, cp_mult, dic_cp_mult):
     '''
     :param evo_pokemon: string of evolution pokemon
     :param d_list_levels: dict of narrowed down key cp multiplier (float): 
@@ -680,91 +573,84 @@ def calc_evolve_cp(evo_pokemon, d_list_levels, IV, dic_cp_mult):
     # user input on which pokemon(s) to evolve
     # user input on pokemon to evolve into
 
-    evolve_stats = []
+    #evolve_stats = []
 
-    for i_combo in IV:
-        level = i_combo[0]
-        stam_IV = i_combo[1]
-        atk_IV = i_combo[2]
-        def_IV = i_combo[3]
+#        level = i_combo[0]
+    stam_IV = IV_list[2]
+    atk_IV = IV_list[0]
+    def_IV = IV_list[1]
 
-        # find those base stats
-        base_stats = read_base_stats(evo_pokemon)
-        stam_base = base_stats[0]
-        atk_base = base_stats[1]
-        def_base = base_stats[2]
+    # find those base stats
+    base_stats = read_base_stats(evo_pokemon)
+    stam_base = base_stats[0]
+    atk_base = base_stats[1]
+    def_base = base_stats[2]
 
-        #atk_base = 277  # salamence
-        #def_base = 168  # salamence
-        #stam_base = 216 # salamence
-        #atk_base = 226  # melmetal
-        #def_base = 190  # melmetal
-        #stam_base = 264 # melmetal
-        # use calc'd IVs, level, new base stats to calc CP
-        for key, value in d_list_levels.items():
-            if value == level:
-                cp_mult = key
-        # also calc HP
-        # calculate CP, rounding down
-        calc_cp = m.floor(.1*(atk_base + atk_IV)*\
-                  m.sqrt(def_base + def_IV)*\
-                  m.sqrt(stam_base + stam_IV)*cp_mult**2)
-        # calculate hp, rounding down
-        calc_hp = m.floor(cp_mult*(stam_base + stam_IV))
+   # use calc'd IVs, level, new base stats to calc CP
+    #for key, value in d_list_levels.items():
+    #    if value == level:
+    #        cp_mult = key
+    # also calc HP
+    # calculate CP, rounding down
+    calc_cp = m.floor(.1*(atk_base + atk_IV)*\
+              m.sqrt(def_base + def_IV)*\
+              m.sqrt(stam_base + stam_IV)*cp_mult**2)
+    # calculate hp, rounding down
+    calc_hp = m.floor(cp_mult*(stam_base + stam_IV))
 
-        #print("cp, hp", calc_cp, calc_hp)
+    #print("cp, hp", calc_cp, calc_hp)
 
-        # calculate closest cp to 1500
-        cp_1500 = calc_cp
-        #print("cp 1500", cp_1500)
-        hp_1500 = calc_hp 
-        cp_mult_1500 = cp_mult
-        level_1500 = level
-        power_up_count = 0
-        # check if calc_hp is already over 1500
-        if cp_1500 <=1500:
-            while cp_1500 <= 1500 and level_1500 < 40.0:
-                power_up_count += 1
-                level_1500 += 0.5
-                cp_mult_1500 = dic_cp_mult[level_1500]
-                #print("cp_mult", cp_mult_1500)
-                # calculate CP, rounding down
-                cp_1500 = m.floor(.1*(atk_base + atk_IV)*\
-                        m.sqrt(def_base + def_IV)*\
-                        m.sqrt(stam_base + stam_IV)*cp_mult_1500**2)
-                # calculate hp, rounding down
-                hp_1500 = m.floor(cp_mult_1500*(stam_base + stam_IV))
-            # since while loop will give cp over 1500, need to get the level below
-            # and recalculate cp and hp
-            if level_1500 == 40.0:
-                pass
-            else:
-                power_up_count -= 1
-                level_1500 -= 0.5
+    # calculate closest cp to 1500
+    cp_1500 = calc_cp
+    #print("cp 1500", cp_1500)
+    hp_1500 = calc_hp 
+    cp_mult_1500 = cp_mult
+    level_1500 = level
+    power_up_count = 0
+    # check if calc_hp is already over 1500
+    if cp_1500 <=1500:
+        while cp_1500 <= 1500 and level_1500 < 40.0:
+            power_up_count += 1
+            level_1500 += 0.5
             cp_mult_1500 = dic_cp_mult[level_1500]
+            #print("cp_mult", cp_mult_1500)
             # calculate CP, rounding down
             cp_1500 = m.floor(.1*(atk_base + atk_IV)*\
                     m.sqrt(def_base + def_IV)*\
                     m.sqrt(stam_base + stam_IV)*cp_mult_1500**2)
             # calculate hp, rounding down
             hp_1500 = m.floor(cp_mult_1500*(stam_base + stam_IV))
+        # since while loop will give cp over 1500, need to get the level below
+        # and recalculate cp and hp
+        if level_1500 == 40.0:
+            pass
+        else:
+            power_up_count -= 1
+            level_1500 -= 0.5
+        cp_mult_1500 = dic_cp_mult[level_1500]
+        # calculate CP, rounding down
+        cp_1500 = m.floor(.1*(atk_base + atk_IV)*\
+                m.sqrt(def_base + def_IV)*\
+                m.sqrt(stam_base + stam_IV)*cp_mult_1500**2)
+        # calculate hp, rounding down
+        hp_1500 = m.floor(cp_mult_1500*(stam_base + stam_IV))
 
 
 
-        #print("1500 cp", cp_1500)
-        #print("1500 hp", hp_1500)
-        #print("1500 level", level_1500)
-        #print("num power ups", power_up_count)
+    #print("1500 cp", cp_1500)
+    #print("1500 hp", hp_1500)
+    #print("1500 level", level_1500)
+    #print("num power ups", power_up_count)
 
-        evolve_stats.append([calc_cp, calc_hp, power_up_count, cp_1500])
+    evolve_stats = [calc_cp, calc_hp, power_up_count, cp_1500]
 
-        # if not, get next level's cp multiplier (add 0.5 to current level)
-        # keep track of how many power ups
-        # calculate new cp
-        # check if less than 1500
-        # add to evolve_stats
+    # if not, get next level's cp multiplier (add 0.5 to current level)
+    # keep track of how many power ups
+    # calculate new cp
+    # check if less than 1500
+    # add to evolve_stats
 
-        #print("evolve stats", evolve_stats)
+    print("evolve stats", evolve_stats)
 
     return evolve_stats 
 
@@ -772,9 +658,10 @@ def calc_evolve_cp(evo_pokemon, d_list_levels, IV, dic_cp_mult):
 # main part of file that calls functions in order
 #################################################
 def main():
+    from stat_product import get_stat_product
 
     # read pokemon data from text file
-    stats = read_stats("poke_data_10.txt")
+    stats = read_stats("poke_data_1.csv")
 
     # ask for evolution pokemon (assumes only one pokemon species in file)
     evo_pokemon = input("Evolution pokemon?\n").lower()
@@ -793,6 +680,8 @@ def main():
     # narrow down IVs using appraisal
     for entry in stats:
         pokemon = entry[1]
+        t_IV = entry[5:]    # order: atk, def, stam
+        print(t_IV)
         # choose correct base stat for pokemon being analyzed
         t_base_stats = read_base_stats(pokemon)
         #for poke in base_stats:
@@ -800,53 +689,37 @@ def main():
         #        t_base_stats = poke[1:]
         #print(t_base_stats)
 
+        # don't need this line
         # narrow down IVs based on appraisal language
-        t_stam_IV, t_atk_IV, t_def_IV, is_single = narrow_IV(entry)
+        #t_stam_IV, t_atk_IV, t_def_IV, is_single = narrow_IV(entry)
+        # still need this to guess level
+        # guess by inputing IVs and possible cp_mult into cp equation
         # narrow down levels & cp multipliers based on stardust
-        t_list_levels, t_cp_mult = narrow_cp_mult(dic_cp_mult, dic_stardust, entry)
+        t_cp_mult, t_level = narrow_cp_mult(dic_cp_mult, dic_stardust, entry,
+                t_base_stats)
         #print("t_list_levels", t_list_levels)
+        # don't need this line, can simply fill in IV's now
         # guess all level & IV combos that work
-        t_IV = guess_IV(t_cp_mult, t_stam_IV, t_atk_IV, t_def_IV, t_base_stats, entry,
-                        t_list_levels, is_single)
+        #t_IV = guess_IV(t_cp_mult, t_stam_IV, t_atk_IV, t_def_IV, t_base_stats, entry,
+                  #      t_list_levels, is_single)
 
         # save appraisal data to display in report
-        t_appraisal = entry[5:]
+        #t_appraisal = entry[5:]
 
         # add info to pokemon's entry list [level, stam IV, atk IV, def IV, percentage]
-        entry.append(t_IV)
+        #entry.append(t_IV)
         
         # calc evolution stats
-        evolve_stats = calc_evolve_cp(evo_pokemon, t_list_levels, t_IV, dic_cp_mult)
+        evolve_stats = calc_evolve_cp(evo_pokemon, t_IV, t_level, t_cp_mult, 
+                dic_cp_mult)
         #print("i calc'd evolution stats")
         #print(evolve_stats)
 
-        # i think the following if else block can be ignored
-        if len(evolve_stats) > 1:
-            min_cp = min(evolve_stats)[0]
-            min_hp = min(evolve_stats)[1]
-            max_cp = max(evolve_stats)[0]
-            max_hp = max(evolve_stats)[1]
-            #print("Melmetal stats")
-            #print("CP range: {}-{}".format(min_cp, max_cp))
-            #print("HP range: {}-{}".format(min_hp, max_hp))
-        else:
-            calc_cp = evolve_stats[0][0]
-            calc_hp = evolve_stats[0][1]
-            #print("Melmetal stats")
-            #print("CP: ", calc_cp)
-            #print("HP: ", calc_hp)
-        
-        # i think the following can be ignored
-        for i_combo, j_IV in zip(evolve_stats, t_IV):
-            calc_cp = i_combo[0]
-            calc_hp = i_combo[1]
-            #print(j_IV[:-1])
-            #print("Melmetal CP: {} and HP: {}".format(calc_cp, calc_hp))
-
-        #print("Salamence CP: ", calc_cp)
-        #print("HP: ", calc_hp)
-
-
+        # get PVP stat product
+        PVP_stats = get_stat_product(evo_pokemon, t_IV)
+        rank = PVP_stats[0]
+        stat_product = PVP_stats[1]
+        percent_max = PVP_stats[2]
 
 
         #print(entry)
@@ -859,33 +732,35 @@ def main():
         #print("Original stats.. :", entry[2:5], t_appraisal)
         print("{}. Original stats:".format(entry[0]))
         print("CP: {}, HP: {}, Stardust: {}".format(entry[2], entry[3], entry[4]))
-        print("Appraisal:", t_appraisal)
+        #print("Appraisal:", t_appraisal)
         #print("Here are level/IV combos that work:")
 
         # Display the report header
         print (hdr_fmt.format('----------', '--------', '--------',\
                               '--------', '--------', '--------','----------', \
                               '-----', '----', '-----', '------'))
-        print (hdr_fmt.format('Pokemon', 'Level', 'STM', 'ATK',\
-                                'DEF', 'IV %', 'Evolution', 'CP', 'HP', '#Pwr^', 'CP1500'))
+        print (hdr_fmt.format('Pokemon', 'Level', 'ATK', 'DEF',\
+                                'STM', 'IV %', 'Evolution', 'CP', 'HP', '#Pwr^', 'CP1500'))
         print (hdr_fmt.format('----------', '--------', '--------',\
                               '--------', '--------', '--------','----------', \
                               '-----', '----','-----','------'))
 
         # print IV report for pokemon
-        for i, j in zip(t_IV, evolve_stats):
-            pokemon = entry[1]
-            level = i[0]
-            stamina = i[1]
-            attack = i[2]
-            defense = i[3]
-            percent = i[4]
-            #evo_pokemon = "Melmetal"
-            evo_cp = j[0]
-            evo_hp = j[1]
-            power_up_count = j[2]
-            cp_1500 = j[3]
-            print(dat_fmt.format(pokemon, level, stamina, attack, defense,'{:,.2f}%'.format(percent), evo_pokemon, evo_cp, evo_hp, power_up_count, cp_1500))
+        #for i, j in zip(t_IV, evolve_stats):
+        pokemon = entry[1]
+        level = t_level 
+        stamina = t_IV[2]
+        attack = t_IV[0]
+        defense = t_IV[1]
+        percent = (stamina+attack+defense)/45*100
+        evo_cp = evolve_stats[0]
+        evo_hp = evolve_stats[1]
+        power_up_count =evolve_stats[2]
+        cp_1500 = evolve_stats[3]
+        print(dat_fmt.format(pokemon, level, attack, defense, stamina,'{:,.2f}%'.format(percent), evo_pokemon, evo_cp, evo_hp, power_up_count, cp_1500))
+
+        print("Rank: {}, Stat Product: {:.2f}, Percent of Max: {:,.2f}%".format(
+            rank, stat_product, percent_max))
 
         print()
 
