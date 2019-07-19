@@ -48,7 +48,7 @@ def calc_stat_product(pokemon):
 
     #pokemon = "vigoroth"
     base_stats = read_base_stats(pokemon)
-    print(base_stats)
+    #print(base_stats)
 
     stam_base = base_stats[0]
     atk_base = base_stats[1]
@@ -60,8 +60,8 @@ def calc_stat_product(pokemon):
 
     min_cpm_est = m.sqrt(14990/((atk_base+15)*m.sqrt((def_base+15)*(stam_base+15))))
     max_cpm_est = m.sqrt(14990/((atk_base+0)*m.sqrt((def_base+0)*(stam_base+0))))
-    print(min_cpm_est)
-    print(max_cpm_est)
+    #print(min_cpm_est)
+    #print(max_cpm_est)
 
     for key, value in dic_cp_mult.items():
         if (value > (min_cpm_est -.02)) and (value < (min_cpm_est)):
@@ -71,7 +71,7 @@ def calc_stat_product(pokemon):
             max_cpm = value
             max_level = key
 
-    print(min_cpm, "min cp mult")
+    #print(min_cpm, "min cp mult")
     print(max_cpm, "max cp mult")
     print(min_level)
 
@@ -154,14 +154,13 @@ def get_stat_product(pokemon, IV_list):
     db.close()
 
     PVP_stats = list(PVP_stats[0])
-    print(PVP_stats)
+    #print(PVP_stats)
 
     return PVP_stats
 
 
 
-
-
-#create_table("swampert")
-#calc_stat_product("swampert")
-get_stat_product("swampert", [15,15,15])
+if __name__ == "__main__":
+    create_table("lanturn")
+    calc_stat_product("lanturn")
+    #get_stat_product("swampert", [15,15,15])

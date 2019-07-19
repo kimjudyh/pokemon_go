@@ -409,8 +409,8 @@ def narrow_cp_mult(dic_cp_mult, dic_stardust, entry, base_stats):
         if cp == calc_cp:
             real_cp_mult = i_cpm
             real_level = d_list_levels[i_cpm]
-    print("cp_mult", real_cp_mult)
-    print("level", real_level)
+    #print("cp_mult", real_cp_mult)
+    #print("level", real_level)
 
     return real_cp_mult, real_level 
 
@@ -650,7 +650,7 @@ def calc_evolve_cp(evo_pokemon, IV_list, level, cp_mult, dic_cp_mult):
     # check if less than 1500
     # add to evolve_stats
 
-    print("evolve stats", evolve_stats)
+    #print("evolve stats", evolve_stats)
 
     return evolve_stats 
 
@@ -661,7 +661,7 @@ def main():
     from stat_product import get_stat_product
 
     # read pokemon data from text file
-    stats = read_stats("poke_data_1.csv")
+    stats = read_stats("poke_data_2.csv")
 
     # ask for evolution pokemon (assumes only one pokemon species in file)
     evo_pokemon = input("Evolution pokemon?\n").lower()
@@ -681,7 +681,7 @@ def main():
     for entry in stats:
         pokemon = entry[1]
         t_IV = entry[5:]    # order: atk, def, stam
-        print(t_IV)
+        #print(t_IV)
         # choose correct base stat for pokemon being analyzed
         t_base_stats = read_base_stats(pokemon)
         #for poke in base_stats:
@@ -759,7 +759,7 @@ def main():
         cp_1500 = evolve_stats[3]
         print(dat_fmt.format(pokemon, level, attack, defense, stamina,'{:,.2f}%'.format(percent), evo_pokemon, evo_cp, evo_hp, power_up_count, cp_1500))
 
-        print("Rank: {}, Stat Product: {:.2f}, Percent of Max: {:,.2f}%".format(
+        print("Rank: {}\nStat Product: {:.2f}\nPercent of Max: {:,.2f}%".format(
             rank, stat_product, percent_max))
 
         print()
