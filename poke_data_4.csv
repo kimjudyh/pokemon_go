@@ -1,0 +1,12 @@
+﻿id,pokemon,CP,hp,stardust,atk IV,def IV,stam IV
+1,chinchou,827,135,4500,11,8,10
+2,chinchou,783,126,4000,12,13,5
+3,chinchou,764,129,4000,9,11,9
+4,chinchou,676,123,4000,4,0,0
+5,chinchou,642,123,3500,4,2,7
+6,chinchou,541,109,2500,5,13,7
+7,chinchou,883,138,7000,9,4,4
+8,chinchou,782,132,4000,11,10,13
+9,chinchou,754,129,4000,7,12,9
+10,chinchou,642,123,3500,4,2,7
+11,lanturn,880,145,1900,14,13,14

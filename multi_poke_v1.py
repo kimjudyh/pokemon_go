@@ -661,7 +661,7 @@ def main():
     from stat_product import get_stat_product
 
     # read pokemon data from text file
-    stats = read_stats("poke_data_2.csv")
+    stats = read_stats("poke_data_6.csv")
 
     # ask for evolution pokemon (assumes only one pokemon species in file)
     evo_pokemon = input("Evolution pokemon?\n").lower()

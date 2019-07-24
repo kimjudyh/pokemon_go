@@ -161,6 +161,6 @@ def get_stat_product(pokemon, IV_list):
 
 
 if __name__ == "__main__":
-    create_table("lanturn")
-    calc_stat_product("lanturn")
+    create_table("melmetal")
+    calc_stat_product("melmetal")
     #get_stat_product("swampert", [15,15,15])
