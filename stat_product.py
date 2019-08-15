@@ -72,7 +72,7 @@ def calc_stat_product(pokemon):
             max_level = key
 
     #print(min_cpm, "min cp mult")
-    print(max_cpm, "max cp mult")
+    #print(max_cpm, "max cp mult")
     print(min_level)
 
     stat_product = []
@@ -86,11 +86,12 @@ def calc_stat_product(pokemon):
                 cp = m.floor(.1*A*m.sqrt(D*S)*min_cpm**2)
                 if cp <= 1500:
                     level = min_level
-                    while cp <= 1500:
+                    while cp <= 1500 and level < 40:
                         level += .5
                         cp_mult = dic_cp_mult[level]
                         cp = m.floor(.1*A*m.sqrt(D*S)*cp_mult**2)
-                    level -= .5
+                    if level < 40 or cp > 1500:
+                        level -= .5
                     cp_mult = dic_cp_mult[level]
                     cp = m.floor(.1*A*m.sqrt(D*S)*cp_mult**2)
                     #print(cp)
@@ -161,6 +162,6 @@ def get_stat_product(pokemon, IV_list):
 
 
 if __name__ == "__main__":
-    create_table("melmetal")
-    calc_stat_product("melmetal")
+    create_table("azumarill")
+    calc_stat_product("azumarill")
     #get_stat_product("swampert", [15,15,15])
