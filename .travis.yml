@@ -14,6 +14,8 @@ install:
 # command to run tests
 before_script:
   - psql -c 'create database mydb;' -U postgres
+  - psql -c 'create table base_stats(id varchar, species varchar, hp int, attack int, defense int);' -U postgres
+
 script:
         #- psql postgresql
   - pytest -v
