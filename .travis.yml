@@ -15,6 +15,7 @@ install:
 before_script:
   - psql -c 'create database mydb;' -U postgres
   - psql -c 'create table base_stats(id varchar, species varchar, hp int, attack int, defense int);' -U postgres
+  - psql -c "\copy base_stats FROM 'pogostats_csv.csv' (format csv, header true);" -U postgres
 
 script:
         #- psql postgresql
