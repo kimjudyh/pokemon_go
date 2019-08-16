@@ -19,4 +19,4 @@ before_script:
 
 script:
         #- psql postgresql
-  - pytest -v
+  - pytest test_read_base_stats.py -v
