@@ -72,8 +72,8 @@ def calc_stat_product(pokemon):
             max_level = key
 
     #print(min_cpm, "min cp mult")
-    print(max_cpm, "max cp mult")
-    print(min_level)
+    #print(max_cpm, "max cp mult")
+    #print(min_level)
 
     stat_product = []
     for i_stam in stam_IV:
