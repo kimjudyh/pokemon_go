@@ -1,7 +1,7 @@
 ﻿id,pokemon,CP,atk IV,def IV,stam IV
-1,skarmory,1493,14,1,11
-2,skarmory,1490,11,15,13
-3,skarmory,1480,5,4,6
+1,skarmory,1500,0,15,14
+2,skarmory,1495,0,15,13
+3,skarmory,1498,0,13,15
 4,skarmory,1456,4,0,12
 5,skarmory,1372,10,13,9
 6,skarmory,1366,14,14,13
