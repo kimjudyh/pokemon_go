@@ -6,7 +6,7 @@ def test_azumarill():
         create_table("azumarill")
         calc_stat_product("azumarill")
     except Exception as e:
-        print("table exists")
+        print(e)
     PVP_stats = get_stat_product("azumarill", [8, 15, 15])
 
     assert PVP_stats[0] == 1
@@ -33,7 +33,7 @@ def test_medicham():
         create_table("medicham")
         calc_stat_product("medicham")
     except Exception as e:
-        print("table exists")
+        print(e)
     PVP_stats = get_stat_product("medicham", [15, 15, 15])
 
     assert PVP_stats[0] == 1
