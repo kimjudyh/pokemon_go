@@ -339,7 +339,7 @@ def main():
     from stat_product import get_stat_product
 
     # read pokemon data from text file
-    stats = read_stats("chinchou1.csv")
+    stats = read_stats("skarmory1.csv")
 
     # ask for evolution pokemon (assumes only one pokemon species in file)
     evo_pokemon = input("Evolution pokemon?\n").lower()
@@ -352,48 +352,31 @@ def main():
     dic_stardust = read_stardust()
     #print(dic_stardust[1300])
 
-    # for now, get base stats of 3 pokemon
-    #base_stats = read_base_stats()
 
-    # narrow down IVs using appraisal
     for entry in stats:
         pokemon = entry[1]
         t_IV = entry[3:]    # order: atk, def, stam
         #print(t_IV)
         # choose correct base stat for pokemon being analyzed
         t_base_stats = read_base_stats(pokemon)
-        #for poke in base_stats:
-        #    if poke[0] == entry[1]:
-        #        t_base_stats = poke[1:]
-        #print(t_base_stats)
-
-        # don't need this line
-        # narrow down IVs based on appraisal language
-        #t_stam_IV, t_atk_IV, t_def_IV, is_single = narrow_IV(entry)
-        # still need this to guess level
+       # still need this to guess level
         # guess by inputing IVs and possible cp_mult into cp equation
         # narrow down levels & cp multipliers based on stardust
         t_cp_mult, t_level = narrow_cp_mult(dic_cp_mult, dic_stardust, entry,
                 t_base_stats)
         #print("t_list_levels", t_list_levels)
-        # don't need this line, can simply fill in IV's now
-        # guess all level & IV combos that work
-        #t_IV = guess_IV(t_cp_mult, t_stam_IV, t_atk_IV, t_def_IV, t_base_stats, entry,
-                  #      t_list_levels, is_single)
-
-        # save appraisal data to display in report
-        #t_appraisal = entry[5:]
-
-        # add info to pokemon's entry list [level, stam IV, atk IV, def IV, percentage]
-        #entry.append(t_IV)
-        
+       
         # calc evolution stats
         evolve_stats = calc_evolve_cp(evo_pokemon, t_IV, t_level, t_cp_mult, 
                 dic_cp_mult)
-        #print("i calc'd evolution stats")
         #print(evolve_stats)
 
         # get PVP stat product
+        try:
+            create_table(evo_pokemon)
+            calc_stat_product(evo_pokemon)
+        except Exception as e:
+            pass
         PVP_stats = get_stat_product(evo_pokemon, t_IV)
         rank = PVP_stats[0]
         stat_product = PVP_stats[1]

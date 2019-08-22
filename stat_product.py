@@ -72,7 +72,7 @@ def calc_stat_product(pokemon):
             max_level = key
 
     #print(min_cpm, "min cp mult")
-    #print(max_cpm, "max cp mult")
+    print(max_cpm, "max cp mult")
     print(min_level)
 
     stat_product = []
@@ -162,6 +162,9 @@ def get_stat_product(pokemon, IV_list):
 
 
 if __name__ == "__main__":
-    create_table("azumarill")
-    calc_stat_product("azumarill")
+    try:
+        create_table("skarmory")
+        calc_stat_product("skarmory")
+    except Exception as e:
+        print(e)
     #get_stat_product("swampert", [15,15,15])
