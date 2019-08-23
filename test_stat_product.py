@@ -64,7 +64,7 @@ def test_bronzong():
     PVP_stats = get_stat_product("bronzong", [1, 15, 14])
 
     assert PVP_stats[0] == 1
-    assert round(PVP_stats[1]) == 2050591
+    assert round(PVP_stats[1]) == 2050565
     assert round(PVP_stats[2]) == 100
 
 def test_altaria():
