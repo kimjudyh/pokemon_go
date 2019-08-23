@@ -1,3 +1,5 @@
+from sys import argv
+
 def create_table(pokemon):
     import math as m
     from multi_poke_v1 import read_cp_mult, read_base_stats
@@ -162,9 +164,10 @@ def get_stat_product(pokemon, IV_list):
 
 
 if __name__ == "__main__":
+    script, pokemon = argv
     try:
-        create_table("skarmory")
-        calc_stat_product("skarmory")
+        create_table(pokemon)
+        calc_stat_product(pokemon)
     except Exception as e:
         print(e)
     #get_stat_product("swampert", [15,15,15])
