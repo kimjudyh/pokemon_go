@@ -1,6 +1,12 @@
 from sys import argv
 
 def create_table(pokemon):
+    '''
+    pokemon: string
+    Creates a POSTGRESQL table in specified database named after input pokemon.
+    Table has columns: Rank, Stamina IV, Attack IV, Defense IV, Stat Product,
+    and Percent of Max.
+    '''
     import math as m
     from multi_poke_v1 import read_cp_mult, read_base_stats
     import psycopg2
@@ -31,6 +37,12 @@ def create_table(pokemon):
     db.close()
 
 def calc_stat_product(pokemon):
+    '''
+    pokemon: string
+    Calculates PVP stat product for all 4096 IV combinations.
+    Places results into a POSTGRESQL table in specified database.
+    Sorts table by ascending rank/descending stat product..
+    '''
     import math as m
     from multi_poke_v1 import read_cp_mult, read_base_stats
     import psycopg2
@@ -48,7 +60,6 @@ def calc_stat_product(pokemon):
 
     dic_cp_mult = read_cp_mult()
 
-    #pokemon = "vigoroth"
     base_stats = read_base_stats(pokemon)
     #print(base_stats)
 
@@ -135,6 +146,11 @@ def calc_stat_product(pokemon):
     db.close()
 
 def get_stat_product(pokemon, IV_list):
+    '''
+    pokemon: string
+    IV_list: list of 3 IVs: [attack IV, defense IV, stamina IV]
+    returns PVP_stats: list of [rank, stat product, percent of max]
+    '''
 
     import psycopg2
     from psycopg2 import sql
@@ -164,10 +180,14 @@ def get_stat_product(pokemon, IV_list):
 
 
 if __name__ == "__main__":
+    # allow pokemon to be specified from command line:
+    # python3 stat_product.py pokemon
     script, pokemon = argv
+    # create table if it doesn't exist, calc stat product
     try:
         create_table(pokemon)
         calc_stat_product(pokemon)
+    # if table exists, move on
     except Exception as e:
         print(e)
     #get_stat_product("swampert", [15,15,15])
