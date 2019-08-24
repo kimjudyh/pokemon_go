@@ -336,7 +336,7 @@ def calc_evolve_cp(evo_pokemon, IV_list, level, cp_mult, dic_cp_mult):
 # main part of file that calls functions in order
 #################################################
 def main():
-    from stat_product import get_stat_product
+    from stat_product import get_stat_product, create_table, calc_stat_product
 
     # read pokemon data from text file
     stats = read_stats("skarmory1.csv")
