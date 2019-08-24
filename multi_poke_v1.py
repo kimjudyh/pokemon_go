@@ -11,6 +11,8 @@
 # todo: change to read from csv the following:
 # id, pokemon, cp, stardust, atk IV, def IV, stam IV
 
+from sys import argv
+
 # read and process pokemon data csv file
 def read_stats(filename):
     import csv
@@ -336,13 +338,22 @@ def calc_evolve_cp(evo_pokemon, IV_list, level, cp_mult, dic_cp_mult):
 # main part of file that calls functions in order
 #################################################
 def main():
-    from stat_product import get_stat_product
+    from stat_product import get_stat_product, create_table, calc_stat_product
 
     # read pokemon data from text file
-    stats = read_stats("skarmory1.csv")
+    stats = read_stats("jeff.csv")
 
     # ask for evolution pokemon (assumes only one pokemon species in file)
-    evo_pokemon = input("Evolution pokemon?\n").lower()
+    # evo_pokemon = input("Evolution pokemon?\n").lower()
+    if len(argv) == 2:
+        evo_pokemon = argv[1].lower()
+        print("Using target pokemon: {}".format(evo_pokemon))
+    elif len(argv) == 1:
+        evo_pokemon = input("Evolution pokemon?\n").lower()
+    else:
+        print("Usage:\n  python3 multi_poke_v1.py")
+        exit(1)
+
 
     # read cp multiplier and level data from text file
     dic_cp_mult = read_cp_mult()
@@ -373,10 +384,12 @@ def main():
 
         # get PVP stat product
         try:
+            print("creating table for: {}".format(evo_pokemon))
             create_table(evo_pokemon)
             calc_stat_product(evo_pokemon)
         except Exception as e:
-            pass
+            pass #print(e)
+
         PVP_stats = get_stat_product(evo_pokemon, t_IV)
         rank = PVP_stats[0]
         stat_product = PVP_stats[1]
