@@ -340,8 +340,15 @@ def calc_evolve_cp(evo_pokemon, IV_list, level, cp_mult, dic_cp_mult):
 def main():
     from stat_product import get_stat_product, create_table, calc_stat_product
 
+    # file input choice
+    poke_file = "turtwig1.csv"
+    option = input("Input file is currently {}. Choose a new file? Y or N\n".format(poke_file))
+    option = option.lower()
+    if option == "y":
+        poke_file = input("New file? ex. poke.csv\n")
+
     # read pokemon data from text file
-    stats = read_stats("jeff.csv")
+    stats = read_stats(poke_file)
 
     # ask for evolution pokemon (assumes only one pokemon species in file)
     # evo_pokemon = input("Evolution pokemon?\n").lower()
@@ -388,6 +395,7 @@ def main():
             create_table(evo_pokemon)
             calc_stat_product(evo_pokemon)
         except Exception as e:
+            print(e)
             pass #print(e)
 
         PVP_stats = get_stat_product(evo_pokemon, t_IV)
