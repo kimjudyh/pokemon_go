@@ -6,3 +6,6 @@ read_it.py
 read_txt.py
 pogostats.xlsx
 *.pyc
+poke*.txt
+bulbasaur.py
+cp_multiplier.py
