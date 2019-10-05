@@ -83,6 +83,9 @@ def calc_stat_product(pokemon):
         if (value > (max_cpm_est)) and (value < (max_cpm_est + .02)):
             max_cpm = value
             max_level = key
+    else:
+        min_level = 1
+        min_cpm = dic_cp_mult[min_level]
 
     #print(min_cpm, "min cp mult")
     #print(max_cpm, "max cp mult")

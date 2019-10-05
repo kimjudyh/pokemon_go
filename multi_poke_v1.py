@@ -24,7 +24,7 @@ def file_input(a_file = None):
 
     # option 1: manually change here:
     if not a_file:
-        poke_file = "skarmory1.csv"
+        poke_file = "oneoff1.csv"
         # option 2: change while program is running
         option = input("Input file is currently {}. Choose a new file? Y or N\n".format(poke_file))
         option = option.lower()
@@ -379,12 +379,10 @@ def main():
         stats = read_stats(poke_file)
 
     # ask for evolution pokemon (assumes only one pokemon species in file)
-    # evo_pokemon = input("Evolution pokemon?\n").lower()
-    if len(argv) == 2:
+    if len(argv) == 2 and "csv" not in argv[1]:
+        # evolution input from command line, and input not mistaken for csv file
         evo_pokemon = argv[1].lower()
         print("Using target pokemon: {}".format(evo_pokemon))
-    elif len(argv) == 1:
-        evo_pokemon = input("Evolution pokemon?\n").lower()
     else:
         evo_pokemon = input("Evolution pokemon?\n").lower()
         #print("Usage:\n  python3 multi_poke_v1.py")
