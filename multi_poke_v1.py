@@ -1,4 +1,6 @@
+#!/usr/bin/python3
 # This file contains the following functions:
+# file_input
 # read_stats
 # read_cp_mult
 # read_stardust
@@ -8,10 +10,33 @@
 # calc_evolve_cp
 # main
 
-# todo: change to read from csv the following:
-# id, pokemon, cp, stardust, atk IV, def IV, stam IV
 
 from sys import argv
+
+# choose how input file is chosen
+def file_input(a_file = None):
+    '''
+    input:
+    poke_file: string, if no value is given, defaults to None
+
+    '''
+    global poke_file
+
+    # option 1: manually change here:
+    if not a_file:
+        poke_file = "skarmory1.csv"
+        # option 2: change while program is running
+        option = input("Input file is currently {}. Choose a new file? Y or N\n".format(poke_file))
+        option = option.lower()
+        if option == "y":
+            poke_file = input("New file? ex. poke.csv\n")
+        return poke_file
+    elif a_file:
+        # option 3: provide an argument to this function
+        poke_file = a_file
+        return poke_file
+
+    
 
 # read and process pokemon data csv file
 def read_stats(filename):
@@ -340,15 +365,18 @@ def calc_evolve_cp(evo_pokemon, IV_list, level, cp_mult, dic_cp_mult):
 def main():
     from stat_product import get_stat_product, create_table, calc_stat_product
 
-    # file input choice
-    poke_file = "turtwig1.csv"
-    option = input("Input file is currently {}. Choose a new file? Y or N\n".format(poke_file))
-    option = option.lower()
-    if option == "y":
-        poke_file = input("New file? ex. poke.csv\n")
-
+    # set poke_file as global so that files can be fed in
+    # see read_many_files.py for usage
+    global poke_file
+    
     # read pokemon data from text file
-    stats = read_stats(poke_file)
+    try:
+        # poke_file has been defined somewhere else as global var
+        stats = read_stats(poke_file)
+    except:
+        # poke_file hasn't been defined
+        poke_file = file_input()
+        stats = read_stats(poke_file)
 
     # ask for evolution pokemon (assumes only one pokemon species in file)
     # evo_pokemon = input("Evolution pokemon?\n").lower()
@@ -358,8 +386,9 @@ def main():
     elif len(argv) == 1:
         evo_pokemon = input("Evolution pokemon?\n").lower()
     else:
-        print("Usage:\n  python3 multi_poke_v1.py")
-        exit(1)
+        evo_pokemon = input("Evolution pokemon?\n").lower()
+        #print("Usage:\n  python3 multi_poke_v1.py")
+        #exit(1)
 
 
     # read cp multiplier and level data from text file
