@@ -19,5 +19,6 @@ script:
         #- psql postgresql
   - psql mydb -c 'create table base_stats(id varchar, species varchar, hp int, attack int, defense int);' -U postgres
   - psql mydb -c "\copy base_stats FROM 'pogostats_csv.csv' (format csv, header true);" -U postgres
+  - pytest test_file_read.py -v
   - pytest test_read_base_stats.py -v
   - pytest test_stat_product.py -v
