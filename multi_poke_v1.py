@@ -167,6 +167,7 @@ def read_base_stats(pokemon):
     '''
     # [pokemon, stamina, attack, defense]
     import psycopg2
+    import sys
 
     # create connection to database (mydb)
     db = psycopg2.connect(database = "mydb")
@@ -179,6 +180,7 @@ def read_base_stats(pokemon):
     cur.execute(
             "SELECT hp, attack, defense FROM base_stats WHERE species = (%s)",\
                     (pokemon.title(),))
+    
     # store query results (list of tuples)
     base_stats = cur.fetchall()
 
@@ -186,7 +188,11 @@ def read_base_stats(pokemon):
     db.close()
 
     # convert tuples in list into list
-    base_stats = list(base_stats[0])
+    try:
+        base_stats = list(base_stats[0])
+    except Exception as e:
+        print("{} doesn't exist. Try again?\n".format(pokemon))
+        sys.exit(0)
     #print(base_stats)
     #print(base_stats[0],type(base_stats[0]))
     #print(base_stats[1],type(base_stats[1]))

@@ -18,6 +18,7 @@ def create_table(pokemon):
     # create cursor to go through database
     cur = db.cursor()
 
+
     # convert pokemon string variable into something that can be passed into
     # query as a table name
     table_name = sql.Identifier(pokemon.lower())
@@ -60,7 +61,11 @@ def calc_stat_product(pokemon):
 
     dic_cp_mult = read_cp_mult()
 
-    base_stats = read_base_stats(pokemon)
+    try:
+        base_stats = read_base_stats(pokemon)
+    except Exception as e:
+        print(e)
+
     #print(base_stats)
 
     stam_base = base_stats[0]
