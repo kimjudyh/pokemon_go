@@ -26,10 +26,10 @@ def file_input(a_file = None):
     if not a_file:
         poke_file = "oneoff1.csv"
         # option 2: change while program is running
-        option = input("Input file is currently {}. Choose a new file? Y or N\n".format(poke_file))
-        option = option.lower()
-        if option == "y":
-            poke_file = input("New file? ex. poke.csv\n")
+        #option = input("Input file is currently {}. Choose a new file? Y or N\n".format(poke_file))
+        #option = option.lower()
+        #if option == "y":
+        #    poke_file = input("New file? ex. poke.csv\n")
         return poke_file
     elif a_file:
         # option 3: provide an argument to this function
@@ -418,11 +418,11 @@ def main():
 
         # get PVP stat product
         try:
-            print("creating table for: {}".format(evo_pokemon))
+            #print("creating table for: {}".format(evo_pokemon))
             create_table(evo_pokemon)
             calc_stat_product(evo_pokemon)
         except Exception as e:
-            print(e)
+            #print(e)
             pass #print(e)
 
         PVP_stats = get_stat_product(evo_pokemon, t_IV)
