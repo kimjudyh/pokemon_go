@@ -24,7 +24,7 @@ def file_input(a_file = None):
 
     # option 1: manually change here:
     if not a_file:
-        poke_file = "oneoff1.csv"
+        poke_file = "trapinch1.csv"
         # option 2: change while program is running
         #option = input("Input file is currently {}. Choose a new file? Y or N\n".format(poke_file))
         #option = option.lower()
