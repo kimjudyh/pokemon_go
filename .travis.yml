@@ -9,10 +9,10 @@ services:
   - postgresql
 # command to install dependencies
 install:
-        #- pip install -r requirements.txt
-  - pip3 install psycopg2
-  - pip3 install PrettyTable
-  - pip3 install termcolor
+  - pip install -r requirements.txt
+    #- pip3 install psycopg2
+    #- pip3 install PrettyTable
+    #- pip3 install termcolor
 # command to run tests
 before_script:
   - psql -c 'create database mydb;' -U postgres
