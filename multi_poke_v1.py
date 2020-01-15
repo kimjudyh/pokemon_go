@@ -12,6 +12,8 @@
 
 
 from sys import argv
+from prettytable import PrettyTable
+from termcolor import colored
 
 # choose how input file is chosen
 def file_input(a_file = None):
@@ -436,33 +438,8 @@ def main():
         stat_product = PVP_stats[1]
         percent_max = PVP_stats[2]
 
-
-        #print(entry)
-        # format header and data
-        hdr_fmt = ("|{0:^10}|{1:^8}|{2:^8}|{3:^8}|{4:^8}|{5:^8}|"
-                "{6:^10}|{7:^5}|{8:^4}|{9:^5}|{10:^6}|")  # Header format
-        dat_fmt = ("|{0:^10}|{1:^8}|{2:^8}|{3:^8}|{4:^8}|{5:^8}|"
-                "{6:^10}|{7:^5}|{8:^4}|{9:^5}|{10:^6}|")  # data format
-
-        #print("Original stats.. :", entry[2:5], t_appraisal)
-        print("{}. Original stats:".format(entry[0]))
-        print("CP: {}".format(entry[2]))
-        #print("Appraisal:", t_appraisal)
-        #print("Here are level/IV combos that work:")
-
-        # Display the report header
-        print (hdr_fmt.format('----------', '--------', '--------',\
-                              '--------', '--------', '--------','----------', \
-                              '-----', '----', '-----', '------'))
-        print (hdr_fmt.format('Pokemon', 'Level', 'ATK', 'DEF',\
-                                'STM', 'IV %', 'Evolution', 'CP', 'HP', '#Pwr^', 'CP1500'))
-        print (hdr_fmt.format('----------', '--------', '--------',\
-                              '--------', '--------', '--------','----------', \
-                              '-----', '----','-----','------'))
-
-        # print IV report for pokemon
-        #for i, j in zip(t_IV, evolve_stats):
         pokemon = entry[1]
+        original_cp = entry[2]
         level = t_level 
         stamina = t_IV[2]
         attack = t_IV[0]
@@ -472,10 +449,32 @@ def main():
         evo_hp = evolve_stats[1]
         power_up_count =evolve_stats[2]
         cp_1500 = evolve_stats[3]
-        print(dat_fmt.format(pokemon, level, attack, defense, stamina,'{:,.2f}%'.format(percent), evo_pokemon, evo_cp, evo_hp, power_up_count, cp_1500))
 
-        print("Rank: {}\nStat Product: {:.2f}\nPercent of Max: {:,.2f}%".format(
-            rank, stat_product, percent_max))
+
+        # print ex: 53. trapinch CP 412 --> flygon CP 882
+        print("{}. {} CP {} --> {}".format(
+            entry[0],
+            pokemon,
+            original_cp,
+            evo_pokemon,
+            ))
+
+        # define headers and corresponding data to put in table
+        headers1 = ['Level', 'ATK', 'DEF', 'STM', 'IV %']
+        data1 = [level, attack, defense, stamina, '{:,.2f}%'.format(percent)]
+
+        headers2 = [colored('Rank','green'), 'Evo CP', '#Pwr^', 'CP1500']
+        data2 = [colored(rank, 'green'), evo_cp, power_up_count, cp_1500]
+
+        # use PrettyTable to make formatted table
+        pt3 = PrettyTable(headers1 + headers2)
+        pt3.add_row(data1 + data2)
+        print(pt3)
+
+
+        print("Stat Product: {:.2f}\nPercent of Max: {:,.2f}%".format(
+            stat_product, percent_max))
+
 
         print()
 
