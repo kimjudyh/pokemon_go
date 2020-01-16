@@ -257,8 +257,6 @@ def narrow_cp_mult(dic_cp_mult, dic_stardust, entry, base_stats):
     atk_base = base_stats[1]
     def_base = base_stats[2]
 
-    print('base stats stam, atk, def', stam_base, atk_base, def_base)
-
     cp_mult = []
     d_list_levels = {}
     # get list of levels from stardust dictionary associated with given stardust
