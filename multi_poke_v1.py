@@ -452,16 +452,15 @@ def main():
 
 
         # print ex: 53. trapinch CP 412 --> flygon CP 882
-        print("{}. {} CP {} --> {}".format(
+        print("{}. {} --> {}".format(
             entry[0],
             pokemon,
-            original_cp,
             evo_pokemon,
             ))
 
         # define headers and corresponding data to put in table
-        headers1 = ['Level', 'ATK', 'DEF', 'STM', 'IV %']
-        data1 = [level, attack, defense, stamina, '{:,.2f}%'.format(percent)]
+        headers1 = ['CP', 'Level', 'ATK', 'DEF', 'STM', 'IV %']
+        data1 = [original_cp, level, attack, defense, stamina, '{:,.2f}%'.format(percent)]
 
         headers2 = [colored('Rank','green'), 'Evo CP', '#Pwr^', 'CP1500']
         data2 = [colored(rank, 'green'), evo_cp, power_up_count, cp_1500]
@@ -472,8 +471,9 @@ def main():
         print(pt3)
 
 
-        print("Stat Product: {:.2f}\nPercent of Max: {:,.2f}%".format(
-            stat_product, percent_max))
+        # optionally print stat product, percent of max
+        #print("Stat Product: {:.2f}\nPercent of Max: {:,.2f}%".format(
+        #    stat_product, percent_max))
 
 
         print()
