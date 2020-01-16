@@ -4,6 +4,7 @@
 # read_stats
 # read_cp_mult
 # read_stardust
+# read_power_up_costs
 # read_base_stats
 # narrow_IV
 # guess_IV
@@ -12,6 +13,8 @@
 
 
 from sys import argv
+from prettytable import PrettyTable
+from termcolor import colored
 
 # choose how input file is chosen
 def file_input(a_file = None):
@@ -24,7 +27,7 @@ def file_input(a_file = None):
 
     # option 1: manually change here:
     if not a_file:
-        poke_file = "trapinch1.csv"
+        poke_file = "oneoff1.csv"
         # option 2: change while program is running
         #option = input("Input file is currently {}. Choose a new file? Y or N\n".format(poke_file))
         #option = option.lower()
@@ -158,6 +161,29 @@ def read_stardust():
     return dic_stardust
 
 
+def read_power_up_costs():
+    '''
+    returns dictionary with key: level (int), value: dictionary with keys:
+    'stardust': int
+    'candy': int
+    ex. {10.5: {'stardust': 1000, 'candy': 1}}
+    '''
+    import csv
+
+    dic_power_up = {}
+    count = 0
+
+    with open("power_up_costs.csv", newline='') as power_up_file:
+        read_file = csv.reader(power_up_file)
+        for row in read_file:
+            # skip first line
+            if count == 0:
+                count += 1
+                continue
+            dic_power_up[float(row[0])] = {'stardust': int(row[1]), 'candy': int(row[2])}
+
+    return dic_power_up
+
 
 # some base stats.. from text file? or hard-coded in for now in v1
 def read_base_stats(pokemon):
@@ -268,7 +294,7 @@ def narrow_cp_mult(dic_cp_mult, dic_stardust, entry, base_stats):
 
 
 #def calc_evolve_cp(evo_pokemon, d_list_levels, IV, dic_cp_mult):
-def calc_evolve_cp(evo_pokemon, IV_list, level, cp_mult, dic_cp_mult):
+def calc_evolve_cp(evo_pokemon, IV_list, level, cp_mult, dic_cp_mult, dic_power_up):
     '''
     :param evo_pokemon: string of evolution pokemon
     :param d_list_levels: dict of narrowed down key cp multiplier (float): 
@@ -284,9 +310,14 @@ def calc_evolve_cp(evo_pokemon, IV_list, level, cp_mult, dic_cp_mult):
     # user input on which pokemon(s) to evolve
     # user input on pokemon to evolve into
 
-    #evolve_stats = []
+    # initialize vars for stardust and candy cost
+    stardust_cost = 0
+    candy_cost = 0
 
-#        level = i_combo[0]
+    # initialize var for number of power ups
+    power_up_count = 0
+
+    # assign IVs from IV_list
     stam_IV = IV_list[2]
     atk_IV = IV_list[0]
     def_IV = IV_list[1]
@@ -317,18 +348,27 @@ def calc_evolve_cp(evo_pokemon, IV_list, level, cp_mult, dic_cp_mult):
     hp_1500 = calc_hp 
     cp_mult_1500 = cp_mult
     level_1500 = level
-    power_up_count = 0
+
     # check if calc_hp is already over 1500
     if cp_1500 <=1500:
         while cp_1500 <= 1500 and level_1500 < 40.0:
+            # use level to get how much stardust, candy to power up
+            stardust_cost += dic_power_up[level_1500]['stardust']
+            candy_cost += dic_power_up[level_1500]['candy']
+
+            # add to power up count, add 0.5 level
             power_up_count += 1
             level_1500 += 0.5
+            
+            # get new cp multiplier
             cp_mult_1500 = dic_cp_mult[level_1500]
             #print("cp_mult", cp_mult_1500)
+
             # calculate CP, rounding down
             cp_1500 = m.floor(.1*(atk_base + atk_IV)*\
                     m.sqrt(def_base + def_IV)*\
                     m.sqrt(stam_base + stam_IV)*cp_mult_1500**2)
+
             # calculate hp, rounding down
             hp_1500 = m.floor(cp_mult_1500*(stam_base + stam_IV))
         # since while loop will give cp over 1500, need to get the level below
@@ -338,6 +378,9 @@ def calc_evolve_cp(evo_pokemon, IV_list, level, cp_mult, dic_cp_mult):
         else:
             power_up_count -= 1
             level_1500 -= 0.5
+            stardust_cost -= dic_power_up[level_1500]['stardust']
+            candy_cost -= dic_power_up[level_1500]['candy']
+
         cp_mult_1500 = dic_cp_mult[level_1500]
         # calculate CP, rounding down
         cp_1500 = m.floor(.1*(atk_base + atk_IV)*\
@@ -353,7 +396,7 @@ def calc_evolve_cp(evo_pokemon, IV_list, level, cp_mult, dic_cp_mult):
     #print("1500 level", level_1500)
     #print("num power ups", power_up_count)
 
-    evolve_stats = [calc_cp, calc_hp, power_up_count, cp_1500]
+    evolve_stats = [calc_cp, calc_hp, power_up_count, cp_1500, stardust_cost, candy_cost]
 
     # if not, get next level's cp multiplier (add 0.5 to current level)
     # keep track of how many power ups
@@ -377,7 +420,7 @@ def main():
     
     # read pokemon data from text file
     try:
-        # poke_file has been defined somewhere else as global var
+        # poke_file has been defined in read_many_files.py as global var
         stats = read_stats(poke_file)
     except:
         # poke_file hasn't been defined
@@ -389,6 +432,9 @@ def main():
         # evolution input from command line, and input not mistaken for csv file
         evo_pokemon = argv[1].lower()
         print("Using target pokemon: {}".format(evo_pokemon))
+    elif len(argv) >= 3 and "csv" not in argv[1]:
+        # argv has [useless string, evo pokemon, poke file]
+        evo_pokemon = argv[1].lower()
     else:
         evo_pokemon = input("Evolution pokemon?\n").lower()
         #print("Usage:\n  python3 multi_poke_v1.py")
@@ -402,6 +448,8 @@ def main():
     # read stardust and level data from csv file
     dic_stardust = read_stardust()
     #print(dic_stardust[1300])
+
+    dic_power_up = read_power_up_costs()
 
 
     for entry in stats:
@@ -419,7 +467,7 @@ def main():
        
         # calc evolution stats
         evolve_stats = calc_evolve_cp(evo_pokemon, t_IV, t_level, t_cp_mult, 
-                dic_cp_mult)
+                dic_cp_mult, dic_power_up)
         #print(evolve_stats)
 
         # get PVP stat product
@@ -436,46 +484,56 @@ def main():
         stat_product = PVP_stats[1]
         percent_max = PVP_stats[2]
 
-
-        #print(entry)
-        # format header and data
-        hdr_fmt = ("|{0:^10}|{1:^8}|{2:^8}|{3:^8}|{4:^8}|{5:^8}|"
-                "{6:^10}|{7:^5}|{8:^4}|{9:^5}|{10:^6}|")  # Header format
-        dat_fmt = ("|{0:^10}|{1:^8}|{2:^8}|{3:^8}|{4:^8}|{5:^8}|"
-                "{6:^10}|{7:^5}|{8:^4}|{9:^5}|{10:^6}|")  # data format
-
-        #print("Original stats.. :", entry[2:5], t_appraisal)
-        print("{}. Original stats:".format(entry[0]))
-        print("CP: {}".format(entry[2]))
-        #print("Appraisal:", t_appraisal)
-        #print("Here are level/IV combos that work:")
-
-        # Display the report header
-        print (hdr_fmt.format('----------', '--------', '--------',\
-                              '--------', '--------', '--------','----------', \
-                              '-----', '----', '-----', '------'))
-        print (hdr_fmt.format('Pokemon', 'Level', 'ATK', 'DEF',\
-                                'STM', 'IV %', 'Evolution', 'CP', 'HP', '#Pwr^', 'CP1500'))
-        print (hdr_fmt.format('----------', '--------', '--------',\
-                              '--------', '--------', '--------','----------', \
-                              '-----', '----','-----','------'))
-
-        # print IV report for pokemon
-        #for i, j in zip(t_IV, evolve_stats):
         pokemon = entry[1]
+        original_cp = entry[2]
         level = t_level 
         stamina = t_IV[2]
         attack = t_IV[0]
         defense = t_IV[1]
         percent = (stamina+attack+defense)/45*100
+
         evo_cp = evolve_stats[0]
         evo_hp = evolve_stats[1]
         power_up_count =evolve_stats[2]
         cp_1500 = evolve_stats[3]
-        print(dat_fmt.format(pokemon, level, attack, defense, stamina,'{:,.2f}%'.format(percent), evo_pokemon, evo_cp, evo_hp, power_up_count, cp_1500))
+        stardust_cost = evolve_stats[4]
+        candy_cost = evolve_stats[5]
 
-        print("Rank: {}\nStat Product: {:.2f}\nPercent of Max: {:,.2f}%".format(
-            rank, stat_product, percent_max))
+
+        # print ex: 53. trapinch --> flygon
+        print("{}. {} --> {}".format(
+            entry[0],
+            pokemon,
+            evo_pokemon,
+            ))
+
+        # color code rank
+        if rank <= 200:
+            rank_data = [colored(rank, 'green', attrs=['reverse', 'bold'])]
+        elif rank <= 1000:
+            rank_data = [colored(rank, 'green')]
+        elif 1000 < rank <= 2000:
+            rank_data = [colored(rank, 'yellow')]
+        else:
+            rank_data = [colored(rank, 'red')]
+
+        # define headers and corresponding data to put in table
+        headers1 = ['CP', 'Level', 'ATK', 'DEF', 'STM', 'IV %']
+        data1 = [original_cp, level, attack, defense, stamina, '{:,.2f}%'.format(percent)]
+
+        headers2 = ['Rank', 'Evo CP', '#Pwr^', 'Stardust', 'Candy', 'CP1500']
+        data2 = rank_data + [evo_cp, power_up_count, stardust_cost, candy_cost, cp_1500]
+
+        # use PrettyTable to make formatted table
+        pt3 = PrettyTable(headers1 + headers2)
+        pt3.add_row(data1 + data2)
+        print(pt3)
+
+
+        # optionally print stat product, percent of max
+        #print("Stat Product: {:.2f}\nPercent of Max: {:,.2f}%".format(
+        #    stat_product, percent_max))
+
 
         print()
 
