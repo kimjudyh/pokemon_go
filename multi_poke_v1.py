@@ -420,7 +420,7 @@ def main():
     
     # read pokemon data from text file
     try:
-        # poke_file has been defined somewhere else as global var
+        # poke_file has been defined in read_many_files.py as global var
         stats = read_stats(poke_file)
     except:
         # poke_file hasn't been defined
@@ -432,6 +432,9 @@ def main():
         # evolution input from command line, and input not mistaken for csv file
         evo_pokemon = argv[1].lower()
         print("Using target pokemon: {}".format(evo_pokemon))
+    elif len(argv) >= 3 and "csv" not in argv[1]:
+        # argv has [useless string, evo pokemon, poke file]
+        evo_pokemon = argv[1].lower()
     else:
         evo_pokemon = input("Evolution pokemon?\n").lower()
         #print("Usage:\n  python3 multi_poke_v1.py")
