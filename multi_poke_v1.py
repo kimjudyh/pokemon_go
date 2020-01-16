@@ -4,6 +4,7 @@
 # read_stats
 # read_cp_mult
 # read_stardust
+# read_power_up_costs
 # read_base_stats
 # narrow_IV
 # guess_IV
@@ -158,6 +159,30 @@ def read_stardust():
         dic_stardust[int(entry[0])] = entry[1:]
 
     return dic_stardust
+
+
+def read_power_up_costs():
+    '''
+    returns dictionary with key: level (int), value: dictionary with keys:
+    'stardust': int
+    'candy': int
+    ex. {10.5: {'stardust': 1000, 'candy': 1}}
+    '''
+    import csv
+
+    dic_power_up = {}
+    count = 0
+
+    with open("power_up_costs.csv", newline='') as power_up_file:
+        read_file = csv.reader(power_up_file)
+        for row in read_file:
+            # skip first line
+            if count == 0:
+                count += 1
+                continue
+            dic_power_up[float(row[0])] = {'stardust': int(row[1]), 'candy': int(row[2])}
+
+    return dic_power_up
 
 
 
