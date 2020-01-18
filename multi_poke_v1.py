@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # This file contains the following functions:
 # file_input
+# evo_pokemon_input
 # read_stats
 # read_cp_mult
 # read_stardust
@@ -39,6 +40,15 @@ def file_input(a_file = None):
         poke_file = a_file
         return poke_file
 
+
+# give option to define evolution pokemon externally
+def evo_pokemon_input(e_poke=None):
+    global evo_pokemon
+    if e_poke is None:
+        pass
+    else:
+        evo_pokemon = e_poke
+        return evo_pokemon
     
 
 # read and process pokemon data csv file
@@ -418,6 +428,7 @@ def main():
     # set poke_file as global so that files can be fed in
     # see read_many_files.py for usage
     global poke_file
+    global evo_pokemon
     
     # read pokemon data from text file
     try:
@@ -428,6 +439,7 @@ def main():
         poke_file = file_input()
         stats = read_stats(poke_file)
 
+
     # ask for evolution pokemon (assumes only one pokemon species in file)
     if len(argv) == 2 and "csv" not in argv[1]:
         # evolution input from command line, and input not mistaken for csv file
@@ -436,6 +448,8 @@ def main():
     elif len(argv) >= 3 and "csv" not in argv[1]:
         # argv has [useless string, evo pokemon, poke file]
         evo_pokemon = argv[1].lower()
+    elif evo_pokemon:
+        print('Evolution pokemon chosen: ', evo_pokemon)
     else:
         evo_pokemon = input("Evolution pokemon?\n").lower()
         #print("Usage:\n  python3 multi_poke_v1.py")
