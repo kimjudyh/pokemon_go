@@ -8,6 +8,8 @@ from multi_poke_v1 import main, file_input, evo_pokemon_input
 
 def db_search():
     # search for pokemon names that match search string
+    # make results global so can be accessed in other functions
+    global search_db
     # create connection to database
     db = psycopg2.connect(database = 'mydb')
     cur = db.cursor()
@@ -31,10 +33,12 @@ def db_search():
         result_box['state'] = 'normal'
         result_box.delete('1.0', 'end')
         if len(search_db) > 10:
+            list_results.set(search_db[0:10])
             for i in range(0,10):
                 result_box.insert('end', search_db[i])
                 result_box.insert('end', '\n')
         else:
+            list_results.set(search_db)
             for result in search_db:
                 result_box.insert('end', result)
                 result_box.insert('end', '\n')
@@ -45,6 +49,28 @@ def db_search():
 def onKeyRelease(event):
     # on key press, performs search of pokemon string in database
     db_search()
+
+def onLeftClick(event):
+    # on left click, make list selection evolution pokemon
+
+    # curselection returns tuple of index of item chosen: (2,) or second list item
+    selection_tuple = result_list.curselection()
+    print('tuple', selection_tuple)
+
+    try:
+        # cast index as int after extracting from tuple
+        selection_idx = int(selection_tuple[0])
+
+
+        # get list of search results from combobox values (somehow only global list)
+        select_from = search_db
+        selection = select_from[selection_idx]
+
+        # set combobox to list selection
+        evo_chosen.set(selection)
+    except:
+        # nothing is selected, empty tuple
+        pass
 
 def open_file(*args):
     # open a file dialog to choose file
@@ -61,7 +87,7 @@ def analyze(*args):
         evo_pokemon =  evo_pokemon_input(evo_chosen.get())
         print("evo poke: ", evo_pokemon)
         # close gui
-        root.destroy()
+        #root.destroy()
         # run analysis program
         main()
         print('done')
@@ -112,7 +138,13 @@ ttk.Label(mainframe, text="Evolution:").grid(column=1, row=4, sticky=(W,E))
 
 # make text box that shows top 10 search results
 result_box = Text(mainframe, state='disabled', width=15, height=10)
-result_box.grid(row=11, column=2, sticky=(W,E))
+result_box.grid(row=11, column=1, sticky=(W,E))
+
+list_results = StringVar()
+result_list = Listbox(mainframe, listvariable=list_results, height=10)
+result_list.grid(row=11, column=2, stick=(W,E))
+# bind for cursor selection
+result_list.bind("<<ListboxSelect>>", onLeftClick)
 
 # button that will run main program from multi_poke_v1
 ttk.Button(mainframe, text="Analyze", command=analyze).grid(column=2, row=10, sticky=(W,E))
