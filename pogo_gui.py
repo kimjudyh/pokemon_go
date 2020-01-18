@@ -55,7 +55,6 @@ def onLeftClick(event):
 
     # curselection returns tuple of index of item chosen: (2,) or second list item
     selection_tuple = result_list.curselection()
-    print('tuple', selection_tuple)
 
     try:
         # cast index as int after extracting from tuple
@@ -82,7 +81,6 @@ def analyze(*args):
     try:
         file_value = file_chosen.get()
         poke_file=file_input(file_value)
-        print("file chosen", file_value)
         print("file: ", poke_file)
         evo_pokemon =  evo_pokemon_input(evo_chosen.get())
         print("evo poke: ", evo_pokemon)
