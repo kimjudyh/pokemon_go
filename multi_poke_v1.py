@@ -448,12 +448,11 @@ def main():
     elif len(argv) >= 3 and "csv" not in argv[1]:
         # argv has [useless string, evo pokemon, poke file]
         evo_pokemon = argv[1].lower()
-    elif evo_pokemon:
-        print('Evolution pokemon chosen: ', evo_pokemon)
-    else:
+    elif len(argv) >= 2 and "csv" in argv[1]:
+        # no evo pokemon specified from command line, only files
         evo_pokemon = input("Evolution pokemon?\n").lower()
-        #print("Usage:\n  python3 multi_poke_v1.py")
-        #exit(1)
+    else:
+        print('Evolution pokemon chosen: ', evo_pokemon)
 
 
     # read cp multiplier and level data from text file
