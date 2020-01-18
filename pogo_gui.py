@@ -23,13 +23,28 @@ def db_search():
     db.close()
     # convert tuples in list into list
     try:
-        #search_db = list(search_db[0])
-        print('search db', search_db)
         search_results.set(search_db)
         evo_entry['values'] = search_db
+
+        # write top 10 to text box
+        # first clear contents of text box
+        result_box['state'] = 'normal'
+        result_box.delete('1.0', 'end')
+        if len(search_db) > 10:
+            for i in range(0,10):
+                result_box.insert('end', search_db[i])
+                result_box.insert('end', '\n')
+        else:
+            for result in search_db:
+                result_box.insert('end', result)
+                result_box.insert('end', '\n')
+        result_box['state'] = 'disabled'
     except Exception as e:
         print(e)
 
+def onKeyRelease(event):
+    # on key press, performs search of pokemon string in database
+    db_search()
 
 def open_file(*args):
     # open a file dialog to choose file
@@ -59,7 +74,7 @@ root = Tk()
 root.title("PoGo Batch Analysis")
 
 # create a Frame widget that holds all content, place in root
-mainframe = ttk.Frame(root, padding='5 5 20 12')
+mainframe = ttk.Frame(root, padding='20 5 20 12')
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
 # if window resized, frame should expand
 root.columnconfigure(0, weight=1)
@@ -81,6 +96,7 @@ ttk.Button(mainframe, text="...", command=open_file, width=3).grid(column=3, row
 # entry and button to search for evo
 search_entry = ttk.Entry(mainframe, textvariable=search_chosen)
 search_entry.grid(column=2, row=2, sticky=(E,W))
+search_entry.bind("<KeyRelease>", onKeyRelease)
 ttk.Label(mainframe, text="Search for Evolution: ").grid(column=1, row=2)
 # ideally would get text and update combobox after each keystroke
 # for now, use a button to search
@@ -94,8 +110,12 @@ evo_entry.grid(column=2, row=4, sticky=(W,E))
 evo_entry['values'] = []
 ttk.Label(mainframe, text="Evolution:").grid(column=1, row=4, sticky=(W,E))
 
+# make text box that shows top 10 search results
+result_box = Text(mainframe, state='disabled', width=15, height=10)
+result_box.grid(row=11, column=2, sticky=(W,E))
+
 # button that will run main program from multi_poke_v1
-ttk.Button(mainframe, text="Analyze", command=analyze).grid(column=2, row=5, sticky=(W,E))
+ttk.Button(mainframe, text="Analyze", command=analyze).grid(column=2, row=10, sticky=(W,E))
 
 # puts padding around all widgets
 for child in mainframe.winfo_children(): child.grid_configure(padx=5, pady=5)
@@ -103,7 +123,7 @@ for child in mainframe.winfo_children(): child.grid_configure(padx=5, pady=5)
 # make cursor blink in this field first
 file_entry.focus()
 # makes pressing Enter key do same as press Calculate button
-root.bind('<Return>', analyze)
+#root.bind('<Return>', analyze)
 
 # tells Tk to enter event loop, needed to make everything run
 root.mainloop()
