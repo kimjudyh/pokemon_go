@@ -52,35 +52,40 @@ def evo_pokemon_input(e_poke=None):
     
 
 # read and process pokemon data csv file
-def read_stats(filename):
+def read_stats(filename=None, single_entry=None):
     import csv
-
-    # initialize variables
+    
     pokemon_list = []
-    count = 0
 
-    # open csv file, use csv reader
-    pokemon_file = open(filename, newline = '')
-    read_file = csv.reader(pokemon_file)
+    if filename is not None and single_entry is None: 
+        # multiple entries from CSV file
 
-    for i_row in read_file:
-        # skip first line
-        if count == 0:
-            count += 1
-            continue
-        # cast certain entries as ints
-        i_row[0] = int(i_row[0])    # id
-        i_row[2] = int(i_row[2])    # cp
-        i_row[3] = int(i_row[3])    # atk IV
-        i_row[4] = int(i_row[4])    # def IV
-        i_row[5] = int(i_row[5])    # stam IV
-        # add each row to list
-        pokemon_list.append(i_row)
+        # initialize variables
+        count = 0
 
-    # cast id, cp, stardust, and all IV's as ints
+        # open csv file, use csv reader
+        pokemon_file = open(filename, newline = '')
+        read_file = csv.reader(pokemon_file)
 
+        for i_row in read_file:
+            # skip first line
+            if count == 0:
+                count += 1
+                continue
+            # cast certain entries as ints
+            i_row[0] = int(i_row[0])    # id
+            i_row[2] = int(i_row[2])    # cp
+            i_row[3] = int(i_row[3])    # atk IV
+            i_row[4] = int(i_row[4])    # def IV
+            i_row[5] = int(i_row[5])    # stam IV
+            # add each row to list
+            pokemon_list.append(i_row)
 
-    pokemon_file.close()
+        pokemon_file.close()
+
+    elif filename is None and single_entry is not None:
+        # single entry from the GUI
+        pokemon_list.append(single_entry)
     print(pokemon_list)
 
     return pokemon_list
@@ -429,11 +434,12 @@ def main():
     # see read_many_files.py for usage
     global poke_file
     global evo_pokemon
+    global single_entry
     
     # read pokemon data from text file
     try:
         # poke_file has been defined in read_many_files.py as global var
-        stats = read_stats(poke_file)
+        stats = read_stats(poke_file, single_entry)
     except:
         # poke_file hasn't been defined
         poke_file = file_input()
@@ -451,7 +457,9 @@ def main():
     elif len(argv) >= 2 and "csv" in argv[1]:
         # no evo pokemon specified from command line, only files
         evo_pokemon = input("Evolution pokemon?\n").lower()
+        print('Evolution pokemon chosen: ', evo_pokemon)
     else:
+        evo_pokemon = input("Evolution pokemon?\n").lower()
         print('Evolution pokemon chosen: ', evo_pokemon)
 
 
@@ -469,10 +477,10 @@ def main():
     for entry in stats:
         pokemon = entry[1]
         t_IV = entry[3:]    # order: atk, def, stam
-        #print(t_IV)
+
         # choose correct base stat for pokemon being analyzed
         t_base_stats = read_base_stats(pokemon)
-       # still need this to guess level
+
         # guess by inputing IVs and possible cp_mult into cp equation
         # narrow down levels & cp multipliers based on stardust
         t_cp_mult, t_level = narrow_cp_mult(dic_cp_mult, dic_stardust, entry,
