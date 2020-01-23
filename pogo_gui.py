@@ -257,7 +257,7 @@ mainframe = ttk.Frame(root, padding='50 5 20 12')
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
 
 # create smaller Frame widget for single pokemon data entry
-singleframe = ttk.Frame(mainframe, padding='10 5 20 12')
+singleframe = ttk.Frame(mainframe)#, padding='10 5 20 12')
 singleframe.grid(column=2, row=0, sticky=(N,W,E,S))
 
 # if window resized, frame should expand
@@ -301,16 +301,29 @@ single_poke_stm.grid(column=5, row=single_row+1, sticky=(W,E))
 # Pokemon search list box
 single_list_results = StringVar()
 single_list = Listbox(mainframe, listvariable=single_list_results, height=5)
-single_list.grid(row=single_row+2, column=2, stick=(W,E))
+single_list.grid(row=single_row+1, column=2, stick=(W,E))
 # bind for cursor selection
 single_list.bind("<<ListboxSelect>>", onLeftClickSingle)
+
+# instructions
+instructions = Text(mainframe, state='disabled', wrap=WORD, width=30, height=14)
+instructions.grid(row=0, rowspan=3, column=1, sticky=(W,E))
+instructions['state'] = 'normal'
+instructions.insert('1.0', 
+        '''Input data for a single pokemon, or select a file to analyze. \
+Search for the evolution pokemon and select from the list of results. \
+Or directly type it into the Evolution drop-down menu field. \n
+Click Analyze to see results. This window can remain open to switch to a \
+different single pokemon, file, or evolution.''')
+instructions['state'] = 'disabled'
+
 
 
 # entry form for file
 file_row = 8
 file_entry = ttk.Entry(mainframe, width=15, textvariable=file_chosen)
 file_entry.grid(column=2, row=file_row, sticky=(W,E))
-ttk.Label(mainframe, text="File:").grid(column=1, row=file_row, sticky=(W,E))
+ttk.Label(mainframe, text="File:").grid(column=1, row=file_row, sticky=(E))
 # button that opens file dialog
 ttk.Button(mainframe, text="...", command=open_file, width=3).grid(
         column=3, row=file_row, sticky=(W))
@@ -319,7 +332,7 @@ ttk.Button(mainframe, text="...", command=open_file, width=3).grid(
 search_entry = ttk.Entry(mainframe, textvariable=search_chosen)
 search_entry.grid(column=2, row=file_row+1, sticky=(E,W))
 search_entry.bind("<KeyRelease>", onKeyRelease)
-ttk.Label(mainframe, text="Search for Evolution: ").grid(column=1, row=file_row+1)
+ttk.Label(mainframe, text="Search for Evolution: ").grid(column=1, row=file_row+1, sticky=E)
 # ideally would get text and update combobox after each keystroke
 # for now, use a button to search
 ttk.Button(mainframe, text="Go", width=3, command=db_search).grid(
@@ -329,23 +342,23 @@ ttk.Button(mainframe, text="Go", width=3, command=db_search).grid(
 ttk.Label(mainframe, text="Type in evolution if known, or choose from list").grid(
         column=2,row=file_row+2)
 evo_entry = ttk.Combobox(mainframe, width=10, textvariable=evo_chosen)
-evo_entry.grid(column=2, row=file_row+2, sticky=(W,E))
+evo_entry.grid(column=2, row=file_row+3, sticky=(W,E))
 # initialize evo pokemon choices list as empty
 evo_entry['values'] = []
-ttk.Label(mainframe, text="Evolution:").grid(column=1, row=file_row+2, sticky=(W,E))
+ttk.Label(mainframe, text="Evolution:").grid(column=1, row=file_row+3, sticky=(E))
 
 # make text box that shows top 10 search results
 result_box = Text(mainframe, state='disabled', width=15, height=10)
-result_box.grid(row=file_row+4, column=1, sticky=(W,E))
+result_box.grid(row=file_row+5, column=1, sticky=(W,E))
 
 list_results = StringVar()
 result_list = Listbox(mainframe, listvariable=list_results, height=10)
-result_list.grid(row=file_row+4, column=2, stick=(W,E))
+result_list.grid(row=file_row+5, column=2, stick=(W,E))
 # bind for cursor selection
 result_list.bind("<<ListboxSelect>>", onLeftClick)
 
 # button that will run main program from multi_poke_v1
-ttk.Button(mainframe, text="Analyze", command=analyze).grid(column=2, row=file_row+3, sticky=(W,E))
+ttk.Button(mainframe, text="Analyze", command=analyze).grid(column=2, row=file_row+4, sticky=(W,E))
 
 # puts padding around all widgets
 for child in mainframe.winfo_children(): child.grid_configure(padx=5, pady=5)
