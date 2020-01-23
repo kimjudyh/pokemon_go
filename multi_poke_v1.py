@@ -439,7 +439,7 @@ def main():
     # read pokemon data from text file
     try:
         # poke_file has been defined in read_many_files.py as global var
-        stats = read_stats(poke_file, single_entry)
+        stats = read_stats(poke_file)
     except:
         # poke_file hasn't been defined
         poke_file = file_input()
@@ -459,9 +459,10 @@ def main():
         evo_pokemon = input("Evolution pokemon?\n").lower()
         print('Evolution pokemon chosen: ', evo_pokemon)
     else:
-        evo_pokemon = input("Evolution pokemon?\n").lower()
-        print('Evolution pokemon chosen: ', evo_pokemon)
-
+        try:
+            print('Evolution pokemon chosen: ', evo_pokemon)
+        except:
+            evo_pokemon = input("Evolution pokemon?\n").lower()
 
     # read cp multiplier and level data from text file
     dic_cp_mult = read_cp_mult()
