@@ -304,7 +304,8 @@ def narrow_cp_mult(dic_cp_mult, dic_stardust, entry, base_stats):
         return real_cp_mult, real_level
     except Exception as e:
         print("ERROR: Wrong IVs inputted for entry {}\n".format(entry[0]))
-        sys.exit(0)
+
+        #sys.exit(0)
         
     #print("level", real_level)
 
