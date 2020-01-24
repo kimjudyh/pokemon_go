@@ -10,6 +10,7 @@ def db_search(search_value):
     # search for pokemon names that match search string
     # make results global so can be accessed in other functions
     global search_db
+
     # create connection to database
     db = psycopg2.connect(database = 'mydb')
     cur = db.cursor()
@@ -22,9 +23,9 @@ def db_search(search_value):
     search_db = list(sum(search_db, ()))
     search_db.sort()
     db.close()
-    # convert tuples in list into list
 
 def set_single_search_results():
+    # display database search results in listbox for single pokemon
     try:
         single_list_results.set(search_db) 
     except Exception as e:
@@ -32,14 +33,19 @@ def set_single_search_results():
 
 
 def set_evo_search_results():
+    # display database search results in listbox for evolution pokemon
     try:
+        # set listbox 
         search_results.set(search_db)
+        # set combobox values
         evo_entry['values'] = search_db
 
         # write top 10 to text box
-        # first clear contents of text box
+        # set state to normal to enable write permission
         result_box['state'] = 'normal'
+        # clear contents of text box
         result_box.delete('1.0', 'end')
+
         if len(search_db) > 10:
             list_results.set(search_db[0:10])
             for i in range(0,10):
@@ -77,10 +83,12 @@ def onLeftClick(event):
         # cast index as int after extracting from tuple
         selection_idx = int(selection_tuple[0])
 
-
         # get list of search results from combobox values (somehow only global list)
         select_from = search_db
         selection = select_from[selection_idx]
+
+        # set search box to list selection
+        search_chosen.set(selection)
 
         # set combobox to list selection
         evo_chosen.set(selection)
@@ -90,6 +98,7 @@ def onLeftClick(event):
 
 
 def onLeftClickSingle(event):
+    # on left click, make list selection single pokemon
     selection_tuple = single_list.curselection()
     try:
         selection_idx = int(selection_tuple[0])
@@ -107,6 +116,7 @@ def open_file(*args):
 
 
 def set_single_pokemon():
+    # create list of single pokemon's data
     try:
         single_entry = []
         single_entry.append(1)
@@ -149,20 +159,16 @@ def single_poke_analysis(single_entry):
         # narrow down levels & cp multipliers based on stardust
         t_cp_mult, t_level = narrow_cp_mult(dic_cp_mult, dic_stardust, entry,
                 t_base_stats)
-        #print("t_list_levels", t_list_levels)
        
         # calc evolution stats
         evolve_stats = calc_evolve_cp(evo_pokemon, t_IV, t_level, t_cp_mult, 
                 dic_cp_mult, dic_power_up)
-        #print(evolve_stats)
 
         # get PVP stat product
         try:
-            #print("creating table for: {}".format(evo_pokemon))
             create_table(evo_pokemon)
             calc_stat_product(evo_pokemon)
         except Exception as e:
-            #print(e)
             pass #print(e)
 
         PVP_stats = get_stat_product(evo_pokemon, t_IV)
@@ -225,25 +231,31 @@ def single_poke_analysis(single_entry):
 
 
 def analyze(*args):
+    # what pressing the Analyze button does
     try:
+        # see if there is a single pokemon's data
         single_entry = set_single_pokemon()
-        print(single_entry)
+        # see if there is a csv file entered
         file_value = file_chosen.get()
-        print(len(file_value))
+
+        # either analyze file, or analyze single pokemon
         if len(file_value) > 0:
+            # file was chosen, get its value from entry form
             poke_file = file_input(file_value)
             print("file: ", poke_file)
-            evo_pokemon =  evo_pokemon_input(evo_chosen.get())
+            # get evolution pokemon from entry form
+            evo_pokemon =  evo_pokemon_input(search_chosen.get())
             print("evo poke: ", evo_pokemon)
+            # run main function from multi_poke_v1
             main()
             print('done')
 
         elif single_entry is not None:
+            # single pokemon data was entered
             single_poke_analysis(single_entry)
             print('done')
         # close gui
         #root.destroy()
-        # run analysis program
     except ValueError:
         pass
 
@@ -328,19 +340,16 @@ ttk.Label(mainframe, text="File:").grid(column=1, row=file_row, sticky=(E))
 ttk.Button(mainframe, text="...", command=open_file, width=3).grid(
         column=3, row=file_row, sticky=(W))
 
-# entry and button to search for evo
+# entry to search for evo
+ttk.Label(mainframe, text="Type in evolution if known, or choose from list").grid(
+        column=2,row=file_row+1, sticky=(W,E,S))
 search_entry = ttk.Entry(mainframe, textvariable=search_chosen)
-search_entry.grid(column=2, row=file_row+1, sticky=(E,W))
+search_entry.grid(column=2, row=file_row+2, sticky=(E,W))
 search_entry.bind("<KeyRelease>", onKeyRelease)
-ttk.Label(mainframe, text="Search for Evolution: ").grid(column=1, row=file_row+1, sticky=E)
+ttk.Label(mainframe, text="Search for Evolution: ").grid(column=1, row=file_row+2, sticky=E)
 # ideally would get text and update combobox after each keystroke
-# for now, use a button to search
-ttk.Button(mainframe, text="Go", width=3, command=db_search).grid(
-        column=3, row=file_row+1, sticky=(W))
 # update combobox values
 
-ttk.Label(mainframe, text="Type in evolution if known, or choose from list").grid(
-        column=2,row=file_row+2)
 evo_entry = ttk.Combobox(mainframe, width=10, textvariable=evo_chosen)
 evo_entry.grid(column=2, row=file_row+3, sticky=(W,E))
 # initialize evo pokemon choices list as empty
@@ -351,6 +360,7 @@ ttk.Label(mainframe, text="Evolution:").grid(column=1, row=file_row+3, sticky=(E
 result_box = Text(mainframe, state='disabled', width=15, height=10)
 result_box.grid(row=file_row+5, column=1, sticky=(W,E))
 
+# list box that displays selectable evo poke search results
 list_results = StringVar()
 result_list = Listbox(mainframe, listvariable=list_results, height=10)
 result_list.grid(row=file_row+5, column=2, stick=(W,E))
