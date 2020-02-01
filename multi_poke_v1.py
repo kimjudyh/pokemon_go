@@ -10,6 +10,8 @@
 # narrow_IV
 # guess_IV
 # calc_evolve_cp
+# display_great_league
+# display_ultra_league
 # main
 
 
@@ -234,9 +236,6 @@ def read_base_stats(pokemon):
     except Exception as e:
         print("{} doesn't exist. Try again?\n".format(pokemon))
         sys.exit(0)
-    #print(base_stats)
-    #print(base_stats[0],type(base_stats[0]))
-    #print(base_stats[1],type(base_stats[1]))
     '''
     base_stats = [["meltan", 130, 118, 99],
                   ["charmander", 118, 116, 93],
@@ -310,7 +309,6 @@ def narrow_cp_mult(dic_cp_mult, dic_stardust, entry, base_stats):
     #print("level", real_level)
 
 
-#def calc_evolve_cp(evo_pokemon, d_list_levels, IV, dic_cp_mult):
 def calc_evolve_cp(evo_pokemon, IV_list, level, cp_mult, dic_cp_mult, dic_power_up):
     '''
     :param evo_pokemon: string of evolution pokemon
@@ -345,11 +343,6 @@ def calc_evolve_cp(evo_pokemon, IV_list, level, cp_mult, dic_cp_mult, dic_power_
     atk_base = base_stats[1]
     def_base = base_stats[2]
 
-   # use calc'd IVs, level, new base stats to calc CP
-    #for key, value in d_list_levels.items():
-    #    if value == level:
-    #        cp_mult = key
-    # also calc HP
     # calculate CP, rounding down
     calc_cp = m.floor(.1*(atk_base + atk_IV)*\
               m.sqrt(def_base + def_IV)*\
@@ -366,8 +359,8 @@ def calc_evolve_cp(evo_pokemon, IV_list, level, cp_mult, dic_cp_mult, dic_power_
     cp_mult_1500 = cp_mult
     level_1500 = level
 
-    # check if calc_hp is already over 1500
-    if cp_1500 <=1500:
+    # check if calc_cp is already over 1500
+    if cp_1500 <= 1500:
         while cp_1500 <= 1500 and level_1500 < 40.0:
             # use level to get how much stardust, candy to power up
             stardust_cost += dic_power_up[level_1500]['stardust']
@@ -406,24 +399,168 @@ def calc_evolve_cp(evo_pokemon, IV_list, level, cp_mult, dic_cp_mult, dic_power_
         # calculate hp, rounding down
         hp_1500 = m.floor(cp_mult_1500*(stam_base + stam_IV))
 
+    # calculate closest CP to 2500 for Ultra League
+    # start where Cp 1500 calcs left off
+    cp_2500 = cp_1500
+    cp_mult_2500 = cp_mult_1500
+    level_2500 = level_1500
+    stardust_2500 = stardust_cost
+    candy_2500 = candy_cost
+    power_up_2500 = power_up_count
 
+    if level_2500 == 40.0:
+        pass
+    elif cp_2500 <= 2500:
+        while cp_2500 <= 2500 and level_2500 < 40.0:
+            stardust_2500 += dic_power_up[level_2500]['stardust']
+            candy_2500 += dic_power_up[level_2500]['candy']
+            power_up_2500 += 1
+            level_2500 += 0.5
+            cp_mult_2500 = dic_cp_mult[level_2500]
+            cp_2500 = m.floor(.1*(atk_base + atk_IV)*\
+                    m.sqrt(def_base + def_IV)*\
+                    m.sqrt(stam_base + stam_IV)*cp_mult_2500**2)
+        if level_2500 == 40.0:
+            pass
+        else:
+            power_up_2500 -= 1
+            level_2500 -= 0.5
+            stardust_2500 -= dic_power_up[level_2500]['stardust']
+            candy_2500 -= dic_power_up[level_2500]['candy']
 
-    #print("1500 cp", cp_1500)
-    #print("1500 hp", hp_1500)
-    #print("1500 level", level_1500)
-    #print("num power ups", power_up_count)
+        # calculate final values
+        cp_mult_2500 = dic_cp_mult[level_2500]
+        cp_2500 = m.floor(.1*(atk_base + atk_IV)*\
+                m.sqrt(def_base + def_IV)*\
+                m.sqrt(stam_base + stam_IV)*cp_mult_2500**2)
 
-    evolve_stats = [calc_cp, calc_hp, power_up_count, cp_1500, stardust_cost, candy_cost]
-
-    # if not, get next level's cp multiplier (add 0.5 to current level)
-    # keep track of how many power ups
-    # calculate new cp
-    # check if less than 1500
-    # add to evolve_stats
-
-    #print("evolve stats", evolve_stats)
+    evolve_stats = [calc_cp, calc_hp, power_up_count, cp_1500, stardust_cost, candy_cost,\
+            cp_2500, power_up_2500, stardust_2500, candy_2500]
 
     return evolve_stats 
+
+
+def display_great_league(PVP_stats, entry, t_level, t_IV, evolve_stats, evo_pokemon):
+    '''
+    Display analysis for great league. Operates within loop of pokemon batch.
+    '''
+
+    # from PVP_stats, entry, t_level, t_IV, evolve_stats,
+    # assign to variables for readability
+    rank = PVP_stats[0]
+    stat_product = PVP_stats[1]
+    percent_max = PVP_stats[2]
+
+    pokemon = entry[1]
+    original_cp = entry[2]
+
+    level = t_level 
+
+    stamina = t_IV[2]
+    attack = t_IV[0]
+    defense = t_IV[1]
+    percent = (stamina+attack+defense)/45*100
+
+    evo_cp = evolve_stats[0]
+    evo_hp = evolve_stats[1]
+    power_up_count =evolve_stats[2]
+    cp_1500 = evolve_stats[3]
+    stardust_cost = evolve_stats[4]
+    candy_cost = evolve_stats[5]
+
+
+    # print ex: 53. trapinch --> flygon
+    print("{}. {} --> {}".format(
+        entry[0],
+        pokemon,
+        evo_pokemon,
+        ))
+
+    # color code rank
+    if rank <= 200:
+        rank_data = [colored(rank, 'green', attrs=['reverse', 'bold'])]
+    elif rank <= 1000:
+        rank_data = [colored(rank, 'green')]
+    elif 1000 < rank <= 2000:
+        rank_data = [colored(rank, 'yellow')]
+    else:
+        rank_data = [colored(rank, 'red')]
+
+    # define headers and corresponding data to put in table
+    headers1 = ['CP', 'Level', 'ATK', 'DEF', 'STM', 'IV %']
+    data1 = [original_cp, level, attack, defense, stamina, '{:,.2f}%'.format(percent)]
+
+    headers2 = ['Rank', 'Evo CP', '#Pwr^', 'Stardust', 'Candy', 'CP1500']
+    data2 = rank_data + [evo_cp, power_up_count, stardust_cost, candy_cost, cp_1500]
+
+    # use PrettyTable to make formatted table
+    pt3 = PrettyTable(headers1 + headers2)
+    pt3.add_row(data1 + data2)
+    print(pt3)
+
+
+    # optionally print stat product, percent of max
+    #print("Stat Product: {:.2f}\nPercent of Max: {:,.2f}%".format(
+    #    stat_product, percent_max))
+
+
+    print()
+
+    return
+
+
+def display_ultra_league(PVP_stats, entry, t_level, t_IV, evolve_stats):
+    '''
+    Display analysis for ultra league. Operates within loop of pokemon batch.
+    '''
+    # from PVP_stats, entry, t_level, t_IV, evolve_stats,
+    # assign to variables for readability
+    rank = PVP_stats[0]
+    stat_product = PVP_stats[1]
+    percent_max = PVP_stats[2]
+
+    pokemon = entry[1]
+    original_cp = entry[2]
+
+    level = t_level 
+
+    stamina = t_IV[2]
+    attack = t_IV[0]
+    defense = t_IV[1]
+    percent = (stamina+attack+defense)/45*100
+
+    evo_cp = evolve_stats[0]
+    evo_hp = evolve_stats[1]
+    power_up_count = evolve_stats[7]
+    cp_2500 = evolve_stats[6]
+    stardust_cost = evolve_stats[8]
+    candy_cost = evolve_stats[9]
+
+    print('\tUltra League Analysis:')
+    
+    # color code rank
+    if rank <= 200:
+        rank_data = [colored(rank, 'green', attrs=['reverse', 'bold'])]
+    elif rank <= 1000:
+        rank_data = [colored(rank, 'green')]
+    elif 1000 < rank <= 2000:
+        rank_data = [colored(rank, 'yellow')]
+    else:
+        rank_data = [colored(rank, 'red')]
+
+    # define headers and corresponding data to put in table
+    headers1 = ['CP2500', '#Pwr^', 'Stardust', 'Candy']
+    data1 = [cp_2500, power_up_count, stardust_cost, candy_cost]
+
+    # use PrettyTable to make formatted table
+    pt3 = PrettyTable(headers1)
+    pt3.add_row(data1)
+    print(pt3)
+
+    print()
+
+    return
+
 
 
 # main part of file that calls functions in order
@@ -504,13 +641,22 @@ def main():
             pass #print(e)
 
         PVP_stats = get_stat_product(evo_pokemon, t_IV)
+
+        display_great_league(PVP_stats, entry, t_level, t_IV, evolve_stats, evo_pokemon)
+        display_ultra_league(PVP_stats, entry, t_level, t_IV, evolve_stats)
+
+        '''
+        # from PVP_stats, entry, t_level, t_IV, evolve_stats,
+        # assign to variables for readability
         rank = PVP_stats[0]
         stat_product = PVP_stats[1]
         percent_max = PVP_stats[2]
 
         pokemon = entry[1]
         original_cp = entry[2]
+
         level = t_level 
+
         stamina = t_IV[2]
         attack = t_IV[0]
         defense = t_IV[1]
@@ -560,6 +706,7 @@ def main():
 
 
         print()
+        '''
 
     #print(narrow_cp_mult.__doc__)
 
