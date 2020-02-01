@@ -172,63 +172,12 @@ def single_poke_analysis(single_entry):
             pass #print(e)
 
         PVP_stats = get_stat_product(evo_pokemon, t_IV)
-        rank = PVP_stats[0]
-        stat_product = PVP_stats[1]
-        percent_max = PVP_stats[2]
 
-        pokemon = entry[1]
-        original_cp = entry[2]
-        level = t_level 
-        stamina = t_IV[2]
-        attack = t_IV[0]
-        defense = t_IV[1]
-        percent = (stamina+attack+defense)/45*100
+        display_great_league(PVP_stats, entry, t_level, t_IV, evolve_stats, evo_pokemon)
 
-        evo_cp = evolve_stats[0]
-        evo_hp = evolve_stats[1]
-        power_up_count =evolve_stats[2]
-        cp_1500 = evolve_stats[3]
-        stardust_cost = evolve_stats[4]
-        candy_cost = evolve_stats[5]
-
-
-        # print ex: 53. trapinch --> flygon
-        print("{}. {} --> {}".format(
-            entry[0],
-            pokemon,
-            evo_pokemon,
-            ))
-
-        # color code rank
-        if rank <= 200:
-            rank_data = [colored(rank, 'green', attrs=['reverse', 'bold'])]
-        elif rank <= 1000:
-            rank_data = [colored(rank, 'green')]
-        elif 1000 < rank <= 2000:
-            rank_data = [colored(rank, 'yellow')]
-        else:
-            rank_data = [colored(rank, 'red')]
-
-        # define headers and corresponding data to put in table
-        headers1 = ['CP', 'Level', 'ATK', 'DEF', 'STM', 'IV %']
-        data1 = [original_cp, level, attack, defense, stamina, '{:,.2f}%'.format(percent)]
-
-        headers2 = ['Rank', 'Evo CP', '#Pwr^', 'Stardust', 'Candy', 'CP1500']
-        data2 = rank_data + [evo_cp, power_up_count, stardust_cost, candy_cost, cp_1500]
-
-        # use PrettyTable to make formatted table
-        pt3 = PrettyTable(headers1 + headers2)
-        pt3.add_row(data1 + data2)
-        print(pt3)
-
-
-        # optionally print stat product, percent of max
-        #print("Stat Product: {:.2f}\nPercent of Max: {:,.2f}%".format(
-        #    stat_product, percent_max))
-
-
-        print()
-
+        if show_ultra_league.get() is True:
+            display_ultra_league(PVP_stats, entry, t_level, t_IV, evolve_stats)
+        
 
 def analyze(*args):
     # what pressing the Analyze button does
@@ -287,6 +236,12 @@ file_chosen = StringVar()
 search_chosen = StringVar()
 search_results = StringVar()
 
+# options
+show_ultra_league = BooleanVar()
+ultra_league = ttk.Checkbutton(mainframe, text="Show Ultra League Analysis",
+        variable=show_ultra_league, onvalue=True, offvalue=False, takefocus=False)
+ultra_league.grid(column=2, row=20)
+
 # entry forms for single Pokemon stats
 single_row = 0
 ttk.Label(singleframe, text="Pokemon:").grid(column=1, row=single_row, sticky=(W,E))
@@ -312,7 +267,8 @@ single_poke_stm.grid(column=5, row=single_row+1, sticky=(W,E))
 
 # Pokemon search list box
 single_list_results = StringVar()
-single_list = Listbox(mainframe, listvariable=single_list_results, height=5)
+single_list = Listbox(mainframe, listvariable=single_list_results, height=5, 
+        takefocus=False)
 single_list.grid(row=single_row+1, column=2, stick=(W,E))
 # bind for cursor selection
 single_list.bind("<<ListboxSelect>>", onLeftClickSingle)
