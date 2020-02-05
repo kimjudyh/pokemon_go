@@ -37,26 +37,10 @@ def set_evo_search_results():
     try:
         # set listbox 
         search_results.set(search_db)
-        # set combobox values
-        evo_entry['values'] = search_db
-
-        # write top 10 to text box
-        # set state to normal to enable write permission
-        result_box['state'] = 'normal'
-        # clear contents of text box
-        result_box.delete('1.0', 'end')
-
         if len(search_db) > 10:
             list_results.set(search_db[0:10])
-            for i in range(0,10):
-                result_box.insert('end', search_db[i])
-                result_box.insert('end', '\n')
         else:
             list_results.set(search_db)
-            for result in search_db:
-                result_box.insert('end', result)
-                result_box.insert('end', '\n')
-        result_box['state'] = 'disabled'
     except Exception as e:
         print(e)
 
@@ -90,8 +74,6 @@ def onLeftClick(event):
         # set search box to list selection
         search_chosen.set(selection)
 
-        # set combobox to list selection
-        evo_chosen.set(selection)
     except:
         # nothing is selected, empty tuple
         pass
@@ -135,7 +117,7 @@ def single_poke_analysis(single_entry):
     
     stats = read_stats(filename=None, single_entry=single_entry)
 
-    evo_pokemon = evo_chosen.get()
+    evo_pokemon = search_chosen.get()
 
     # read cp multiplier and level data from text file
     dic_cp_mult = read_cp_mult()
@@ -231,7 +213,6 @@ CP = StringVar()
 attack = StringVar()
 defense = StringVar()
 stamina = StringVar()
-evo_chosen = StringVar()
 file_chosen = StringVar()
 search_chosen = StringVar()
 search_results = StringVar()
@@ -278,14 +259,12 @@ instructions = Text(mainframe, state='disabled', wrap=WORD, width=30, height=14)
 instructions.grid(row=0, rowspan=3, column=1, sticky=(W,E))
 instructions['state'] = 'normal'
 instructions.insert('1.0', 
-        '''Input data for a single pokemon, or select a file to analyze. \
-Search for the evolution pokemon and select from the list of results. \
-Or directly type it into the Evolution drop-down menu field. \n
-Click Analyze to see results. This window can remain open to switch to a \
+        '''Input data for a single pokemon, or select a file to analyze. \n
+Search for the evolution pokemon and select from the list of results. \n
+Click Analyze to see results.\n
+This window can remain open to switch to a \
 different single pokemon, file, or evolution.''')
 instructions['state'] = 'disabled'
-
-
 
 # entry form for file
 file_row = 8
@@ -303,18 +282,6 @@ search_entry = ttk.Entry(mainframe, textvariable=search_chosen)
 search_entry.grid(column=2, row=file_row+2, sticky=(E,W))
 search_entry.bind("<KeyRelease>", onKeyRelease)
 ttk.Label(mainframe, text="Search for Evolution: ").grid(column=1, row=file_row+2, sticky=E)
-# ideally would get text and update combobox after each keystroke
-# update combobox values
-
-evo_entry = ttk.Combobox(mainframe, width=10, textvariable=evo_chosen)
-evo_entry.grid(column=2, row=file_row+3, sticky=(W,E))
-# initialize evo pokemon choices list as empty
-evo_entry['values'] = []
-ttk.Label(mainframe, text="Evolution:").grid(column=1, row=file_row+3, sticky=(E))
-
-# make text box that shows top 10 search results
-result_box = Text(mainframe, state='disabled', width=15, height=10)
-result_box.grid(row=file_row+5, column=1, sticky=(W,E))
 
 # list box that displays selectable evo poke search results
 list_results = StringVar()
@@ -333,7 +300,7 @@ for child in singleframe.winfo_children(): child.grid_configure(padx=5, pady=5)
 # make cursor blink in this field first
 single_poke_name.focus()
 # makes pressing Enter key do same as press Calculate button
-#root.bind('<Return>', analyze)
+root.bind('<Return>', analyze)
 
 # tells Tk to enter event loop, needed to make everything run
 root.mainloop()
