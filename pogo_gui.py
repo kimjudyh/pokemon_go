@@ -6,6 +6,10 @@ import psycopg2
 from multi_poke_v1 import *
 
 
+def get_option_states():
+    ultra_state = show_ultra_league.get()
+    return ultra_state
+
 def db_search(search_value):
     # search for pokemon names that match search string
     # make results global so can be accessed in other functions
@@ -177,6 +181,8 @@ def analyze(*args):
             # get evolution pokemon from entry form
             evo_pokemon =  evo_pokemon_input(search_chosen.get())
             print("evo poke: ", evo_pokemon)
+            # get ultra league analysis display option state
+            show_ultra_state = get_display_option(show_ultra_league.get())
             # run main function from multi_poke_v1
             main()
             print('done')
@@ -186,7 +192,6 @@ def analyze(*args):
             single_poke_analysis(single_entry)
             print('done')
         # close gui
-        #root.destroy()
     except ValueError:
         pass
 
@@ -304,3 +309,5 @@ root.bind('<Return>', analyze)
 
 # tells Tk to enter event loop, needed to make everything run
 root.mainloop()
+
+

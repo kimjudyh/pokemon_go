@@ -2,6 +2,7 @@
 # This file contains the following functions:
 # file_input
 # evo_pokemon_input
+# get_display_option
 # read_stats
 # read_cp_mult
 # read_stardust
@@ -51,6 +52,15 @@ def evo_pokemon_input(e_poke=None):
     else:
         evo_pokemon = e_poke
         return evo_pokemon
+
+
+# get external status on whether to display Ultra League analysis
+def get_display_option(state):
+    # called in pogo_gui to get checkbox state
+    global show_ultra_state
+
+    show_ultra_state = state
+    return show_ultra_state
     
 
 # read and process pokemon data csv file
@@ -573,6 +583,7 @@ def main():
     global poke_file
     global evo_pokemon
     global single_entry
+    global show_ultra_state
     
     # read pokemon data from text file
     try:
@@ -642,8 +653,15 @@ def main():
 
         PVP_stats = get_stat_product(evo_pokemon, t_IV)
 
+        # display Great League analysis
         display_great_league(PVP_stats, entry, t_level, t_IV, evolve_stats, evo_pokemon)
-        display_ultra_league(PVP_stats, entry, t_level, t_IV, evolve_stats)
+
+        # optionally display Ultra League analysis based on checkbox in GUI
+        try:
+            if show_ultra_state:
+                display_ultra_league(PVP_stats, entry, t_level, t_IV, evolve_stats)
+        except Exception as e:
+            print(e)
 
         
     #print(narrow_cp_mult.__doc__)
