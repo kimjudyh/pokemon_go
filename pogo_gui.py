@@ -5,7 +5,7 @@ import psycopg2
 
 from multi_poke_v1 import *
 
-
+# can remove this function, i think
 def get_option_states():
     ultra_state = show_ultra_league.get()
     return ultra_state
@@ -41,10 +41,7 @@ def set_evo_search_results():
     try:
         # set listbox 
         search_results.set(search_db)
-        if len(search_db) > 10:
-            list_results.set(search_db[0:10])
-        else:
-            list_results.set(search_db)
+        list_results.set(search_db)
     except Exception as e:
         print(e)
 
@@ -221,12 +218,8 @@ stamina = StringVar()
 file_chosen = StringVar()
 search_chosen = StringVar()
 search_results = StringVar()
-
-# options
 show_ultra_league = BooleanVar()
-ultra_league = ttk.Checkbutton(mainframe, text="Show Ultra League Analysis",
-        variable=show_ultra_league, onvalue=True, offvalue=False, takefocus=False)
-ultra_league.grid(column=2, row=20)
+
 
 # entry forms for single Pokemon stats
 single_row = 0
@@ -253,9 +246,9 @@ single_poke_stm.grid(column=5, row=single_row+1, sticky=(W,E))
 
 # Pokemon search list box
 single_list_results = StringVar()
-single_list = Listbox(mainframe, listvariable=single_list_results, height=5, 
+single_list = Listbox(mainframe, listvariable=single_list_results, height=10, 
         takefocus=False)
-single_list.grid(row=single_row+1, column=2, stick=(W,E))
+single_list.grid(row=single_row+1, column=2, sticky=(W,E))
 # bind for cursor selection
 single_list.bind("<<ListboxSelect>>", onLeftClickSingle)
 
@@ -291,16 +284,22 @@ ttk.Label(mainframe, text="Search for Evolution: ").grid(column=1, row=file_row+
 # list box that displays selectable evo poke search results
 list_results = StringVar()
 result_list = Listbox(mainframe, listvariable=list_results, height=10)
-result_list.grid(row=file_row+5, column=2, stick=(W,E))
+result_list.grid(row=file_row+4, column=2, stick=(W,E))
 # bind for cursor selection
 result_list.bind("<<ListboxSelect>>", onLeftClick)
 
+# options
+ultra_league = ttk.Checkbutton(mainframe, text="Show Ultra League Analysis",
+        variable=show_ultra_league, onvalue=True, offvalue=False, takefocus=False)
+ultra_league.grid(column=2, row=file_row+5)
+
 # button that will run main program from multi_poke_v1
-ttk.Button(mainframe, text="Analyze", command=analyze).grid(column=2, row=file_row+4, sticky=(W,E))
+ttk.Button(mainframe, text="Analyze", command=analyze).grid(column=2, row=file_row+6, sticky=(W,E))
+
 
 # puts padding around all widgets
-for child in mainframe.winfo_children(): child.grid_configure(padx=5, pady=5)
-for child in singleframe.winfo_children(): child.grid_configure(padx=5, pady=5)
+for child in mainframe.winfo_children(): child.grid_configure(padx=5, pady=2)
+for child in singleframe.winfo_children(): child.grid_configure(padx=5, pady=2)
 
 # make cursor blink in this field first
 single_poke_name.focus()
