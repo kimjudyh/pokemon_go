@@ -27,7 +27,6 @@ def test_skarmory():
     assert round(PVP_stats[2]) == 100
 
 
-
 def test_medicham():
     try:
         create_table("medicham")
@@ -39,7 +38,6 @@ def test_medicham():
     assert PVP_stats[0] == 1
     assert round(PVP_stats[1]) == 1900834
     assert round(PVP_stats[2]) == 100
-
 
 
 def test_lanturn():
@@ -78,5 +76,32 @@ def test_altaria():
     assert PVP_stats[0] == 1
     assert round(PVP_stats[1]) == 2212160
     assert round(PVP_stats[2]) == 100
+
+
+def test_deoxys_d():
+    try:
+        create_table("deoxys defense")
+        calc_stat_product("deoxys defense")
+    except:
+        pass
+    PVP_stats = get_stat_product("deoxys defense", [0,15,15])
+
+    assert PVP_stats[0] == 1
+    assert round(PVP_stats[1]) == 2305927
+    assert round(PVP_stats[2]) == 100
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
