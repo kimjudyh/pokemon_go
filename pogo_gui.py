@@ -6,19 +6,20 @@ import psycopg2
 from multi_poke_v1 import *
 
 # can remove this function, i think
+'''
 def get_option_states():
     ultra_state = show_ultra_league.get()
     return ultra_state
+    '''
 
 def db_search(search_value):
     # search for pokemon names that match search string
     # make results global so can be accessed in other functions
-    global search_db
+    #global search_db
 
     # create connection to database
     db = psycopg2.connect(database = 'mydb')
     cur = db.cursor()
-
     cur.execute(
         "SELECT species FROM base_stats WHERE species ILIKE (%s)", (search_value+'%',))
     search_db = cur.fetchall()
@@ -28,15 +29,16 @@ def db_search(search_value):
     search_db.sort()
     db.close()
 
-def set_single_search_results():
+    return search_db
+
+def set_single_search_results(search_db):
     # display database search results in listbox for single pokemon
     try:
         single_list_results.set(search_db) 
     except Exception as e:
         print(e)
 
-
-def set_evo_search_results():
+def set_evo_search_results(search_db):
     # display database search results in listbox for evolution pokemon
     try:
         # set listbox 
@@ -47,16 +49,21 @@ def set_evo_search_results():
 
 def onKeyReleaseSingle(event):
     # on key press, performs search of normal pokemon string in database
+    global db_search_results_single
+
     search_value = pokemon_name.get()
-    db_search(search_value)
-    set_single_search_results()
+    db_search_results_single = db_search(search_value)
+    # show results in listbox
+    set_single_search_results(db_search_results_single)
 
 def onKeyRelease(event):
     # on key press, performs search of evolution pokemon string in database
+    global db_search_results
 
     search_value = search_chosen.get()
-    db_search(search_value)
-    set_evo_search_results()
+    db_search_results = db_search(search_value)
+    # show results in listbox
+    set_evo_search_results(db_search_results)
 
 def onLeftClick(event):
     # on left click, make list selection evolution pokemon
@@ -68,8 +75,8 @@ def onLeftClick(event):
         # cast index as int after extracting from tuple
         selection_idx = int(selection_tuple[0])
 
-        # get list of search results from combobox values (somehow only global list)
-        select_from = search_db
+        # get list of search results from combobox values 
+        select_from = db_search_results
         selection = select_from[selection_idx]
 
         # set search box to list selection
@@ -85,11 +92,12 @@ def onLeftClickSingle(event):
     selection_tuple = single_list.curselection()
     try:
         selection_idx = int(selection_tuple[0])
-        select_from = search_db
+        #select_from = search_db
+        select_from = db_search_results_single
         selection = select_from[selection_idx]
         pokemon_name.set(selection)
         single_poke_cp.focus()
-    except:
+    except Exception as e:
         pass
 
 def open_file(*args):
@@ -117,7 +125,6 @@ def single_poke_analysis(single_entry):
     from stat_product import get_stat_product, create_table, calc_stat_product
     
     stats = read_stats(filename=None, single_entry=single_entry)
-
     evo_pokemon = search_chosen.get()
 
     # read cp multiplier and level data from text file
