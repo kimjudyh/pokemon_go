@@ -559,8 +559,8 @@ def display_ultra_league(PVP_stats, entry, t_level, t_IV, evolve_stats):
         rank_data = [colored(rank, 'red')]
 
     # define headers and corresponding data to put in table
-    headers1 = ['CP2500', '#Pwr^', 'Stardust', 'Candy']
-    data1 = [cp_2500, power_up_count, stardust_cost, candy_cost]
+    headers1 = ['#Pwr^', 'Stardust', 'Candy', 'CP2500']
+    data1 = [power_up_count, stardust_cost, candy_cost, cp_2500]
 
     # use PrettyTable to make formatted table
     pt3 = PrettyTable(headers1)
