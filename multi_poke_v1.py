@@ -599,7 +599,6 @@ def display_ultra_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats):
     pt3.add_row(data1)
     print(pt3)
 
-    print('\t')
 
     return
 

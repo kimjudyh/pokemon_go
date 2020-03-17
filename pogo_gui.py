@@ -176,9 +176,7 @@ def analyze(*args):
             # get evolution pokemon from entry form
             evo_pokemon =  evo_pokemon_input(search_chosen.get())
             print("evo poke: ", evo_pokemon)
-            # get ultra league analysis display option state, used in main
-            #show_ultra_state = get_display_option(show_ultra_league.get())
-            # get master league analysis display option state, used in main
+            # get ultra and master league analysis display option state, used in main
             get_display_option(show_ultra_league.get(), show_master_league.get())
             # run main function from multi_poke_v1
             main()
