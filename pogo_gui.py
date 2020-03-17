@@ -126,34 +126,24 @@ def single_poke_analysis(single_entry):
     
     stats = read_stats(filename=None, single_entry=single_entry)
     evo_pokemon = search_chosen.get()
-
     # read cp multiplier and level data from text file
     dic_cp_mult = read_cp_mult()
-    #print(dic_cp_mult)
-
     # read stardust and level data from csv file
     dic_stardust = read_stardust()
-    #print(dic_stardust[1300])
-
     dic_power_up = read_power_up_costs()
-
 
     for entry in stats:
         pokemon = entry[1]
         t_IV = entry[3:]    # order: atk, def, stam
-
         # choose correct base stat for pokemon being analyzed
         t_base_stats = read_base_stats(pokemon)
-
         # guess by inputing IVs and possible cp_mult into cp equation
         # narrow down levels & cp multipliers based on stardust
         t_cp_mult, t_level = narrow_cp_mult(dic_cp_mult, dic_stardust, entry,
                 t_base_stats)
-       
         # calc evolution stats
         evolve_stats = calc_evolve_cp(evo_pokemon, t_IV, t_level, t_cp_mult, 
                 dic_cp_mult, dic_power_up)
-
         # get PVP stat product
         try:
             create_table(evo_pokemon)
@@ -162,11 +152,12 @@ def single_poke_analysis(single_entry):
             pass #print(e)
 
         PVP_stats = get_stat_product(evo_pokemon, t_IV)
-
+        # display tables for great league and perhaps ultra league
         display_great_league(PVP_stats, entry, t_level, t_IV, evolve_stats, evo_pokemon)
-
         if show_ultra_league.get() is True:
             display_ultra_league(PVP_stats, entry, t_level, t_IV, evolve_stats)
+        if show_master_league.get() is True:
+            display_master_league(PVP_stats, entry, t_level, t_IV, evolve_stats)
         
 
 def analyze(*args):
@@ -185,8 +176,10 @@ def analyze(*args):
             # get evolution pokemon from entry form
             evo_pokemon =  evo_pokemon_input(search_chosen.get())
             print("evo poke: ", evo_pokemon)
-            # get ultra league analysis display option state
-            show_ultra_state = get_display_option(show_ultra_league.get())
+            # get ultra league analysis display option state, used in main
+            #show_ultra_state = get_display_option(show_ultra_league.get())
+            # get master league analysis display option state, used in main
+            get_display_option(show_ultra_league.get(), show_master_league.get())
             # run main function from multi_poke_v1
             main()
             print('done')
@@ -226,7 +219,7 @@ file_chosen = StringVar()
 search_chosen = StringVar()
 search_results = StringVar()
 show_ultra_league = BooleanVar()
-
+show_master_league = BooleanVar()
 
 # entry forms for single Pokemon stats
 single_row = 0
@@ -299,10 +292,12 @@ result_list.bind("<<ListboxSelect>>", onLeftClick)
 ultra_league = ttk.Checkbutton(mainframe, text="Show Ultra League Analysis",
         variable=show_ultra_league, onvalue=True, offvalue=False, takefocus=False)
 ultra_league.grid(column=2, row=file_row+5)
+master_league = ttk.Checkbutton(mainframe, text="Show Master League Analysis",
+        variable=show_master_league, onvalue=True, offvalue=False, takefocus=False)
+master_league.grid(column=2, row=file_row+6)
 
 # button that will run main program from multi_poke_v1
-ttk.Button(mainframe, text="Analyze", command=analyze).grid(column=2, row=file_row+6, sticky=(W,E))
-
+ttk.Button(mainframe, text="Analyze", command=analyze).grid(column=2, row=file_row+7, sticky=(W,E))
 
 # puts padding around all widgets
 for child in mainframe.winfo_children(): child.grid_configure(padx=5, pady=2)
