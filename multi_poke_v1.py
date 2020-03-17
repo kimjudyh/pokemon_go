@@ -13,6 +13,7 @@
 # calc_evolve_cp
 # display_great_league
 # display_ultra_league
+# display_master_league
 # main
 
 
@@ -55,12 +56,14 @@ def evo_pokemon_input(e_poke=None):
 
 
 # get external status on whether to display Ultra League analysis
-def get_display_option(state):
+def get_display_option(state1, state2):
     # called in pogo_gui to get checkbox state
     global show_ultra_state
+    global show_master_state
 
-    show_ultra_state = state
-    return show_ultra_state
+    show_ultra_state = state1
+    show_master_state = state2
+    #return show_ultra_state
     
 
 # read and process pokemon data csv file
@@ -444,13 +447,42 @@ def calc_evolve_cp(evo_pokemon, IV_list, level, cp_mult, dic_cp_mult, dic_power_
                 m.sqrt(def_base + def_IV)*\
                 m.sqrt(stam_base + stam_IV)*cp_mult_2500**2)
 
-    evolve_stats = [calc_cp, calc_hp, power_up_count, cp_1500, stardust_cost, candy_cost,\
-            cp_2500, power_up_2500, stardust_2500, candy_2500]
+    # calculate max CP for Master League
+    # start where cp 2500 calcs left off
+    cp_max = cp_2500
+    cp_mult_max = cp_mult_2500
+    level_max = level_2500
+    stardust_max = stardust_2500
+    candy_max = candy_2500
+    power_up_max = power_up_2500
 
-    return evolve_stats 
+    if level_max == 40.0:
+        pass
+    else:
+        # calculate CP at level 40
+        cp_mult_max = dic_cp_mult[40.0]
+        cp_max = m.floor(.1*(atk_base + atk_IV)*\
+                    m.sqrt(def_base + def_IV)*\
+                    m.sqrt(stam_base + stam_IV)*cp_mult_max**2)
+        while level_max < 40.0:
+            stardust_max += dic_power_up[level_max]['stardust']
+            candy_max += dic_power_up[level_max]['candy']
+            power_up_max += 1
+            level_max += 1
+
+    dic_evolve_stats = {}
+    dic_evolve_stats['great_league'] = [calc_cp, calc_hp, power_up_count, cp_1500, \
+            stardust_cost, candy_cost]
+    dic_evolve_stats['ultra_league'] = [cp_2500, power_up_2500, stardust_2500, candy_2500]
+    dic_evolve_stats['master_league'] = [cp_max, power_up_max, stardust_max, candy_max]
+
+    #evolve_stats = [calc_cp, calc_hp, power_up_count, cp_1500, stardust_cost, candy_cost,\
+            #cp_2500, power_up_2500, stardust_2500, candy_2500]
+
+    return dic_evolve_stats 
 
 
-def display_great_league(PVP_stats, entry, t_level, t_IV, evolve_stats, evo_pokemon):
+def display_great_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats, evo_pokemon):
     '''
     Display analysis for great league. Operates within loop of pokemon batch.
     '''
@@ -471,9 +503,10 @@ def display_great_league(PVP_stats, entry, t_level, t_IV, evolve_stats, evo_poke
     defense = t_IV[1]
     percent = (stamina+attack+defense)/45*100
 
+    evolve_stats = dic_evolve_stats['great_league']
     evo_cp = evolve_stats[0]
     evo_hp = evolve_stats[1]
-    power_up_count =evolve_stats[2]
+    power_up_count = evolve_stats[2]
     cp_1500 = evolve_stats[3]
     stardust_cost = evolve_stats[4]
     candy_cost = evolve_stats[5]
@@ -519,7 +552,7 @@ def display_great_league(PVP_stats, entry, t_level, t_IV, evolve_stats, evo_poke
     return
 
 
-def display_ultra_league(PVP_stats, entry, t_level, t_IV, evolve_stats):
+def display_ultra_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats):
     '''
     Display analysis for ultra league. Operates within loop of pokemon batch.
     '''
@@ -539,12 +572,11 @@ def display_ultra_league(PVP_stats, entry, t_level, t_IV, evolve_stats):
     defense = t_IV[1]
     percent = (stamina+attack+defense)/45*100
 
-    evo_cp = evolve_stats[0]
-    evo_hp = evolve_stats[1]
-    power_up_count = evolve_stats[7]
-    cp_2500 = evolve_stats[6]
-    stardust_cost = evolve_stats[8]
-    candy_cost = evolve_stats[9]
+    evolve_stats = dic_evolve_stats['ultra_league']
+    power_up_count = evolve_stats[1]
+    cp_2500 = evolve_stats[0]
+    stardust_cost = evolve_stats[2]
+    candy_cost = evolve_stats[3]
 
     print('\tUltra League Analysis:')
     
@@ -567,10 +599,60 @@ def display_ultra_league(PVP_stats, entry, t_level, t_IV, evolve_stats):
     pt3.add_row(data1)
     print(pt3)
 
-    print()
+    print('\t')
 
     return
 
+def display_master_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats):
+    '''
+    Display analysis for master league in a table.
+    '''
+    # from PVP_stats, entry, t_level, t_IV, evolve_stats,
+    # assign to variables for readability
+    rank = PVP_stats[0]
+    stat_product = PVP_stats[1]
+    percent_max = PVP_stats[2]
+
+    pokemon = entry[1]
+    original_cp = entry[2]
+
+    level = t_level 
+
+    stamina = t_IV[2]
+    attack = t_IV[0]
+    defense = t_IV[1]
+    percent = (stamina+attack+defense)/45*100
+
+    evolve_stats = dic_evolve_stats['master_league']
+    power_up_count = evolve_stats[1]
+    cp_max = evolve_stats[0]
+    stardust_cost = evolve_stats[2]
+    candy_cost = evolve_stats[3]
+
+    print('\tMaster League Analysis:')
+    
+    # color code rank
+    if rank <= 200:
+        rank_data = [colored(rank, 'green', attrs=['reverse', 'bold'])]
+    elif rank <= 1000:
+        rank_data = [colored(rank, 'green')]
+    elif 1000 < rank <= 2000:
+        rank_data = [colored(rank, 'yellow')]
+    else:
+        rank_data = [colored(rank, 'red')]
+
+    # define headers and corresponding data to put in table
+    headers1 = ['#Pwr^', 'Stardust', 'Candy', 'Max CP']
+    data1 = [power_up_count, stardust_cost, candy_cost, cp_max]
+
+    # use PrettyTable to make formatted table
+    pt3 = PrettyTable(headers1)
+    pt3.add_row(data1)
+    print(pt3)
+
+    print()
+
+    return
 
 
 # main part of file that calls functions in order
@@ -638,7 +720,7 @@ def main():
         #print("t_list_levels", t_list_levels)
        
         # calc evolution stats
-        evolve_stats = calc_evolve_cp(evo_pokemon, t_IV, t_level, t_cp_mult, 
+        dic_evolve_stats = calc_evolve_cp(evo_pokemon, t_IV, t_level, t_cp_mult, 
                 dic_cp_mult, dic_power_up)
         #print(evolve_stats)
 
@@ -654,12 +736,14 @@ def main():
         PVP_stats = get_stat_product(evo_pokemon, t_IV)
 
         # display Great League analysis
-        display_great_league(PVP_stats, entry, t_level, t_IV, evolve_stats, evo_pokemon)
+        display_great_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats, evo_pokemon)
 
         # optionally display Ultra League analysis based on checkbox in GUI
         try:
             if show_ultra_state:
-                display_ultra_league(PVP_stats, entry, t_level, t_IV, evolve_stats)
+                display_ultra_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats)
+            if show_master_state:
+                display_master_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats)
         except Exception as e:
             print(e)
 
