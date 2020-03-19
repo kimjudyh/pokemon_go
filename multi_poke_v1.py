@@ -472,8 +472,9 @@ def calc_evolve_cp(evo_pokemon, IV_list, level, cp_mult, dic_cp_mult, dic_power_
 
     dic_evolve_stats = {}
     dic_evolve_stats['great_league'] = [calc_cp, calc_hp, power_up_count, cp_1500, \
-            stardust_cost, candy_cost]
-    dic_evolve_stats['ultra_league'] = [cp_2500, power_up_2500, stardust_2500, candy_2500]
+            stardust_cost, candy_cost, level_1500]
+    dic_evolve_stats['ultra_league'] = [cp_2500, power_up_2500, stardust_2500, 
+            candy_2500, level_2500]
     dic_evolve_stats['master_league'] = [cp_max, power_up_max, stardust_max, candy_max]
 
     #evolve_stats = [calc_cp, calc_hp, power_up_count, cp_1500, stardust_cost, candy_cost,\
