@@ -196,7 +196,7 @@ root = Tk()
 root.title("PoGo Batch Analysis")
 
 # create a Frame widget that holds all content, place in root
-mainframe = ttk.Frame(root, padding='50 5 20 12')
+mainframe = ttk.Frame(root, padding='5 5 5 5')
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
 
 # create smaller Frame widget for single pokemon data entry
@@ -216,6 +216,8 @@ stamina = StringVar()
 file_chosen = StringVar()
 search_chosen = StringVar()
 search_results = StringVar()
+single_list_results = StringVar()
+list_results = StringVar()
 show_ultra_league = BooleanVar()
 show_master_league = BooleanVar()
 
@@ -243,7 +245,6 @@ single_poke_stm = ttk.Entry(singleframe, width = 5, textvariable=stamina)
 single_poke_stm.grid(column=5, row=single_row+1, sticky=(W,E))
 
 # Pokemon search list box
-single_list_results = StringVar()
 single_list = Listbox(mainframe, listvariable=single_list_results, height=10, 
         takefocus=False)
 single_list.grid(row=single_row+1, column=2, sticky=(W,E))
@@ -280,7 +281,6 @@ search_entry.bind("<KeyRelease>", onKeyRelease)
 ttk.Label(mainframe, text="Search for Evolution: ").grid(column=1, row=file_row+2, sticky=E)
 
 # list box that displays selectable evo poke search results
-list_results = StringVar()
 result_list = Listbox(mainframe, listvariable=list_results, height=10)
 result_list.grid(row=file_row+4, column=2, stick=(W,E))
 # bind for cursor selection
