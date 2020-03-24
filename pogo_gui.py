@@ -5,20 +5,12 @@ import psycopg2
 
 from multi_poke_v1 import *
 
-# can remove this function, i think
-def get_option_states():
-    ultra_state = show_ultra_league.get()
-    return ultra_state
-
 def db_search(search_value):
     # search for pokemon names that match search string
-    # make results global so can be accessed in other functions
-    global search_db
 
     # create connection to database
     db = psycopg2.connect(database = 'mydb')
     cur = db.cursor()
-
     cur.execute(
         "SELECT species FROM base_stats WHERE species ILIKE (%s)", (search_value+'%',))
     search_db = cur.fetchall()
@@ -28,15 +20,16 @@ def db_search(search_value):
     search_db.sort()
     db.close()
 
-def set_single_search_results():
+    return search_db
+
+def set_single_search_results(search_db):
     # display database search results in listbox for single pokemon
     try:
         single_list_results.set(search_db) 
     except Exception as e:
         print(e)
 
-
-def set_evo_search_results():
+def set_evo_search_results(search_db):
     # display database search results in listbox for evolution pokemon
     try:
         # set listbox 
@@ -47,16 +40,21 @@ def set_evo_search_results():
 
 def onKeyReleaseSingle(event):
     # on key press, performs search of normal pokemon string in database
+    global db_search_results_single
+
     search_value = pokemon_name.get()
-    db_search(search_value)
-    set_single_search_results()
+    db_search_results_single = db_search(search_value)
+    # show results in listbox
+    set_single_search_results(db_search_results_single)
 
 def onKeyRelease(event):
     # on key press, performs search of evolution pokemon string in database
+    global db_search_results
 
     search_value = search_chosen.get()
-    db_search(search_value)
-    set_evo_search_results()
+    db_search_results = db_search(search_value)
+    # show results in listbox
+    set_evo_search_results(db_search_results)
 
 def onLeftClick(event):
     # on left click, make list selection evolution pokemon
@@ -68,8 +66,8 @@ def onLeftClick(event):
         # cast index as int after extracting from tuple
         selection_idx = int(selection_tuple[0])
 
-        # get list of search results from combobox values (somehow only global list)
-        select_from = search_db
+        # get list of search results from combobox values 
+        select_from = db_search_results
         selection = select_from[selection_idx]
 
         # set search box to list selection
@@ -85,11 +83,12 @@ def onLeftClickSingle(event):
     selection_tuple = single_list.curselection()
     try:
         selection_idx = int(selection_tuple[0])
-        select_from = search_db
+        #select_from = search_db
+        select_from = db_search_results_single
         selection = select_from[selection_idx]
         pokemon_name.set(selection)
         single_poke_cp.focus()
-    except:
+    except Exception as e:
         pass
 
 def open_file(*args):
@@ -117,36 +116,25 @@ def single_poke_analysis(single_entry):
     from stat_product import get_stat_product, create_table, calc_stat_product
     
     stats = read_stats(filename=None, single_entry=single_entry)
-
     evo_pokemon = search_chosen.get()
-
     # read cp multiplier and level data from text file
     dic_cp_mult = read_cp_mult()
-    #print(dic_cp_mult)
-
     # read stardust and level data from csv file
     dic_stardust = read_stardust()
-    #print(dic_stardust[1300])
-
     dic_power_up = read_power_up_costs()
-
 
     for entry in stats:
         pokemon = entry[1]
         t_IV = entry[3:]    # order: atk, def, stam
-
         # choose correct base stat for pokemon being analyzed
         t_base_stats = read_base_stats(pokemon)
-
         # guess by inputing IVs and possible cp_mult into cp equation
         # narrow down levels & cp multipliers based on stardust
         t_cp_mult, t_level = narrow_cp_mult(dic_cp_mult, dic_stardust, entry,
                 t_base_stats)
-       
         # calc evolution stats
         evolve_stats = calc_evolve_cp(evo_pokemon, t_IV, t_level, t_cp_mult, 
                 dic_cp_mult, dic_power_up)
-
         # get PVP stat product
         try:
             create_table(evo_pokemon)
@@ -155,11 +143,12 @@ def single_poke_analysis(single_entry):
             pass #print(e)
 
         PVP_stats = get_stat_product(evo_pokemon, t_IV)
-
+        # display tables for great league and perhaps ultra league
         display_great_league(PVP_stats, entry, t_level, t_IV, evolve_stats, evo_pokemon)
-
         if show_ultra_league.get() is True:
             display_ultra_league(PVP_stats, entry, t_level, t_IV, evolve_stats)
+        if show_master_league.get() is True:
+            display_master_league(PVP_stats, entry, t_level, t_IV, evolve_stats)
         
 
 def analyze(*args):
@@ -178,8 +167,8 @@ def analyze(*args):
             # get evolution pokemon from entry form
             evo_pokemon =  evo_pokemon_input(search_chosen.get())
             print("evo poke: ", evo_pokemon)
-            # get ultra league analysis display option state
-            show_ultra_state = get_display_option(show_ultra_league.get())
+            # get ultra and master league analysis display option state, used in main
+            get_display_option(show_ultra_league.get(), show_master_league.get())
             # run main function from multi_poke_v1
             main()
             print('done')
@@ -198,7 +187,7 @@ root = Tk()
 root.title("PoGo Batch Analysis")
 
 # create a Frame widget that holds all content, place in root
-mainframe = ttk.Frame(root, padding='50 5 20 12')
+mainframe = ttk.Frame(root, padding='5 5 5 5')
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
 
 # create smaller Frame widget for single pokemon data entry
@@ -218,8 +207,10 @@ stamina = StringVar()
 file_chosen = StringVar()
 search_chosen = StringVar()
 search_results = StringVar()
+single_list_results = StringVar()
+list_results = StringVar()
 show_ultra_league = BooleanVar()
-
+show_master_league = BooleanVar()
 
 # entry forms for single Pokemon stats
 single_row = 0
@@ -245,7 +236,6 @@ single_poke_stm = ttk.Entry(singleframe, width = 5, textvariable=stamina)
 single_poke_stm.grid(column=5, row=single_row+1, sticky=(W,E))
 
 # Pokemon search list box
-single_list_results = StringVar()
 single_list = Listbox(mainframe, listvariable=single_list_results, height=10, 
         takefocus=False)
 single_list.grid(row=single_row+1, column=2, sticky=(W,E))
@@ -282,7 +272,6 @@ search_entry.bind("<KeyRelease>", onKeyRelease)
 ttk.Label(mainframe, text="Search for Evolution: ").grid(column=1, row=file_row+2, sticky=E)
 
 # list box that displays selectable evo poke search results
-list_results = StringVar()
 result_list = Listbox(mainframe, listvariable=list_results, height=10)
 result_list.grid(row=file_row+4, column=2, stick=(W,E))
 # bind for cursor selection
@@ -292,10 +281,12 @@ result_list.bind("<<ListboxSelect>>", onLeftClick)
 ultra_league = ttk.Checkbutton(mainframe, text="Show Ultra League Analysis",
         variable=show_ultra_league, onvalue=True, offvalue=False, takefocus=False)
 ultra_league.grid(column=2, row=file_row+5)
+master_league = ttk.Checkbutton(mainframe, text="Show Master League Analysis",
+        variable=show_master_league, onvalue=True, offvalue=False, takefocus=False)
+master_league.grid(column=2, row=file_row+6)
 
 # button that will run main program from multi_poke_v1
-ttk.Button(mainframe, text="Analyze", command=analyze).grid(column=2, row=file_row+6, sticky=(W,E))
-
+ttk.Button(mainframe, text="Analyze", command=analyze).grid(column=2, row=file_row+7, sticky=(W,E))
 
 # puts padding around all widgets
 for child in mainframe.winfo_children(): child.grid_configure(padx=5, pady=2)

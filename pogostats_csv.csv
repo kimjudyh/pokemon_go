@@ -32,10 +32,10 @@
 027A,Alolan Sandshrew,137,125,129
 28,Sandslash,181,182,175
 028A,Alolan Sandslash,181,177,195
-29,Nidoran,146,86,89
+29,Nidoran F,146,86,89
 30,Nidorina,172,117,120
 31,Nidoqueen,207,180,173
-32,Nidoran,130,105,76
+32,Nidoran M,130,105,76
 33,Nidorino,156,137,111
 34,Nidoking,191,204,156
 35,Clefairy,172,107,108
@@ -167,6 +167,7 @@
 148,Dragonair,156,163,135
 149,Dragonite,209,263,198
 150,Mewtwo,214,300,182
+150A,Mewtwo Armored,214,182,278
 151,Mew,225,210,210
 152,Chikorita,128,92,122
 153,Bayleef,155,122,155
@@ -367,10 +368,10 @@
 348,Armaldo,181,222,174
 349,Feebas,85,29,85
 350,Milotic,216,192,219
-351,Castform,172,139,139
-351R,Castform,172,139,139
-351H,Castform,172,139,139
-351S,Castform,172,139,139
+351,Castform Neutral,172,139,139
+351R,Castform Rain,172,139,139
+351H,Castform Sun,172,139,139
+351S,Castform Snow,172,139,139
 352,Kecleon,155,161,189
 353,Shuppet,127,138,65
 354,Banette,162,218,126
@@ -405,7 +406,7 @@
 383,Groudon,205,270,228
 384,Rayquaza,213,284,170
 385,Jirachi,225,210,210
-386,Deoxys,137,345,115
+386,Deoxys Neutral,137,345,115
 386A,Deoxys Attack,137,414,46
 386D,Deoxys Defense,137,144,330
 386S,Deoxys Speed,137,230,218
@@ -434,12 +435,12 @@
 409,Rampardos,219,295,109
 410,Shieldon,102,76,195
 411,Bastiodon,155,94,286
-412,Burmy,120,53,83
-412G,Burmy,120,53,83
-412S,Burmy,120,53,83
-413,Wormadam,155,141,180
-413G,Wormadam,155,141,180
-413S,Wormadam,155,127,175
+412,Burmy Plant,120,53,83
+412G,Burmy Sandy,120,53,83
+412S,Burmy Trash,120,53,83
+413,Wormadam Plant,155,141,180
+413G,Wormadam Sandy,155,141,180
+413S,Wormadam Trash,155,127,175
 414,Mothim,172,185,98
 415,Combee,102,59,83
 416,Vespiquen,172,149,190
@@ -447,12 +448,12 @@
 418,Buizel,146,132,67
 419,Floatzel,198,221,114
 420,Cherubi,128,108,92
-421,Cherrim,172,170,153
-421S,Cherrim,172,170,153
-422,Shellos,183,103,105
-422E,Shellos,183,103,105
-423,Gastrodon,244,169,143
-423E,Gastrodon,244,169,143
+421,Cherrim Sunny,172,170,153
+421S,Cherrim Overcast,172,170,153
+422,Shellos Pink,183,103,105
+422E,Shellos Blue,183,103,105
+423,Gastrodon Pink,244,169,143
+423E,Gastrodon Blue,244,169,143
 424,Ambipom,181,205,143
 425,Drifloon,207,117,80
 426,Drifblim,312,180,102
@@ -509,11 +510,11 @@
 477,Dusknoir,128,180,254
 478,Froslass,172,171,150
 479,Rotom,137,185,159
-479F,Rotom,137,204,219
-479R,Rotom,137,204,219
-479O,Rotom,137,204,219
-479L,Rotom,137,204,219
-479W,Rotom,137,204,219
+479F,Rotom Fan,137,204,219
+479R,Rotom Frost,137,204,219
+479O,Rotom Heat,137,204,219
+479L,Rotom Mow,137,204,219
+479W,Rotom Wash,137,204,219
 480,Uxie,181,156,270
 481,Mesprit,190,212,212
 482,Azelf,181,270,151
@@ -521,14 +522,14 @@
 484,Palkia,189,280,215
 485,Heatran,209,251,213
 486,Regigigas,221,287,210
-487,Giratina,284,187,225
+487,Giratina Altered,284,187,225
 487O,Giratina Origin,284,225,187
 488,Cresselia,260,152,258
 489,Phione,190,162,162
 490,Manaphy,225,210,210
 491,Darkrai,172,285,198
-492,Shaymin,225,210,210
-492S,Shaymin,225,261,166
+492,Shaymin Land,225,210,210
+492S,Shaymin Sky,225,261,166
 493,Arceus,237,238,238
 494,Victini,225,210,210
 495,Snivy,128,88,107
@@ -586,14 +587,14 @@
 547,Whimsicott,155,164,176
 548,Petilil,128,119,91
 549,Lilligant,172,214,155
-550,Basculin,172,189,129
-550B,Basculin,172,189,129
+550,Basculin Blue,172,189,129
+550B,Basculin Red,172,189,129
 551,Sandile,137,132,69
 552,Krokorok,155,155,90
 553,Krookodile,216,229,158
 554,Darumaka,172,153,86
 555,Darmanitan,233,263,114
-555Z,Darmanitan,233,243,202
+555Z,Darmanitan Zen,233,243,202
 556,Maractus,181,201,130
 557,Dwebble,137,118,128
 558,Crustle,172,188,200
@@ -679,20 +680,20 @@
 638,Cobalion,209,192,229
 639,Terrakion,209,260,192
 640,Virizion,209,192,229
-641,Tornadus,188,266,164
-641T,Tornadus,188,238,189
-642,Thundurus,188,266,164
-642T,Thundurus,188,295,161
+641,Tornadus Incarnate,188,266,164
+641T,Tornadus Therian,188,238,189
+642,Thundurus Incarnate,188,266,164
+642T,Thundurus Therian,188,295,161
 643,Reshiram,205,275,211
 644,Zekrom,205,275,211
-645,Landorus,205,261,182
-645T,Landorus,205,289,179
+645,Landorus Incarnate,205,261,182
+645T,Landorus Therian,205,289,179
 646,Kyurem,245,246,170
-646W,Kyurem,245,310,183
-646B,Kyurem,245,310,183
+646W,Kyurem White,245,310,183
+646B,Kyurem Black,245,310,183
 647,Keldeo,209,260,192
-647R,Keldeo,209,260,192
-648,Meloetta,225,250,225
-648P,Meloetta,225,269,188
+647R,Keldeo Resolute,209,260,192
+648,Meloetta Aria,225,250,225
+648P,Meloetta Pirouette,225,269,188
 808,Meltan,130,118,99
 809,Melmetal,264,226,190

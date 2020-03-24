@@ -24,3 +24,4 @@ script:
   - pytest test_file_read.py -v
   - pytest test_read_base_stats.py -v
   - pytest test_stat_product.py -v
+  - pytest test_power_up_costs.py -v
