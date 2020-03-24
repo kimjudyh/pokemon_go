@@ -56,13 +56,13 @@ def evo_pokemon_input(e_poke=None):
 
 
 # get external status on whether to display Ultra League analysis
-def get_display_option(state1, state2):
+def get_display_option(ultra_league_state, master_league_state):
     # called in pogo_gui to get checkbox state
     global show_ultra_state
     global show_master_state
 
-    show_ultra_state = state1
-    show_master_state = state2
+    show_ultra_state = ultra_league_state
+    show_master_state = master_league_state
     #return show_ultra_state
     
 
