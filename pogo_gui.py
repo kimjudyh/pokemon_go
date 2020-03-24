@@ -5,17 +5,8 @@ import psycopg2
 
 from multi_poke_v1 import *
 
-# can remove this function, i think
-'''
-def get_option_states():
-    ultra_state = show_ultra_league.get()
-    return ultra_state
-    '''
-
 def db_search(search_value):
     # search for pokemon names that match search string
-    # make results global so can be accessed in other functions
-    #global search_db
 
     # create connection to database
     db = psycopg2.connect(database = 'mydb')
