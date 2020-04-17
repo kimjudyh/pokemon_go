@@ -33,14 +33,9 @@ def file_input(a_file = None):
     # option 1: manually change here:
     if not a_file:
         poke_file = "oneoff1.csv"
-        # option 2: change while program is running
-        #option = input("Input file is currently {}. Choose a new file? Y or N\n".format(poke_file))
-        #option = option.lower()
-        #if option == "y":
-        #    poke_file = input("New file? ex. poke.csv\n")
         return poke_file
     elif a_file:
-        # option 3: provide an argument to this function
+        # option 2: provide an argument to this function
         poke_file = a_file
         return poke_file
 
@@ -114,10 +109,6 @@ def read_cp_mult():
     with open("cp_mult_data.txt", "r") as cp_mult_file:
         cp_mult_list = cp_mult_file.readlines()
 
-    #cp_mult_file = open("cp_mult_data.txt", "r")
-    #cp_mult_list = cp_mult_file.readlines()
-    #cp_mult_file.close()
-
     # remove header lines that label columns
     del(cp_mult_list[0:1])
 
@@ -132,12 +123,6 @@ def read_cp_mult():
             dic_cp_mult[float(entry[0:x])] = float(entry[x+1:])
         else:
             dic_cp_mult[float(entry[0:x])] = float(entry[x+1:y])
-
-    # testing to see if works - remove later
-    # level = 1
-    # for i in range(0,40,1):
-    #     print(dic_cp_mult[str(level)])
-    #     level += 1
 
     return dic_cp_mult
 
@@ -215,7 +200,6 @@ def read_power_up_costs():
     return dic_power_up
 
 
-# some base stats.. from text file? or hard-coded in for now in v1
 def read_base_stats(pokemon):
     '''
     param pokemon: string of pokemon's name
