@@ -106,7 +106,7 @@ def read_cp_mult():
     returns dictionary with key: level (float), value: cp multiplier (float)
     each level has a unique cp multiplier
     '''
-    with open("cp_mult_data.txt", "r") as cp_mult_file:
+    with open("constants/cp_mult_data.txt", "r") as cp_mult_file:
         cp_mult_list = cp_mult_file.readlines()
 
     # remove header lines that label columns
@@ -140,7 +140,7 @@ def read_stardust():
 
     # open csv file, use csv reader
     try:
-        stardust_file = open("stardust_data.csv", newline = '')
+        stardust_file = open("constants/stardust_data.csv", newline = '')
         read_file = csv.reader(stardust_file)
     except Exception as e:
         print("file processing error: " + str(e))
@@ -188,7 +188,7 @@ def read_power_up_costs():
     dic_power_up = {}
     count = 0
 
-    with open("power_up_costs.csv", newline='') as power_up_file:
+    with open("constants/power_up_costs.csv", newline='') as power_up_file:
         read_file = csv.reader(power_up_file)
         for row in read_file:
             # skip first line
