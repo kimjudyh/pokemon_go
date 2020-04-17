@@ -1,4 +1,4 @@
-from stat_product import create_table, calc_stat_product, get_stat_product
+from pokemon_go.stat_product import create_table, calc_stat_product, get_stat_product
 import math as m
 
 def test_azumarill():
