@@ -1,5 +1,6 @@
-from pokemon_go.stat_product import create_table, calc_stat_product, get_stat_product
+from stat_product import create_table, calc_stat_product, get_stat_product
 import math as m
+import multi_poke_v1
 
 def test_azumarill():
     try:
