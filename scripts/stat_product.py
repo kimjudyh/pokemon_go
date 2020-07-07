@@ -8,7 +8,8 @@ def create_table(pokemon):
     and Percent of Max.
     '''
     import math as m
-    from multi_poke_v1 import read_cp_mult, read_base_stats
+    # from ..scripts.multi_poke_v1 import read_cp_mult, read_base_stats
+    # from multi_poke_v1 import read_cp_mult, read_base_stats
     import psycopg2
     from psycopg2 import sql
 
@@ -44,7 +45,8 @@ def calc_stat_product(pokemon):
     Places results into a POSTGRESQL table in specified database.
     Sorts table by ascending rank/descending stat product..
     '''
-    import math as m
+    # import math as m
+    # from ..scripts.multi_poke_v1 import read_cp_mult, read_base_stats
     from multi_poke_v1 import read_cp_mult, read_base_stats
     import psycopg2
     from psycopg2 import sql

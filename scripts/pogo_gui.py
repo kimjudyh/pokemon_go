@@ -114,6 +114,7 @@ def set_single_pokemon():
 
 def single_poke_analysis(single_entry):
     from stat_product import get_stat_product, create_table, calc_stat_product
+    # from pokemon_go.scripts.stat_product import get_stat_product, create_table, calc_stat_product
     
     stats = read_stats(filename=None, single_entry=single_entry)
     evo_pokemon = search_chosen.get()
@@ -138,9 +139,12 @@ def single_poke_analysis(single_entry):
         # get PVP stat product
         try:
             create_table(evo_pokemon)
+            print('create table')
             calc_stat_product(evo_pokemon)
+            print('calced stat product')
         except Exception as e:
-            pass #print(e)
+            # pass 
+            print(e)
 
         PVP_stats = get_stat_product(evo_pokemon, t_IV)
         # display tables for great league and perhaps ultra league

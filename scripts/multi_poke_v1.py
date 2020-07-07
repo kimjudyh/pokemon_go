@@ -643,6 +643,7 @@ def display_master_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats):
 #################################################
 def main():
     from stat_product import get_stat_product, create_table, calc_stat_product
+    # from pokemon_go.scripts.stat_product import get_stat_product, create_table, calc_stat_product
 
     # set poke_file as global so that files can be fed in
     # see read_many_files.py for usage

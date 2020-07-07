@@ -1,6 +1,5 @@
-from stat_product import create_table, calc_stat_product, get_stat_product
+from ..scripts.stat_product import create_table, calc_stat_product, get_stat_product
 import math as m
-import multi_poke_v1
 
 def test_azumarill():
     try:
@@ -20,7 +19,7 @@ def test_skarmory():
         create_table("skarmory")
         calc_stat_product("skarmory")
     except Exception as e:
-        print("table exists")
+        print(e)
     PVP_stats = get_stat_product("skarmory", [0, 15, 14])
 
     assert PVP_stats[0] == 1
