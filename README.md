@@ -1,16 +1,24 @@
 # pokemon_go
 
-This repository stores files for calculating the evolution CP and PVP stat product rank for a batch of pokemon.
-Pokemon stats (CP, IVs) are written in a CSV file and inputted into the main python file, multi_poke_v1.py.
+This repository stores files for calculating the evolution CP, PVP stat product rank, and power up costs for a batch of pokemon.
 
+The easiest way to use this program is through the GUI, `pogo_gui.py`. Input the Pokemon stats into the GUI and see the results in the terminal.
+
+<img src="./images/weedle.png" height=350>   
+
+<img src="./images/weedle_results.png">
+
+If you want to use the command line interface, run `multi_poke_v1.py` or `read_many_files.py`. More info below!
+
+Pokemon stats (CP, IVs) are written in a CSV file and read by `multi_poke_v1.py`.
 If multiple CSV files are to be analyzed, read_many_files.py can be used.
 
-Requirements:
-Postgresql, psycopg2, python3
+## Requirements
+PostgreSQL, psycopg2, python3
 
 ## Installation
-Install PostgreSQL. Install psycopg2:  
-`$ pip install psycopg2`
+Install the requirements using the `requirements.txt` file:  
+`$ pip install -r requirements.txt`
 
 ## Setting up the database
 Create a database called `mydb`:  
@@ -22,10 +30,15 @@ Create a table in the database called `base_stats`
 Populate the table with base stats from pogostats_csv.csv  
 `$ psql mydb -c "\copy base_stats FROM 'pogostats_csv.csv' (format csv, header true);"`
 
+## Updating Base Stats
+Run the bash file called `update_base_stats.sh`. Enable permissions:  
+`$ chmod +x script.sh`  
+`$ ./scripts/update_base_stats.sh`
+
 ## Creating the input file
 Create a csv file with the following columns: id, pokemon, CP, attack IV, defense IV, stamina IV. Save it in the same directory as multi_poke_v1.py.
 
-It's highly recommended to analyze one type of pokemon. The names of the columns don't matter, but the order does. Refer to bagon1.csv for an example. 
+It's highly recommended to analyze one type of pokemon. The names of the columns don't matter, but the order does.  
 
 | id | pokemon | CP | Atk IV | Def IV | Stam IV|
 | ------ | ------ | ------ | ------ | ------ | ------ |
@@ -40,6 +53,9 @@ Analyzing one file:
 
 Analyzing many files:
 `$ python3 read_many_files.py bagon1.csv bagon2.csv bagon3.csv`
+
+Analyzing one file and specifying evolution pokemon:  
+`$ python3 scripts/read_many_files.py salamence bagon1.csv`
 
 ## Specifying the evolution pokemon
 The program will ask for an evolution pokemon. Type in the pokemon's name (ex. shelgon) and press enter for the analysis.
