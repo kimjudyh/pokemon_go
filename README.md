@@ -8,25 +8,25 @@ The easiest way to use this program is through the GUI in the `scripts` director
 
 ### Batch Analysis
 A CSV file with 62 Turtwig entries:  
-<img src="./images/turtwig_csv.png" height=250>   
+<img src="./images/turtwig_csv.png" height=350>   
 Choose the file in the GUI:  
-<img src="./images/choose_csv.png" height=350>   
-Choose the evolution Pokemon. In this case, Torterra:
-<img src="./images/turtwig.png" height=350>   
+<img src="./images/choose_csv.png" height=450>   
+Choose the evolution Pokemon. In this case, Torterra:  
+<img src="./images/turtwig.png" height=450>   
 See the results in the terminal:  
-<img src="./images/turtwig_results.png" height=550>   
+<img src="./images/turtwig_results.png" >   
 
 ### Single Pokemon Analysis
 Alternatively, you can analyze a single Pokemon in the GUI. Enter the species, CP, and IVs, and choose the evolution:  
-<img src="./images/weedle.png" height=350>   
+<img src="./images/weedle.png" height=450>   
 See the results in the terminal:  
-<img src="./images/weedle_results.png" >
+<img src="./images/weedle_results.png" height=150>
 
 ### Ultra & Master League Analysis
 Calculate stardust and candy powerup costs for Ultra League and Master League:
-<img src="./images/dialga.png" height=350>   
+<img src="./images/dialga.png" height=450>   
 See the results in the terminal:  
-<img src="./images/dialga_results.png" >   
+<img src="./images/dialga_results.png" height=400>   
 
 If you want to use the command line interface, run `multi_poke_v1.py` or `read_many_files.py`. More info below!
 
