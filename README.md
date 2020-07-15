@@ -14,7 +14,7 @@ Choose the file in the GUI:
 Choose the evolution Pokemon. In this case, Torterra:  
 <img src="./images/turtwig.png" height=450>   
 See the results in the terminal:  
-<img src="./images/turtwig_results.png" >   
+<img src="./images/turtwig_results.png" height=700>   
 
 ### Single Pokemon Analysis
 Alternatively, you can analyze a single Pokemon in the GUI. Enter the species, CP, and IVs, and choose the evolution:  
