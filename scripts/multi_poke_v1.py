@@ -712,9 +712,21 @@ def main():
         # optionally display Ultra League analysis based on checkbox in GUI
         try:
             if show_ultra_state:
-                display_ultra_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats)
+                try:
+                    create_table(evo_pokemon, "UL")
+                    calc_stat_product(evo_pokemon, "UL")
+                except Exception as e:
+                    pass
+                PVP_stats_UL = get_stat_product(evo_pokemon, t_IV, "UL")
+                display_ultra_league(PVP_stats_UL, entry, t_level, t_IV, dic_evolve_stats)
             if show_master_state:
-                display_master_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats)
+                try:
+                    create_table(evo_pokemon, "ML")
+                    calc_stat_product(evo_pokemon, "ML")
+                except Exception as e:
+                    pass
+                PVP_stats_ML = get_stat_product(evo_pokemon, t_IV, "ML")
+                display_master_league(PVP_stats_ML, entry, t_level, t_IV, dic_evolve_stats)
         except Exception as e:
             print(e)
 
