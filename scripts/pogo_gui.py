@@ -150,13 +150,21 @@ def single_poke_analysis(single_entry):
         # display tables for great league and perhaps ultra league
         display_great_league(PVP_stats, entry, t_level, t_IV, evolve_stats, evo_pokemon)
         if show_ultra_league.get() is True:
-            create_table(evo_pokemon, "UL")
-            calc_stat_product(evo_pokemon, "UL")
-            display_ultra_league(PVP_stats, entry, t_level, t_IV, evolve_stats)
+            try:
+                create_table(evo_pokemon, "UL")
+                calc_stat_product(evo_pokemon, "UL")
+            except Exception as e:
+                pass
+            PVP_stats_UL = get_stat_product(evo_pokemon, t_IV, "UL")
+            display_ultra_league(PVP_stats_UL, entry, t_level, t_IV, evolve_stats)
         if show_master_league.get() is True:
-            create_table(evo_pokemon, "ML")
-            calc_stat_product(evo_pokemon, "ML")
-            display_master_league(PVP_stats, entry, t_level, t_IV, evolve_stats)
+            try:
+                create_table(evo_pokemon, "ML")
+                calc_stat_product(evo_pokemon, "ML")
+            except Exception as e:
+                pass
+            PVP_stats_ML = get_stat_product(evo_pokemon, t_IV, "ML")
+            display_master_league(PVP_stats_ML, entry, t_level, t_IV, evolve_stats)
         
 
 def analyze(*args):

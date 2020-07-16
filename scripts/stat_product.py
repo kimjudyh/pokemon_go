@@ -210,7 +210,7 @@ def get_stat_product(pokemon, IV_list, league_name):
         db.close()
         sys.exit(0)
 
-    print(PVP_stats)
+    #print("pvp stat product debug", PVP_stats)
 
     return PVP_stats
 

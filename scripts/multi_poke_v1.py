@@ -576,12 +576,15 @@ def display_ultra_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats):
         rank_data = [colored(rank, 'red')]
 
     # define headers and corresponding data to put in table
-    headers1 = ['#Pwr^', 'Stardust', 'Candy', 'CP2500']
-    data1 = [power_up_count, stardust_cost, candy_cost, cp_2500]
+    headers2 = ['Rank', '#Pwr^', 'Stardust', 'Candy', 'CP2500']
+    data2 = rank_data + [power_up_count, stardust_cost, candy_cost, cp_2500]
+    
+    #headers1 = ['#Pwr^', 'Stardust', 'Candy', 'CP2500']
+    #data1 = [power_up_count, stardust_cost, candy_cost, cp_2500]
 
     # use PrettyTable to make formatted table
-    pt3 = PrettyTable(headers1)
-    pt3.add_row(data1)
+    pt3 = PrettyTable(headers2)
+    pt3.add_row(data2)
     print(pt3)
 
 
@@ -626,12 +629,14 @@ def display_master_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats):
         rank_data = [colored(rank, 'red')]
 
     # define headers and corresponding data to put in table
-    headers1 = ['#Pwr^', 'Stardust', 'Candy', 'Max CP']
-    data1 = [power_up_count, stardust_cost, candy_cost, cp_max]
+    headers2 = ['Rank', '#Pwr^', 'Stardust', 'Candy', 'Max CP']
+    data2 = rank_data + [power_up_count, stardust_cost, candy_cost, cp_max]
+    #headers1 = ['#Pwr^', 'Stardust', 'Candy', 'Max CP']
+    #data1 = [power_up_count, stardust_cost, candy_cost, cp_max]
 
     # use PrettyTable to make formatted table
-    pt3 = PrettyTable(headers1)
-    pt3.add_row(data1)
+    pt3 = PrettyTable(headers2)
+    pt3.add_row(data2)
     print(pt3)
 
     print()
