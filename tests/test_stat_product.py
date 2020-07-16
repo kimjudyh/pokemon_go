@@ -92,13 +92,65 @@ def test_deoxys_d():
     assert round(PVP_stats[2]) == 100
 
 
+def test_clefable():
+    try:
+        create_table("clefable", "UL")
+        calc_stat_product("clefable", "UL")
+    except:
+        pass
+    PVP_stats = get_stat_product("clefable", [13,13,14], "UL")
+
+    assert round(PVP_stats[1]) == 3778626
+    assert round(PVP_stats[2]) == 97
 
 
+def test_togekiss():
+    try:
+        create_table("togekiss", "UL")
+        calc_stat_product("togekiss", "UL")
+    except:
+        pass
+    PVP_stats = get_stat_product("togekiss", [10,12,14], "UL")
+
+    assert round(PVP_stats[1]) == 3811706
+    assert round(PVP_stats[2]) == 97
 
 
+def test_mewtwo():
+    try:
+        create_table("mewtwo", "ML")
+        calc_stat_product("mewtwo", "ML")
+    except:
+        pass
+    PVP_stats = get_stat_product("mewtwo", [15,15,15], "ML")
+
+    assert PVP_stats[0] == 1
+    assert round(PVP_stats[1]) == 6976430
+    assert round(PVP_stats[2]) == 100
 
 
+def test_dialga():
+    try:
+        create_table("dialga", "ML")
+        calc_stat_product("dialga", "ML")
+    except:
+        pass
+    PVP_stats = get_stat_product("dialga", [15,15,15], "ML")
 
+    assert round(PVP_stats[1]) == 7081684
+    assert round(PVP_stats[2]) == 100
+
+
+def test_groudon():
+    try:
+        create_table("groudon", "ML")
+        calc_stat_product("groudon", "ML")
+    except:
+        pass
+    PVP_stats = get_stat_product("groudon", [15,15,15], "ML")
+
+    assert round(PVP_stats[1]) == 7483094
+    assert round(PVP_stats[2]) == 100
 
 
 
