@@ -205,9 +205,9 @@ def read_base_stats(pokemon):
     param pokemon: string of pokemon's name
     return base_stats: list [stamina, attack, defense]
     '''
-    # [pokemon, stamina, attack, defense]
     import psycopg2
     import sys
+    import math as m
 
     # create connection to database (mydb)
     db = psycopg2.connect(database = "mydb")
@@ -233,13 +233,7 @@ def read_base_stats(pokemon):
     except Exception as e:
         print("{} doesn't exist. Try again?\n".format(pokemon))
         sys.exit(0)
-    '''
-    base_stats = [["meltan", 130, 118, 99],
-                  ["charmander", 118, 116, 93],
-                  ["squirtle", 127, 94, 121],
-                  ["bagon", 128, 134, 93],
-                  ["salamence", 216, 277, 168]]
-    '''
+
     return base_stats
 
 # narrow down cp multiplier range based on stardust.
@@ -273,28 +267,15 @@ def narrow_cp_mult(dic_cp_mult, dic_stardust, entry, base_stats):
     # get list of levels from stardust dictionary associated with given stardust
     #list_levels = dic_stardust[stardust]
 
-    for key, value in dic_stardust.items():
-        list_levels = value
-        cp_mult = []
-        for i in list_levels:
-            # remove half levels
-            #if i.is_integer():
-                # get cp multiplier from cp_mult dictionary associated with level i
-            cp_mult.append(dic_cp_mult[i])
-                # populate dictionary of key: cp_mult, value: level
-            d_list_levels[dic_cp_mult[i]] = i
-
-        # guess real level from narrowed down list
-        for i_cpm in cp_mult:
-            # calculate cp
-            calc_cp = m.floor(.1*(atk_base + atk_IV)*\
-                    m.sqrt(def_base + def_IV)*\
-                    m.sqrt(stam_base + stam_IV)*i_cpm**2)
-
-            if cp == calc_cp:
-                real_cp_mult = i_cpm
-                real_level = d_list_levels[i_cpm]
-                return real_cp_mult, real_level
+    for level, i_cpm in dic_cp_mult.items():
+        # calculate cp
+        calc_cp = m.floor(.1*(atk_base + atk_IV)*\
+                m.sqrt(def_base + def_IV)*\
+                m.sqrt(stam_base + stam_IV)*i_cpm**2)
+        if cp == calc_cp:
+            real_cp_mult = i_cpm
+            real_level = level
+            return real_cp_mult, real_level
 
     try:
         return real_cp_mult, real_level
