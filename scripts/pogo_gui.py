@@ -138,20 +138,24 @@ def single_poke_analysis(single_entry):
                 dic_cp_mult, dic_power_up)
         # get PVP stat product
         try:
-            create_table(evo_pokemon)
+            create_table(evo_pokemon, "GL")
             print('create table')
-            calc_stat_product(evo_pokemon)
+            calc_stat_product(evo_pokemon, "GL")
             print('calced stat product')
         except Exception as e:
             # pass 
             print(e)
 
-        PVP_stats = get_stat_product(evo_pokemon, t_IV)
+        PVP_stats = get_stat_product(evo_pokemon, t_IV, "GL")
         # display tables for great league and perhaps ultra league
         display_great_league(PVP_stats, entry, t_level, t_IV, evolve_stats, evo_pokemon)
         if show_ultra_league.get() is True:
+            create_table(evo_pokemon, "UL")
+            calc_stat_product(evo_pokemon, "UL")
             display_ultra_league(PVP_stats, entry, t_level, t_IV, evolve_stats)
         if show_master_league.get() is True:
+            create_table(evo_pokemon, "ML")
+            calc_stat_product(evo_pokemon, "ML")
             display_master_league(PVP_stats, entry, t_level, t_IV, evolve_stats)
         
 

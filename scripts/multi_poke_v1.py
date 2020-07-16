@@ -712,13 +712,13 @@ def main():
         # get PVP stat product
         try:
             #print("creating table for: {}".format(evo_pokemon))
-            create_table(evo_pokemon)
-            calc_stat_product(evo_pokemon)
+            create_table(evo_pokemon, "GL")
+            calc_stat_product(evo_pokemon, "GL")
         except Exception as e:
             #print(e)
             pass #print(e)
 
-        PVP_stats = get_stat_product(evo_pokemon, t_IV)
+        PVP_stats = get_stat_product(evo_pokemon, t_IV, "GL")
 
         # display Great League analysis
         display_great_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats, evo_pokemon)
