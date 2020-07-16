@@ -3,7 +3,7 @@
 # candy cost
 # final level
 
-from multi_poke_v1 import *
+from ..scripts.multi_poke_v1 import *
 
 def set_up(pokemon, CP, IV_list, evo_pokemon):
     entry = [0, pokemon, CP] + IV_list

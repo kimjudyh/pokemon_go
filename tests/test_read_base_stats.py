@@ -1,6 +1,6 @@
 # test function read_base_stats
 
-from multi_poke_v1 import read_base_stats
+from ..scripts.multi_poke_v1 import read_base_stats
 
 def test_meltan():
     base_stats = read_base_stats("meltan")

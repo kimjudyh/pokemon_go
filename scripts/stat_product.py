@@ -8,7 +8,8 @@ def create_table(pokemon):
     and Percent of Max.
     '''
     import math as m
-    from multi_poke_v1 import read_cp_mult, read_base_stats
+    # from ..scripts.multi_poke_v1 import read_cp_mult, read_base_stats
+    # from multi_poke_v1 import read_cp_mult, read_base_stats
     import psycopg2
     from psycopg2 import sql
 
@@ -45,6 +46,7 @@ def calc_stat_product(pokemon):
     Sorts table by ascending rank/descending stat product..
     '''
     import math as m
+    # from ..scripts.multi_poke_v1 import read_cp_mult, read_base_stats
     from multi_poke_v1 import read_cp_mult, read_base_stats
     import psycopg2
     from psycopg2 import sql
@@ -162,6 +164,7 @@ def get_stat_product(pokemon, IV_list):
 
     import psycopg2
     from psycopg2 import sql
+    import sys
 
     atk_IV = IV_list[0]
     def_IV = IV_list[1]
@@ -178,9 +181,22 @@ def get_stat_product(pokemon, IV_list):
 
     PVP_stats = cur.fetchall()
 
-    db.close()
+    # TODO: if empty table, need to drop table, create, and calc
 
-    PVP_stats = list(PVP_stats[0])
+
+    try:
+        PVP_stats = list(PVP_stats[0])
+        db.close()
+    except Exception as e:
+        print(e)
+        print('Empty table, probably')
+        print(f'Dropping table for {pokemon}')
+        cur.execute(sql.SQL(
+            '''DROP TABLE IF EXISTS {}''').format(table_name))
+        db.commit()
+        db.close()
+        sys.exit(0)
+
     #print(PVP_stats)
 
     return PVP_stats
