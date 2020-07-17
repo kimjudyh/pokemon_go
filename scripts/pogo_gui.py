@@ -310,6 +310,7 @@ master_league = ttk.Checkbutton(mainframe, text="Show Master League Analysis",
 master_league.grid(column=2, row=file_row+6)
 
 # lucky, best budy options
+ttk.Label(mainframe, text="Only work for single Pokemon analysis: ").grid(column=1, row=file_row+4, sticky=S)
 lucky = ttk.Checkbutton(mainframe, text="Lucky Pokemon", variable=is_lucky, onvalue=True, offvalue=False, takefocus=False)
 lucky.grid(column=1, row=file_row+5)
 best_buddy = ttk.Checkbutton(mainframe, text="Best Buddy", variable=is_best_buddy, onvalue=True, offvalue=False, takefocus=False)
