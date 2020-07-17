@@ -476,6 +476,7 @@ def display_great_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats, evo_
     cp_1500 = evolve_stats[3]
     stardust_cost = evolve_stats[4]
     candy_cost = evolve_stats[5]
+    level_1500 = evolve_stats[6]
 
 
     # print ex: 53. trapinch --> flygon
@@ -499,8 +500,8 @@ def display_great_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats, evo_
     headers1 = ['CP', 'Level', 'ATK', 'DEF', 'STM', 'IV %']
     data1 = [original_cp, level, attack, defense, stamina, '{:,.2f}%'.format(percent)]
 
-    headers2 = ['Rank', 'Evo CP', '#Pwr^', 'Stardust', 'Candy', 'CP1500']
-    data2 = rank_data + [evo_cp, power_up_count, stardust_cost, candy_cost, cp_1500]
+    headers2 = ['Rank', 'Evo CP', '#Pwr^', 'Stardust', 'Candy', 'CP1500', 'LVL']
+    data2 = rank_data + [evo_cp, power_up_count, stardust_cost, candy_cost, cp_1500, level_1500]
 
     # use PrettyTable to make formatted table
     pt3 = PrettyTable(headers1 + headers2)
@@ -543,6 +544,7 @@ def display_ultra_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats):
     cp_2500 = evolve_stats[0]
     stardust_cost = evolve_stats[2]
     candy_cost = evolve_stats[3]
+    level_2500 = evolve_stats[4]
 
     print('\tUltra League Analysis:')
     
@@ -557,8 +559,8 @@ def display_ultra_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats):
         rank_data = [colored(rank, 'red')]
 
     # define headers and corresponding data to put in table
-    headers2 = ['Rank', '#Pwr^', 'Stardust', 'Candy', 'CP2500']
-    data2 = rank_data + [power_up_count, stardust_cost, candy_cost, cp_2500]
+    headers2 = ['Rank', '#Pwr^', 'Stardust', 'Candy', 'CP2500', 'LVL']
+    data2 = rank_data + [power_up_count, stardust_cost, candy_cost, cp_2500, level_2500]
     
     #headers1 = ['#Pwr^', 'Stardust', 'Candy', 'CP2500']
     #data1 = [power_up_count, stardust_cost, candy_cost, cp_2500]
