@@ -47,12 +47,16 @@ If multiple CSV files are to be analyzed, read_many_files.py can be used.
 * Stardust: after evolution, the amount of stardust needed to reach CP1500
 * Candy: after evolution, the amount of candy needed to reach CP1500
 * CP1500: the highest CP closest to 1500 that the evolved Pokemon will reach  
+* LVL: level when evolved Pokemon is at CP1500
 ### Ultra League Analysis
+* Rank: evolved Pokemon's Ultra League PVP rank, based on the stat product  
 * #Pwr^: number of power ups needed for evolved Pokemon to reach CP2500
 * Stardust: after evolution, the amount of stardust needed to reach CP2500
 * Candy: after evolution, the amount of candy needed to reach CP2500
 * CP2500: the highest CP closest to 2500 that the evolved Pokemon will reach
+* LVL: level when evolved Pokemon is at CP2500
 ### Master League Analysis
+* Rank: evolved Pokemon's Master League PVP rank, based on the stat product  
 * #Pwr^: number of power ups needed for evolved Pokemon to reach max CP
 * Stardust: after evolution, the amount of stardust needed to reach Max CP
 * Candy: after evolution, the amount of candy needed to reach Max CP
@@ -61,8 +65,6 @@ If multiple CSV files are to be analyzed, read_many_files.py can be used.
 ## Missing Features
 Things I need to add/fix:
 * Best buddy boost
-* Lucky Pokemon stardust discount
-* 9% CP reduction on certain Pokemon (ex. Mewtwo)
 * Galarian Pokemon base stats
 
 

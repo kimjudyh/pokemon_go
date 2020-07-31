@@ -205,9 +205,9 @@ def read_base_stats(pokemon):
     param pokemon: string of pokemon's name
     return base_stats: list [stamina, attack, defense]
     '''
-    # [pokemon, stamina, attack, defense]
     import psycopg2
     import sys
+    import math as m
 
     # create connection to database (mydb)
     db = psycopg2.connect(database = "mydb")
@@ -233,13 +233,7 @@ def read_base_stats(pokemon):
     except Exception as e:
         print("{} doesn't exist. Try again?\n".format(pokemon))
         sys.exit(0)
-    '''
-    base_stats = [["meltan", 130, 118, 99],
-                  ["charmander", 118, 116, 93],
-                  ["squirtle", 127, 94, 121],
-                  ["bagon", 128, 134, 93],
-                  ["salamence", 216, 277, 168]]
-    '''
+
     return base_stats
 
 # narrow down cp multiplier range based on stardust.
@@ -273,28 +267,15 @@ def narrow_cp_mult(dic_cp_mult, dic_stardust, entry, base_stats):
     # get list of levels from stardust dictionary associated with given stardust
     #list_levels = dic_stardust[stardust]
 
-    for key, value in dic_stardust.items():
-        list_levels = value
-        cp_mult = []
-        for i in list_levels:
-            # remove half levels
-            #if i.is_integer():
-                # get cp multiplier from cp_mult dictionary associated with level i
-            cp_mult.append(dic_cp_mult[i])
-                # populate dictionary of key: cp_mult, value: level
-            d_list_levels[dic_cp_mult[i]] = i
-
-        # guess real level from narrowed down list
-        for i_cpm in cp_mult:
-            # calculate cp
-            calc_cp = m.floor(.1*(atk_base + atk_IV)*\
-                    m.sqrt(def_base + def_IV)*\
-                    m.sqrt(stam_base + stam_IV)*i_cpm**2)
-
-            if cp == calc_cp:
-                real_cp_mult = i_cpm
-                real_level = d_list_levels[i_cpm]
-                return real_cp_mult, real_level
+    for level, i_cpm in dic_cp_mult.items():
+        # calculate cp
+        calc_cp = m.floor(.1*(atk_base + atk_IV)*\
+                m.sqrt(def_base + def_IV)*\
+                m.sqrt(stam_base + stam_IV)*i_cpm**2)
+        if cp == calc_cp:
+            real_cp_mult = i_cpm
+            real_level = level
+            return real_cp_mult, real_level
 
     try:
         return real_cp_mult, real_level
@@ -495,6 +476,7 @@ def display_great_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats, evo_
     cp_1500 = evolve_stats[3]
     stardust_cost = evolve_stats[4]
     candy_cost = evolve_stats[5]
+    level_1500 = evolve_stats[6]
 
 
     # print ex: 53. trapinch --> flygon
@@ -518,8 +500,8 @@ def display_great_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats, evo_
     headers1 = ['CP', 'Level', 'ATK', 'DEF', 'STM', 'IV %']
     data1 = [original_cp, level, attack, defense, stamina, '{:,.2f}%'.format(percent)]
 
-    headers2 = ['Rank', 'Evo CP', '#Pwr^', 'Stardust', 'Candy', 'CP1500']
-    data2 = rank_data + [evo_cp, power_up_count, stardust_cost, candy_cost, cp_1500]
+    headers2 = ['Rank', 'Evo CP', '#Pwr^', 'Stardust', 'Candy', 'CP1500', 'LVL']
+    data2 = rank_data + [evo_cp, power_up_count, stardust_cost, candy_cost, cp_1500, level_1500]
 
     # use PrettyTable to make formatted table
     pt3 = PrettyTable(headers1 + headers2)
@@ -562,6 +544,7 @@ def display_ultra_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats):
     cp_2500 = evolve_stats[0]
     stardust_cost = evolve_stats[2]
     candy_cost = evolve_stats[3]
+    level_2500 = evolve_stats[4]
 
     print('\tUltra League Analysis:')
     
@@ -576,12 +559,15 @@ def display_ultra_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats):
         rank_data = [colored(rank, 'red')]
 
     # define headers and corresponding data to put in table
-    headers1 = ['#Pwr^', 'Stardust', 'Candy', 'CP2500']
-    data1 = [power_up_count, stardust_cost, candy_cost, cp_2500]
+    headers2 = ['Rank', '#Pwr^', 'Stardust', 'Candy', 'CP2500', 'LVL']
+    data2 = rank_data + [power_up_count, stardust_cost, candy_cost, cp_2500, level_2500]
+    
+    #headers1 = ['#Pwr^', 'Stardust', 'Candy', 'CP2500']
+    #data1 = [power_up_count, stardust_cost, candy_cost, cp_2500]
 
     # use PrettyTable to make formatted table
-    pt3 = PrettyTable(headers1)
-    pt3.add_row(data1)
+    pt3 = PrettyTable(headers2)
+    pt3.add_row(data2)
     print(pt3)
 
 
@@ -626,12 +612,14 @@ def display_master_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats):
         rank_data = [colored(rank, 'red')]
 
     # define headers and corresponding data to put in table
-    headers1 = ['#Pwr^', 'Stardust', 'Candy', 'Max CP']
-    data1 = [power_up_count, stardust_cost, candy_cost, cp_max]
+    headers2 = ['Rank', '#Pwr^', 'Stardust', 'Candy', 'Max CP']
+    data2 = rank_data + [power_up_count, stardust_cost, candy_cost, cp_max]
+    #headers1 = ['#Pwr^', 'Stardust', 'Candy', 'Max CP']
+    #data1 = [power_up_count, stardust_cost, candy_cost, cp_max]
 
     # use PrettyTable to make formatted table
-    pt3 = PrettyTable(headers1)
-    pt3.add_row(data1)
+    pt3 = PrettyTable(headers2)
+    pt3.add_row(data2)
     print(pt3)
 
     print()
@@ -712,13 +700,13 @@ def main():
         # get PVP stat product
         try:
             #print("creating table for: {}".format(evo_pokemon))
-            create_table(evo_pokemon)
-            calc_stat_product(evo_pokemon)
+            create_table(evo_pokemon, "GL")
+            calc_stat_product(evo_pokemon, "GL")
         except Exception as e:
             #print(e)
             pass #print(e)
 
-        PVP_stats = get_stat_product(evo_pokemon, t_IV)
+        PVP_stats = get_stat_product(evo_pokemon, t_IV, "GL")
 
         # display Great League analysis
         display_great_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats, evo_pokemon)
@@ -726,9 +714,21 @@ def main():
         # optionally display Ultra League analysis based on checkbox in GUI
         try:
             if show_ultra_state:
-                display_ultra_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats)
+                try:
+                    create_table(evo_pokemon, "UL")
+                    calc_stat_product(evo_pokemon, "UL")
+                except Exception as e:
+                    pass
+                PVP_stats_UL = get_stat_product(evo_pokemon, t_IV, "UL")
+                display_ultra_league(PVP_stats_UL, entry, t_level, t_IV, dic_evolve_stats)
             if show_master_state:
-                display_master_league(PVP_stats, entry, t_level, t_IV, dic_evolve_stats)
+                try:
+                    create_table(evo_pokemon, "ML")
+                    calc_stat_product(evo_pokemon, "ML")
+                except Exception as e:
+                    pass
+                PVP_stats_ML = get_stat_product(evo_pokemon, t_IV, "ML")
+                display_master_league(PVP_stats_ML, entry, t_level, t_IV, dic_evolve_stats)
         except Exception as e:
             print(e)
 

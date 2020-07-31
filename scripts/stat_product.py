@@ -1,6 +1,6 @@
 from sys import argv
 
-def create_table(pokemon):
+def create_table(pokemon, league_name):
     '''
     pokemon: string
     Creates a POSTGRESQL table in specified database named after input pokemon.
@@ -8,8 +8,6 @@ def create_table(pokemon):
     and Percent of Max.
     '''
     import math as m
-    # from ..scripts.multi_poke_v1 import read_cp_mult, read_base_stats
-    # from multi_poke_v1 import read_cp_mult, read_base_stats
     import psycopg2
     from psycopg2 import sql
 
@@ -19,10 +17,9 @@ def create_table(pokemon):
     # create cursor to go through database
     cur = db.cursor()
 
-
     # convert pokemon string variable into something that can be passed into
-    # query as a table name
-    table_name = sql.Identifier(pokemon.lower())
+    # query as a table name. Append the league name
+    table_name = sql.Identifier(pokemon.lower() + "_" + league_name)
 
     # create new table that is named after pokemon
     cur.execute(sql.SQL(
@@ -31,14 +28,14 @@ def create_table(pokemon):
         stam_IV int,
         atk_IV  int,
         def_IV  int,
-        stat_product    float,
+        stat_product float,
         percent_max float
         )''').format(table_name))
 
     db.commit()
     db.close()
 
-def calc_stat_product(pokemon):
+def calc_stat_product(pokemon, league_name):
     '''
     pokemon: string
     Calculates PVP stat product for all 4096 IV combinations.
@@ -46,10 +43,14 @@ def calc_stat_product(pokemon):
     Sorts table by ascending rank/descending stat product..
     '''
     import math as m
-    # from ..scripts.multi_poke_v1 import read_cp_mult, read_base_stats
-    from multi_poke_v1 import read_cp_mult, read_base_stats
+    try:
+        from ..scripts.multi_poke_v1 import read_cp_mult, read_base_stats
+    except:
+        from multi_poke_v1 import read_cp_mult, read_base_stats
+        
     import psycopg2
     from psycopg2 import sql
+    from sys import exit
 
     # create connection to database mydb
     db = psycopg2.connect(database = "mydb")
@@ -59,7 +60,7 @@ def calc_stat_product(pokemon):
 
     # convert pokemon string variable into something that can be passed into
     # query as a table name
-    table_name = sql.Identifier(pokemon.lower())
+    table_name = sql.Identifier(pokemon.lower() + "_" + league_name)
 
     dic_cp_mult = read_cp_mult()
 
@@ -78,21 +79,33 @@ def calc_stat_product(pokemon):
     atk_IV = list(range(0,16))
     def_IV = list(range(0,16))
 
-    min_cpm_est = m.sqrt(14990/((atk_base+15)*m.sqrt((def_base+15)*(stam_base+15))))
-    max_cpm_est = m.sqrt(14990/((atk_base+0)*m.sqrt((def_base+0)*(stam_base+0))))
+    if league_name == "GL":
+        max_cp = 1500
+    elif league_name == "UL":
+        max_cp = 2500
+    elif league_name == "ML":
+        max_cp = 9000
+    else:
+        print("League name " + league_name + " is invalid")
+        exit(1)
+
+    #min_cpm_est = m.sqrt(14990/((atk_base+15)*m.sqrt((def_base+15)*(stam_base+15))))
+    #max_cpm_est = m.sqrt(14990/((atk_base+0)*m.sqrt((def_base+0)*(stam_base+0))))
     #print(min_cpm_est)
     #print(max_cpm_est)
 
-    for key, value in dic_cp_mult.items():
-        if (value > (min_cpm_est -.02)) and (value < (min_cpm_est)):
-            min_cpm = value
-            min_level = key
-        if (value > (max_cpm_est)) and (value < (max_cpm_est + .02)):
-            max_cpm = value
-            max_level = key
-    else:
-        min_level = 1
-        min_cpm = dic_cp_mult[min_level]
+    #for key, value in dic_cp_mult.items():
+    #    if (value > (min_cpm_est -.02)) and (value < (min_cpm_est)):
+    #        min_cpm = value
+    #        min_level = key
+    #    if (value > (max_cpm_est)) and (value < (max_cpm_est + .02)):
+    #        max_cpm = value
+    #        max_level = key
+    #else:
+
+    # Start at level 1.
+    min_level = 1
+    min_cpm = dic_cp_mult[min_level]
 
     #print(min_cpm, "min cp mult")
     #print(max_cpm, "max cp mult")
@@ -107,13 +120,13 @@ def calc_stat_product(pokemon):
                 D = def_base + k_def
 
                 cp = m.floor(.1*A*m.sqrt(D*S)*min_cpm**2)
-                if cp <= 1500:
+                if cp <= max_cp:
                     level = min_level
-                    while cp <= 1500 and level < 40:
+                    while cp <= max_cp and level < 40:
                         level += .5
                         cp_mult = dic_cp_mult[level]
                         cp = m.floor(.1*A*m.sqrt(D*S)*cp_mult**2)
-                    if level < 40 or cp > 1500:
+                    if cp > max_cp: # we exit the previous loop when the max cp is exceeded
                         level -= .5
                     cp_mult = dic_cp_mult[level]
                     cp = m.floor(.1*A*m.sqrt(D*S)*cp_mult**2)
@@ -133,8 +146,8 @@ def calc_stat_product(pokemon):
 
     max_p = max(stat_product)
     min_p = min(stat_product)
-    print("max", max_p)
-    print("min", min_p)
+    print(league_name, "max=", max_p)
+    print(league_name, "min=", min_p)
     print(len(stat_product))
 
     # update percent with stat_product/max stat_product
@@ -155,7 +168,7 @@ def calc_stat_product(pokemon):
     db.commit()
     db.close()
 
-def get_stat_product(pokemon, IV_list):
+def get_stat_product(pokemon, IV_list, league_name):
     '''
     pokemon: string
     IV_list: list of 3 IVs: [attack IV, defense IV, stamina IV]
@@ -172,7 +185,7 @@ def get_stat_product(pokemon, IV_list):
 
     db = psycopg2.connect(database = "mydb")
     cur = db.cursor()
-    table_name = sql.Identifier(pokemon.lower())
+    table_name = sql.Identifier(pokemon.lower() + "_" + league_name)
 
     cur.execute(sql.SQL(
         '''SELECT rank, stat_product, percent_max FROM {} WHERE
@@ -197,7 +210,7 @@ def get_stat_product(pokemon, IV_list):
         db.close()
         sys.exit(0)
 
-    #print(PVP_stats)
+    #print("pvp stat product debug", PVP_stats)
 
     return PVP_stats
 
@@ -208,10 +221,16 @@ if __name__ == "__main__":
     # python3 stat_product.py pokemon
     script, pokemon = argv
     # create table if it doesn't exist, calc stat product
+    leagues = {"GL":1500,
+               "UL":2500,
+               "ML":9000}
     try:
-        create_table(pokemon)
-        calc_stat_product(pokemon)
+        for league, max_cp in leagues.items(): 
+            create_table(pokemon, league)
+            calc_stat_product(pokemon, league)
     # if table exists, move on
     except Exception as e:
         print(e)
-    #get_stat_product("swampert", [15,15,15])
+    get_stat_product("medicham", [15,15,15], "GL")
+    get_stat_product("medicham", [15,15,15], "UL")
+    get_stat_product("medicham", [15,15,15], "ML")

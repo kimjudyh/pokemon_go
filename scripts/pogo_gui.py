@@ -136,23 +136,40 @@ def single_poke_analysis(single_entry):
         # calc evolution stats
         evolve_stats = calc_evolve_cp(evo_pokemon, t_IV, t_level, t_cp_mult, 
                 dic_cp_mult, dic_power_up)
+        # account for lucky pokemon discount
+        if is_lucky.get() is True:
+            evolve_stats['great_league'][4] = round(evolve_stats['great_league'][4]/2)
+            evolve_stats['ultra_league'][2] = round(evolve_stats['ultra_league'][2]/2)
+            evolve_stats['master_league'][2] = round(evolve_stats['master_league'][2]/2)
         # get PVP stat product
         try:
-            create_table(evo_pokemon)
+            create_table(evo_pokemon, "GL")
             print('create table')
-            calc_stat_product(evo_pokemon)
+            calc_stat_product(evo_pokemon, "GL")
             print('calced stat product')
         except Exception as e:
             # pass 
             print(e)
 
-        PVP_stats = get_stat_product(evo_pokemon, t_IV)
+        PVP_stats = get_stat_product(evo_pokemon, t_IV, "GL")
         # display tables for great league and perhaps ultra league
         display_great_league(PVP_stats, entry, t_level, t_IV, evolve_stats, evo_pokemon)
         if show_ultra_league.get() is True:
-            display_ultra_league(PVP_stats, entry, t_level, t_IV, evolve_stats)
+            try:
+                create_table(evo_pokemon, "UL")
+                calc_stat_product(evo_pokemon, "UL")
+            except Exception as e:
+                pass
+            PVP_stats_UL = get_stat_product(evo_pokemon, t_IV, "UL")
+            display_ultra_league(PVP_stats_UL, entry, t_level, t_IV, evolve_stats)
         if show_master_league.get() is True:
-            display_master_league(PVP_stats, entry, t_level, t_IV, evolve_stats)
+            try:
+                create_table(evo_pokemon, "ML")
+                calc_stat_product(evo_pokemon, "ML")
+            except Exception as e:
+                pass
+            PVP_stats_ML = get_stat_product(evo_pokemon, t_IV, "ML")
+            display_master_league(PVP_stats_ML, entry, t_level, t_IV, evolve_stats)
         
 
 def analyze(*args):
@@ -215,6 +232,8 @@ single_list_results = StringVar()
 list_results = StringVar()
 show_ultra_league = BooleanVar()
 show_master_league = BooleanVar()
+is_lucky = BooleanVar()
+is_best_buddy = BooleanVar()
 
 # entry forms for single Pokemon stats
 single_row = 0
@@ -275,19 +294,27 @@ search_entry.grid(column=2, row=file_row+2, sticky=(E,W))
 search_entry.bind("<KeyRelease>", onKeyRelease)
 ttk.Label(mainframe, text="Search for Evolution: ").grid(column=1, row=file_row+2, sticky=E)
 
+
 # list box that displays selectable evo poke search results
 result_list = Listbox(mainframe, listvariable=list_results, height=10)
 result_list.grid(row=file_row+4, column=2, stick=(W,E))
 # bind for cursor selection
 result_list.bind("<<ListboxSelect>>", onLeftClick)
 
-# options
+# league options
 ultra_league = ttk.Checkbutton(mainframe, text="Show Ultra League Analysis",
         variable=show_ultra_league, onvalue=True, offvalue=False, takefocus=False)
 ultra_league.grid(column=2, row=file_row+5)
 master_league = ttk.Checkbutton(mainframe, text="Show Master League Analysis",
         variable=show_master_league, onvalue=True, offvalue=False, takefocus=False)
 master_league.grid(column=2, row=file_row+6)
+
+# lucky, best budy options
+ttk.Label(mainframe, text="Only work for single Pokemon analysis: ").grid(column=1, row=file_row+4, sticky=S)
+lucky = ttk.Checkbutton(mainframe, text="Lucky Pokemon", variable=is_lucky, onvalue=True, offvalue=False, takefocus=False)
+lucky.grid(column=1, row=file_row+5)
+best_buddy = ttk.Checkbutton(mainframe, text="Best Buddy", variable=is_best_buddy, onvalue=True, offvalue=False, takefocus=False)
+best_buddy.grid(column=1, row=file_row+6)
 
 # button that will run main program from multi_poke_v1
 ttk.Button(mainframe, text="Analyze", command=analyze).grid(column=2, row=file_row+7, sticky=(W,E))
